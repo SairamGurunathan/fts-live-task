@@ -1,38 +1,68 @@
-.App {
-  text-align: center;
-}
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&display=swap');
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+*{
+    font-family: 'PT Sans', sans-serif !important;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.homebanner{
+    background:linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('./Assects/Images/baseball-homebanner.jpg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    z-index: -1;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+hr{
+    width: 10%;
+    opacity: .6 !important;
 }
-
-.App-link {
-  color: #61dafb;
+.signin{
+    background-color: #de342f !important;
+    box-shadow: 0 6px 8px 0 rgba(0,0,0,.2);
+    padding: 10px !important;
+    transition:transform 1.5s;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.signin:hover{
+    transform:scale(1.1);
+    box-shadow: 0 6px 8px 0 rgba(0,0,0,.2);
+    background-color: #bd2c28 !important;
+}
+.form-login {
+    background-color: #edeef0 !important
+}
+.f-red{
+    color: #de342f !important;
+}
+.linkbtn{
+    cursor: pointer;
+}
+.input-field{
+    height: 45px !important;
+}
+.partner-label{
+    color: rgb(70, 173, 168) !important;
+}
+.left-arrow{
+    position: relative;
+    top: -7px;
+    left: -11px;
+}
+.font-small{
+    font-size:13px !important;
+}
+.font-18{
+    font-size: 18px !important;
+}
+.dropdown-menu[data-bs-popper]{
+    right: 0 !important;
+    left: auto !important;
+}
+.nav-pills .nav-link.active, .bg-main{
+    background-color: #f7f7f7 !important;
+}
+.header{
+    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.8) !important;
+    padding: 13px 10px !important;
+    height: 10vh !important;
+}
+.active-sidebar{
+    border-radius: 10px !important;
 }
