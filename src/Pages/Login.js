@@ -10,6 +10,7 @@ import Partnerwithus from '../Components/Partnerwithus';
 const Login = () => {
   const [isSignIn, setIsSignIn] = useState(true);
   
+  
   return (
     <>
     <section className='homebanner'>

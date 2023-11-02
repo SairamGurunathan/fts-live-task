@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { Icon } from "@iconify/react";
 import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
-import { fetchPartner } from "../Redux/Actions/LoginAPI";
+import { fetchPartner } from "../Redux/Actions/LoginAction";
 
 const Partnerwithus = ({ setIsSignIn }) => {
   const validationSchema = Yup.object().shape({
@@ -83,8 +83,8 @@ const Partnerwithus = ({ setIsSignIn }) => {
               type="text"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              name="organization"
               value={formik.values.organization}
+              name="organization"
             />
 
             {formik.touched.organization && formik.errors.organization && (

@@ -3,6 +3,9 @@
 *{
     font-family: 'PT Sans', sans-serif !important;
 }
+body{
+    background-color: #edeef0 !important
+}
 .homebanner{
     background:linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('./Assects/Images/baseball-homebanner.jpg');
     background-position: center;
@@ -65,4 +68,36 @@ hr{
 }
 .active-sidebar{
     border-radius: 10px !important;
+}
+.add-center{
+    border: 2px dashed #d3d3d3;
+    min-height: 250px;
+}
+.add-banner{
+    height: 60px;
+}
+.add-center-card{
+    min-height: 250px;
+}
+.add-image{
+    min-height: 100px !important;
+    min-width: 120px;
+}
+.labels{
+    color: gray;
+    font-size: smaller;
+    font-weight: 600;
+}
+.arrow-select{
+    position: relative;
+    top: -30px;
+    right: -170px;
+    width: fit-content;
+}
+.cursor-pointer{
+    cursor: pointer;
+}
+
+input[type="file"] {
+    display: none;
 }

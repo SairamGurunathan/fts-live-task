@@ -3,6 +3,7 @@ import thunk from "redux-thunk";
 import reducers from "./Reducers/Index";
 
 let initalValues = {};
+
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(
   reducers,

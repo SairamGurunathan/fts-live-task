@@ -1,13 +1,14 @@
 import { Icon } from '@iconify/react'
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const SideMenu = () => {
+  const navigate = useNavigate();
   return (
     <>
- <div class="d-flex flex-column flex-shrink-0 ms-4 me-2 pt-3 text-bg-white d-lg-block" >
+ <div class="d-flex flex-column flex-shrink-0 px-2 pt-3 text-bg-white d-lg-block bg-white h-100" >
     <ul class="nav nav-pills flex-column mb-auto">
-      <li class="nav-item">
+      <li class="nav-item" onClick={()=>navigate('/center')}>
         <Link to="#" class="nav-link active" aria-current="page">
             <div className='d-flex flex-row justify-content-between align-items-center'>
                 <div className='d-flex flex-row justify-content-between align-items-center ms-1 gap-1 text-danger'>

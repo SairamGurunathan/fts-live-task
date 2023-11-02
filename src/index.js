@@ -5,10 +5,12 @@ import App from './App';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './Redux/store';
+import interceptor from './Global/Interceptor';
 
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+interceptor(store);
 root.render(
   <Router>
     <Provider store={store}>
