@@ -5,7 +5,8 @@ const initialState = {
   partner: [],
   account: [],
   center: [],
-  timezone : []
+  timezone : [],
+  centerList: [],
 };
 export const OffersListReducer = (state = initialState, { type, payload }) => {
   switch (type) {
@@ -26,6 +27,16 @@ export const AccountReducer = (state = initialState, { type, payload }) => {
       return { ...state, account: payload };
     case Constants.FETCH_TIMEZONE:
         return { ...state, timezone: payload };
+    default:
+      return state;
+  }
+};
+
+export const CenterReducer = (state = initialState, { type, payload }) => {
+  switch (type) {
+    case Constants.FETCH_CENTERSLIST:
+      return { ...state, centerList: payload };
+    
     default:
       return state;
   }

@@ -2,9 +2,16 @@ import axios from "axios";
 import { Constants } from "../Constants/Constants";
 
 export const fetchCenter = (payload) => async (dispatch) => {
-  console.log(payload, "hsbiji");
+
     try { 
       const response = await axios.post('api/v1/centers', payload)
+
+      if (response.status === 201) {        
+        window.location.href = "/center"
+      } else {
+        console.error('Center not created');
+      }
+
       const { data } = response;
   
       dispatch({

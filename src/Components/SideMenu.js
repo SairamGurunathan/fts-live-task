@@ -6,7 +6,7 @@ const SideMenu = () => {
   const navigate = useNavigate();
   return (
     <>
- <div class="d-flex flex-column flex-shrink-0 px-2 pt-3 text-bg-white d-lg-block bg-white h-100" >
+ <div class="d-flex flex-column flex-shrink-0 px-2 pt-3 text-bg-white bg-white h-100" >
     <ul class="nav nav-pills flex-column mb-auto">
       <li class="nav-item" onClick={()=>navigate('/center')}>
         <Link to="#" class="nav-link active" aria-current="page">

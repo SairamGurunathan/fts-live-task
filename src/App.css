@@ -65,19 +65,26 @@ hr{
     box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.8) !important;
     padding: 13px 10px !important;
     height: 10vh !important;
+    position: sticky !important;
+    top: 0;
+    z-index: 999;
+}
+.side-menu{
+    position: fixed !important;
+    width: 100 !important;
 }
 .active-sidebar{
     border-radius: 10px !important;
 }
 .add-center{
     border: 2px dashed #d3d3d3;
-    min-height: 250px;
+    min-height: 280px;
 }
 .add-banner{
     height: 60px;
 }
 .add-center-card{
-    min-height: 250px;
+    min-height: 280px;
 }
 .add-image{
     min-height: 100px !important;
@@ -100,4 +107,7 @@ hr{
 
 input[type="file"] {
     display: none;
+}
+.card-bg{
+    background-color: #7f7f7f !important;
 }

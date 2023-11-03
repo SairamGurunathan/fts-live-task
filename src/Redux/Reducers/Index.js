@@ -1,8 +1,9 @@
 import { combineReducers } from "redux";
-import { AccountReducer, OffersListReducer } from "./Reducers";
+import { AccountReducer, CenterReducer, OffersListReducer } from "./Reducers";
 const reducers = combineReducers({
   offersListData: OffersListReducer,
-  AccountReducer: AccountReducer
+  AccountReducer: AccountReducer,
+  CenterReducer:CenterReducer
 });
 
 export default reducers;

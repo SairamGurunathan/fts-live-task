@@ -5,6 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./Pages/Home";
 import AddCenter from "./Pages/AddCenter";
 import OrganizationInfo from "./Pages/OrgInfo";
+import Facilities from "./Pages/Facilities";
 
 function App() {
   return (
@@ -17,6 +18,8 @@ function App() {
         <Route path="/addcenter" element={<AddCenter />} />
 
         <Route path="/organizationinfo" element={<OrganizationInfo />} />
+
+        <Route path="/facilities" element={<Facilities/>}/>
       </Routes>
     </div>
   );

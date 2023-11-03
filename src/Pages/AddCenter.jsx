@@ -65,14 +65,13 @@ const AddCenter = () => {
       email: "",
     },
     validationSchema: validationSchema,
-    onSubmit: async (values, { setSubmitting }) => {
+    onSubmit: async ({ setSubmitting }) => {
       try {
         dispatch(fetchCenter(payload));
       } catch (error) {
         console.log(error);
       }
       setSubmitting(false);
-      console.log(values)
     },
 
   });
@@ -135,10 +134,10 @@ const AddCenter = () => {
       <NavbarHeader />
       <div>
         <Row className="w-100 m-0">
-          <Col lg={2} className="p-0">
+          <Col lg={2} md={4} sm={4} className="p-0">
             <SideMenu />
           </Col>
-          <Col lg={10} className="p-0 form-login h-100 m-0">
+          <Col lg={10} md={8} sm={8} className="p-0 form-login h-100 m-0">
             <div className="container-fluid">
               <div className="mx-2">
                 <h6 className="fw-bold mt-4">Centers</h6>
@@ -149,7 +148,7 @@ const AddCenter = () => {
               <CardBody>
                 <Form onSubmit={formik.handleSubmit}>
                   <div className="row">
-                    <div className="col-4">
+                    <div className="col-lg-4 col-md-12 col-sm-12">
                       <FormGroup>
                         <FormLabel>Name*</FormLabel>
                         <FormControl
@@ -301,7 +300,7 @@ const AddCenter = () => {
                       </div>
                     </div>
                     <div className="row mt-2">
-                      <div className="col-4">
+                      <div className="col-lg-4">
                       <FormGroup>
                         <FormLabel className="labels">Time Zone*</FormLabel>
                             <FormSelect value={selectedTimeZone} onChange={(event)=>handleTimeZone(event)}>
@@ -380,7 +379,7 @@ const AddCenter = () => {
                       <hr className=" w-100 opacity-25" />
                       <div>
                         <div className="row gap-5">
-                          <div className="col-3">
+                          <div className="col-lg-4 col-md-6">
                             <div className="d-flex flex-row justify-content-between">
                               <FormLabel className="labels">
                                 Banner image
@@ -401,7 +400,7 @@ const AddCenter = () => {
                               <input id="file-input" type="file" size="60" />
                             </div>
                           </div>
-                          <div className="col-5">
+                          <div className="col-lg-5 col-md-6">
                             <div className="d-flex flex-row gap-3">
                               <FormLabel className="labels">
                                 Add more images*

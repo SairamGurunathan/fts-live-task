@@ -8,8 +8,8 @@ const Home = () => {
   return (
     <>
     <NavbarHeader/>
-    <div>
-        <Row className='w-100 m-0'>
+
+        <Row className='w-100 h-100 m-0'>
             <Col lg={2} className='p-0'>
             <SideMenu/>
             </Col>
@@ -17,7 +17,6 @@ const Home = () => {
               <Center/>
             </Col>
         </Row>
-    </div>
     
     </>
   )
