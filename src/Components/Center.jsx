@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import AddBanner from "../Assects/Images/addplus.svg";
 import { useNavigate } from "react-router-dom";
-import { Card, CardBody, CardHeader } from "react-bootstrap";
+import { Card, CardBody, CardHeader, Col, Row } from "react-bootstrap";
 import { AccountAction } from "../Redux/Actions/AccountAction";
 import { useDispatch, useSelector } from "react-redux";
 import { CentersListAction } from "../Redux/Actions/CentersListAction";
@@ -13,8 +13,10 @@ const Center = () => {
     (state) => state.AccountReducer?.account
   );
   const centerListSelector = useSelector((state)=> state?.CenterReducer?.centerList)
-
-  const handleClickFacilities = ()=>{
+  
+  
+  const handleClickFacilities = (i)=>{
+    localStorage.setItem("centerId",centerListSelector[i].id)
     navigate('/facilities')
   }
 
@@ -31,11 +33,18 @@ const Center = () => {
   }, [accountDataSelector]);
   return (
     <>
-      <div className="container-fluid">
-        <div className="mx-2">
-          <h6 className="fw-bold mt-4">Center</h6>
-          <hr className="mt-1 w-100 opacity-25" />
-        </div>
+      <div className="container-fluid overflow-auto">
+        <Row className="mt-4">
+          <Col lg={12} md={12} sm={12}>
+            <nav  aria-label="breadcrumb">
+              <ol className="breadcrumb mb-0 fs-16">
+                <li className="breadcrumb-item active fw-bold text-dark mx-2">Center</li>
+              </ol>
+            </nav>
+          </Col>
+        </Row>
+        <hr className="mt-1 w-100 opacity-25" />
+
         <div className="container">
           <div className="card border-0 rounded-4">
             <div className="card-body">
@@ -45,7 +54,7 @@ const Center = () => {
                     <img
                       src={AddBanner}
                       alt="Add Center"
-                      className="add-banner"
+                      className="add-banner cursor-pointer"
                       onClick={() => navigate("/addcenter")}
                     />
                     <div className="mt-2">
@@ -54,12 +63,12 @@ const Center = () => {
                   </div>
                 </div>
                 {centerListSelector.map((acc, index) => (
-                <div className="col-sm-8 col-md-6 col-lg-3" onClick={handleClickFacilities}>           
+                <div className="col-sm-8 col-md-6 col-lg-3" onClick={()=>handleClickFacilities(index)}>           
                     <Card className="add-center-card mt-2" key={index}>
                       <CardHeader className="border-0 card-bg ">
                         <p className="m-0 pt-3 mt-5 text-white text-capitalize">{acc?.title}</p>
                       </CardHeader>
-                      <CardBody className="py-1" >
+                      <CardBody className="py-1 card-content cursor-pointer">
                         <small className="m-0">{acc?.streetAddress}</small>
                         <div className="d-flex mb-3">
                         <small className="m-0">{acc?.city},</small>
@@ -70,7 +79,7 @@ const Center = () => {
                           {acc?.centerHours?.map((time,index)=>(
                           <small key={index}>{time?.weekday}{time?.startTime} to {time?.endTime}</small>))}
                         </p>
-                        <button className="btn btn-outline btn-link text-decoration-none cursor-pointer">Show More...</button>
+                        {/* <button className="btn btn-outline btn-link text-decoration-none cursor-pointer">Show More...</button> */}
                       </CardBody>
                     </Card>       
                 </div>

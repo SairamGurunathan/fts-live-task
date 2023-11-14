@@ -50,9 +50,9 @@ const Partnerwithus = ({ setIsSignIn }) => {
 
   return (
     <>
-      <div className="d-flex flex-column justify-content-center align-items-center">
+      <div className="d-flex flex-column justify-content-center align-items-center rounded-2">
         <Form
-          className="bg-light p-4 rounded-3 form-login"
+          className="p-4 form-login w-100 rounded-3"
           onSubmit={formik.handleSubmit}
         >
           <div onClick={handleBack} className="left-arrow">
@@ -65,16 +65,16 @@ const Partnerwithus = ({ setIsSignIn }) => {
               width="40"
               height="40"
             />
-            <p className="m-0 lh-1 fw-bold">
-              <small>
+            
+              <small className="m-0 partner-info">
                 Please fill this short form and our team will get in touch with
                 you shortly
               </small>
-            </p>
+          
           </div>
 
           <Form.Group>
-            <Form.Label className="my-3 partner-label">
+            <Form.Label className="mt-3 partner-label">
               Organization name
             </Form.Label>
 
@@ -96,7 +96,7 @@ const Partnerwithus = ({ setIsSignIn }) => {
 
           <div className="d-flex flex-row justify-content-between gap-2">
             <Form.Group>
-              <Form.Label className="mb-3 partner-label">First name</Form.Label>
+              <Form.Label className="mb-2 partner-label">First name</Form.Label>
 
               <Form.Control
                 className="mb-2 shadow input-field"
@@ -114,7 +114,7 @@ const Partnerwithus = ({ setIsSignIn }) => {
               )}
             </Form.Group>
             <Form.Group>
-              <Form.Label className="mb-3 partner-label">Last name</Form.Label>
+              <Form.Label className="mb-2 partner-label">Last name</Form.Label>
 
               <Form.Control
                 className="mb-2 shadow input-field"
@@ -134,7 +134,7 @@ const Partnerwithus = ({ setIsSignIn }) => {
 
           <div className="d-flex flex-row justify-content-between gap-2">
             <Form.Group>
-              <Form.Label className="mb-3 partner-label">
+              <Form.Label className="mb-2 partner-label">
                 Phone number
               </Form.Label>
 
@@ -154,7 +154,7 @@ const Partnerwithus = ({ setIsSignIn }) => {
               )}
             </Form.Group>
             <Form.Group>
-              <Form.Label className="mb-3 partner-label">
+              <Form.Label className="mb-2 partner-label">
                 Email address
               </Form.Label>
 

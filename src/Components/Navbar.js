@@ -7,18 +7,28 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 
-const NavbarHeader= () => {
-  const navigate = useNavigate();
-  const orgSelector = useSelector((state) => state.AccountReducer?.account?.data)
 
+const NavbarHeader= () => {
+  const navigate = useNavigate()
+
+  const orgSelector = useSelector((state) => state?.AccountReducer?.account?.data)
   const profileName = orgSelector?.firstName + " " + orgSelector?.lastName
 
+  const handleOrgInfo = ()=>{
+    navigate("/organizationinfo")
+  }
 
   const handleLogout = ()=>{
     localStorage.removeItem("accessToken")
     localStorage.removeItem("refreshToken")
-    navigate("/")
+    localStorage.removeItem("orgID")
+    localStorage.removeItem("orgName")
+    localStorage.removeItem("firstName")
+    localStorage.removeItem("lastName")
+    window.location.href=("/")
   }
+
+
 
   return (
     <>
@@ -28,7 +38,7 @@ const NavbarHeader= () => {
             <img
               alt="logo"
               src={Logo}
-              width="230px"
+              width="210px"
               className="d-inline-block align-top"
             />
         </Navbar.Brand>  
@@ -37,9 +47,9 @@ const NavbarHeader= () => {
           </div>
           
           <div className='d-flex align-items-center gap-1 ms-auto me-1'>
-        <Icon icon="healthicons:ui-user-profile" className='fs-3'/>
-        <NavDropdown title={profileName} id="collapsible-nav-dropdown" className='text-white fs-6 '>
-              <NavDropdown.Item  onClick={()=>navigate('/organizationinfo')}>Organization Info</NavDropdown.Item>
+          <Icon icon="mdi:user-circle" className='fs-3'/>
+                  <NavDropdown title={profileName} id="collapsible-nav-dropdown" className='text-white fs-6 '>
+              <NavDropdown.Item  onClick={handleOrgInfo}>Organization Info</NavDropdown.Item>
               <NavDropdown.Divider className='w-100'/>
               <NavDropdown.Item  onClick={handleLogout}>
                 Log Out

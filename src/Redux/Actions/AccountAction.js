@@ -6,16 +6,18 @@ export const AccountAction = () => async(dispatch) =>{
 
     try{
         const response = await axios.get('api/account');
-        const { data } = response;
 
         if(response.status === 200){
-
+          localStorage.setItem("orgID",response?.data?.orgId)
+          localStorage.setItem("firstName",response?.data?.firstName)
+          localStorage.setItem("lastName",response?.data?.lastName)
+          localStorage.setItem("orgName",response?.data?.orgName)
+          
           dispatch({
             type: Constants.FETCH_ACCOUNT,
-            payload: {data: data, success: true},
+            payload: {data: response.data, success: true},
           });
-        }
-          
+        }     
     }
     catch (error){
         console.log(error);

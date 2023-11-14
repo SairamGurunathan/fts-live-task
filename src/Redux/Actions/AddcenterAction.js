@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Constants } from "../Constants/Constants";
+import { AccountAction } from "./AccountAction";
 
 export const fetchCenter = (payload) => async (dispatch) => {
 
@@ -8,6 +9,7 @@ export const fetchCenter = (payload) => async (dispatch) => {
 
       if (response.status === 201) {        
         window.location.href = "/center"
+        dispatch(AccountAction());
       } else {
         console.error('Center not created');
       }

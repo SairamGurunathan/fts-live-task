@@ -49,7 +49,7 @@ const SignIn = ({ setIsSignIn }) => {
     <>
       <div className="d-flex flex-column justify-content-center align-items-center">
         <Form
-          className="bg-light p-4 rounded-3 form-login w-100"
+          className="p-4 form-login w-100 rounded-3"
           onSubmit={formik.handleSubmit}
         >
           <Form.Group>
@@ -83,8 +83,8 @@ const SignIn = ({ setIsSignIn }) => {
               <p className='error text-danger fw-bold m-0'>{formik.errors.password}</p>
             )}
           </Form.Group>
-          <Link to="#" className="text-decoration-none float-end my-3">
-            <small>Forgot Password?</small>
+          <Link to="#" className="text-decoration-none float-end f-red my-3">
+            <p className="m-0">Forgot Password?</p>
           </Link>
           <Button className="w-100 signin border-0" type="submit" 
           disabled={!formik.isValid || formik.isSubmitting}>
@@ -94,11 +94,11 @@ const SignIn = ({ setIsSignIn }) => {
         <div className="d-flex justify-content-between gap-2 mt-4">
           <div>
             <small className="font-small">Don't have an account?</small>
-            <p className="f-red fw-bold linkbtn mb-1 font-18">Sign up</p>
+            <p className="f-red fw-bold linkbtn mb-1 font-16">Sign up</p>
           </div>
           <div>
             <small className="font-small">Are you a sports organization?</small>
-            <p className="f-red fw-bold linkbtn mb-1 font-18" onClick={handleClick}>
+            <p className="f-red fw-bold linkbtn mb-1 font-16" onClick={handleClick}>
               Partner with us
             </p>
           </div>

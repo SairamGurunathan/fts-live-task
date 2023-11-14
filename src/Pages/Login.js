@@ -29,7 +29,7 @@ const Login = () => {
         </Col>
         
         <Col lg={5} >   
-          <div className='form-login  mt-4 mx-5 rounded-3'>
+          <div className='mt-4 mx-5'>
         {isSignIn ? (<SignIn setIsSignIn = {setIsSignIn}/>) : (<Partnerwithus setIsSignIn = {setIsSignIn}/>)}
         </div>
         </Col>
