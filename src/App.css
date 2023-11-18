@@ -150,8 +150,25 @@ input[type="file"] {
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
-.active-sidebar .sidebar a:hover {
+.nav-link.active{
     background-color: #f7f7f7 !important;
     border-radius: 10px !important;
     color: #de342f!important;
+}
+.sidebar{
+    height: 100vh !important;
+    overflow: hidden !important;
+    position: sticky;
+    top: 0;
+    left: 0;
+}
+.dropdown-item:active{
+    background-color: #de342f !important;
+}
+.side{
+    position: fixed;
+    width: 16.66% !important;
+}
+.side ul{
+    width: 15.5% !important;
 }

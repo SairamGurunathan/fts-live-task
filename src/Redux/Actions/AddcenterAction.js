@@ -8,7 +8,7 @@ export const fetchCenter = (payload) => async (dispatch) => {
       const response = await axios.post('api/v1/centers', payload)
 
       if (response.status === 201) {        
-        window.location.href = "/center"
+        window.location.pathname = "/center"
         dispatch(AccountAction());
       } else {
         console.error('Center not created');

@@ -15,7 +15,7 @@ export const AccountAction = () => async(dispatch) =>{
           
           dispatch({
             type: Constants.FETCH_ACCOUNT,
-            payload: {data: response.data, success: true},
+            payload: {data: response?.data, success: true},
           });
         }     
     }

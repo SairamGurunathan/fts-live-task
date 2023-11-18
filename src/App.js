@@ -16,10 +16,10 @@ function App() {
     <div className="App">
       {window.location.pathname !== '/' && <NavbarHeader/>}
       <Row className='w-100 h-100 m-0'>
-            <Col lg={window.location.pathname !== '/' ? 0 : 2} md={window.location.pathname !== '/' ? 0 : 2} sm={window.location.pathname !== '/' ? 0 : 2} className='p-0 overflow-hidden'>
+            <Col lg={window.location.pathname !== '/' ? 0 : 2} md={window.location.pathname !== '/' ? 0 : 2} sm={window.location.pathname !== '/' ? 0 : 2} className='p-0'>
             {window.location.pathname !== '/' && <SideMenu/>}
             </Col>
-            <Col lg={window.location.pathname === '/' ? 12 : 10}  md={window.location.pathname === '/' ? 12 : 10} sm={window.location.pathname === '/' ? 12 : 10} className='p-0 form-login h-100 m-0 overflow-auto'>
+            <Col lg={window.location.pathname === '/' ? 12 : 10}  md={window.location.pathname === '/' ? 12 : 10} sm={window.location.pathname === '/' ? 12 : 10} className='p-0 form-login h-100 m-0'>
             
       <Routes>
         <Route path="/" element={<Login />} />

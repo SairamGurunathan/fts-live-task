@@ -5,7 +5,7 @@ const reducers = combineReducers({
   offersListData: OffersListReducer,
   AccountReducer: AccountReducer,
   CenterReducer:CenterReducer,
-  OrgInfoReducer:OrgInfoReducer,
+  OrgInfoStore:OrgInfoReducer,
   FacilitiesReducer:FacilitiesReducer,
   SportsListReducer : SportsListReducer,
 });

@@ -24,7 +24,6 @@ const AddFacilities = () => {
   return (
     <>
         <div className="container-fluid">
-              <div className="container">
           <div className="card border-0 rounded-4">
             <div className="card-body">
               <div className="row">
@@ -44,7 +43,6 @@ const AddFacilities = () => {
               </div>
             </div>
           </div>
-        </div>
         </div>
         
         <AddSportsModel show={show} setShow={setShow} setPopUp = {setPopUp} setSportsTitle={setSportsTitle} />

@@ -14,7 +14,7 @@ const Login = () => {
   return (
     <>
     <section className='homebanner'>
-    <Container className='vh-100 d-flex flex-column'>
+    <Container className='min-vh-100 d-flex flex-column pb-3'>
 
         <div className='mt-5'>
             <img src={Logo} alt='logo' className='w-25'/>

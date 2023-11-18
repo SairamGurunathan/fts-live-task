@@ -13,8 +13,10 @@ const Center = () => {
     (state) => state.AccountReducer?.account
   );
   const centerListSelector = useSelector((state)=> state?.CenterReducer?.centerList)
-  
-  
+  // console.log(centerListSelector);
+  //   const startTimeFormat = centerListSelector?.centerHours?.startTime
+  //   console.log(startTimeFormat);
+
   const handleClickFacilities = (i)=>{
     localStorage.setItem("centerId",centerListSelector[i].id)
     navigate('/facilities')
@@ -33,19 +35,19 @@ const Center = () => {
   }, [accountDataSelector]);
   return (
     <>
-      <div className="container-fluid overflow-auto">
+      <div className="container-fluid">
         <Row className="mt-4">
           <Col lg={12} md={12} sm={12}>
             <nav  aria-label="breadcrumb">
-              <ol className="breadcrumb mb-0 fs-16">
-                <li className="breadcrumb-item active fw-bold text-dark mx-2">Center</li>
+              <ol className="breadcrumb fs-16 m-0">
+                <li className="breadcrumb-item active fw-bold text-dark">Center</li>
               </ol>
             </nav>
           </Col>
         </Row>
         <hr className="mt-1 w-100 opacity-25" />
 
-        <div className="container">
+
           <div className="card border-0 rounded-4">
             <div className="card-body">
               <div className="row">
@@ -77,7 +79,7 @@ const Center = () => {
                         <p className="text-muted labels m-0">Business hours</p>
                         <p className="m-0">
                           {acc?.centerHours?.map((time,index)=>(
-                          <small key={index}>{time?.weekday}{time?.startTime} to {time?.endTime}</small>))}
+                          <small key={index}>{time?.weekday}{(time?.startTime)} to {time?.endTime}</small>))}
                         </p>
                         {/* <button className="btn btn-outline btn-link text-decoration-none cursor-pointer">Show More...</button> */}
                       </CardBody>
@@ -88,7 +90,6 @@ const Center = () => {
             </div>
           </div>
         </div>
-      </div>
     </>
   );
 };

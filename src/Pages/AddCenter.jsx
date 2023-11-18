@@ -31,8 +31,8 @@ const AddCenter = () => {
   const allDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const navigate = useNavigate()
   const [selectedTimeZone, setSelectedTimeZone] = useState("");
-  const [startTime, setStartTime] = useState(null);
-  const [endTime, setEndTime] = useState(null);
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [allchecked, setAllChecked] = useState("");
   const [isPlayer, setIsPlayer] = useState(false);
   const [selectedTimes, setSelectedTimes] = useState([]);
@@ -52,13 +52,23 @@ const AddCenter = () => {
     city: Yup.string().required("City is required"),
     stateProvince: Yup.string().required("State is required"),
     zipCode: Yup.number().required("Zip is required"),
-    phoneNumber: Yup.number().required("Phone Number is required"),
-    // phoneNumber: Yup.string()
-    // .required("Phone Number is required")
-    // .matches(/^\d{3}-\d{3}-\d{4}$/, "Phone number must be in the '123-456-7890' format"),
+    phoneNumber: Yup.string().max(10, "Max 10 digit")
+    .required("Phone Number is required"),
+    // .matches( /^\d{3}-\d{3}-\d{4}$/),
     email: Yup.string().email("Invalid email").required("Email is required"),
   });
   const dispatch = useDispatch();
+
+  const numberValidation = (e) => {
+    var regex = new RegExp("^[0-9]+$");
+    var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+    if (regex.test(str)) {
+      return true;
+    }
+    e.preventDefault();
+    return false;
+  };
+
 
   const formik = useFormik({
     initialValues: {
@@ -72,7 +82,8 @@ const AddCenter = () => {
       email: "",
     },
     validationSchema: validationSchema,
-    onSubmit: async ({ setSubmitting }) => {
+    onSubmit:  ( { setSubmitting }) => {
+
       try {
         dispatch(fetchCenter(payload));
       } catch (error) {
@@ -95,8 +106,8 @@ const AddCenter = () => {
     };
 
     setSelectedTimes([...selectedTimes, selectedTimeRange]);
-    setStartTime(null);
-    setEndTime(null);
+    setStartTime();
+    setEndTime();
     setDisplayErrorMessage(false);
   };
 
@@ -124,7 +135,7 @@ const AddCenter = () => {
   const payload = {
     displayName: isPlayer,
     ...formik.values,
-    organization: { id: accountSelector?.orgId },
+    organization: { id: accountSelector?.data?.orgId },
     centerHours: [
       {
         weekday: selectedValuesString,
@@ -139,7 +150,7 @@ const AddCenter = () => {
     centerusers: [
       {
         user: {
-          id: accountSelector?.id,
+          id: accountSelector?.data?.id,
         },
       },
     ],
@@ -156,12 +167,12 @@ const AddCenter = () => {
 
   return (
     <>
-      {/* <div className="container mx-3"> */}
+    <div className="container-fluid overflow-auto">
         <Row className="mt-4">
-          <Col lg={12} md={12} sm={12}>
+          <Col lg={10}>
             <nav aria-label="breadcrumb">
               <ol className="breadcrumb fs-16">
-                <li className="breadcrumb-item text-muted ms-2">Centers</li>
+                <li className="breadcrumb-item text-muted cursor-pointer" onClick={()=>navigate("/center")}>Centers</li>
                 <li className="breadcrumb-item active text-dark fw-bold">
                   Add Center
                 </li>
@@ -169,9 +180,9 @@ const AddCenter = () => {
             </nav>
           </Col>
         </Row>
-        <hr className="mt-1 w-100 opacity-25" />
-      {/* </div> */}
-      <Card className="mx-3">
+        <hr className="mt-1 w-100 opacity-25"/>
+
+      <Card className="">
         <CardBody>
           <Form onSubmit={formik.handleSubmit}>
             <div className="row">
@@ -187,7 +198,7 @@ const AddCenter = () => {
                     value={formik.values.title}
                   />
 
-                  {formik.touched.title && formik.errors.title && (
+                  {formik.errors.title && (
                     <p className="error text-danger m-1 fw-medium">
                       {formik.errors.title}
                     </p>
@@ -215,7 +226,7 @@ const AddCenter = () => {
                       onBlur={formik.handleBlur}
                       value={formik.values.streetAddress}
                     />
-                    {formik.touched.streetAddress &&
+                    {
                       formik.errors.streetAddress && (
                         <p className="error text-danger m-1 fw-medium">
                           {formik.errors.streetAddress}
@@ -246,7 +257,7 @@ const AddCenter = () => {
                       onBlur={formik.handleBlur}
                       value={formik.values.city}
                     />
-                    {formik.touched.city && formik.errors.city && (
+                    { formik.errors.city && (
                       <p className="error text-danger m-1 fw-medium">
                         {formik.errors.city}
                       </p>
@@ -264,7 +275,7 @@ const AddCenter = () => {
                       onBlur={formik.handleBlur}
                       value={formik.values.stateProvince}
                     />
-                    {formik.touched.stateProvince &&
+                    {
                       formik.errors.stateProvince && (
                         <p className="error text-danger m-1 fw-medium">
                           {formik.errors.stateProvince}
@@ -283,7 +294,7 @@ const AddCenter = () => {
                       onBlur={formik.handleBlur}
                       value={formik.values.zipCode}
                     />
-                    {formik.touched.zipCode && formik.errors.zipCode && (
+                    { formik.errors.zipCode && (
                       <p className="error text-danger m-1 fw-medium">
                         {formik.errors.zipCode}
                       </p>
@@ -297,13 +308,17 @@ const AddCenter = () => {
                     <FormLabel className="labels">Phone number*</FormLabel>
                     <FormControl
                       required
-                      type="number"
+                      type="text"
+                      maxLength={10}
                       name="phoneNumber"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       value={formik.values.phoneNumber}
+                      onKeyPress={(e) => {
+                        numberValidation(e);
+                      }}
                     />
-                    {formik.touched.phoneNumber &&
+                    {
                       formik.errors.phoneNumber && (
                         <p className="error text-danger m-1 fw-medium">
                           {formik.errors.phoneNumber}
@@ -322,7 +337,7 @@ const AddCenter = () => {
                       onBlur={formik.handleBlur}
                       value={formik.values.email}
                     />
-                    {formik.touched.email && formik.errors.email && (
+                    { formik.errors.email && (
                       <p className="error text-danger m-1 fw-medium">
                         {formik.errors.email}
                       </p>
@@ -488,6 +503,7 @@ const AddCenter = () => {
           </Form>
         </CardBody>
       </Card>
+      </div>
     </>
   );
 };

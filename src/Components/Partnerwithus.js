@@ -11,12 +11,23 @@ const Partnerwithus = ({ setIsSignIn }) => {
     organization: Yup.string().required("Organization name is required"),
     fName: Yup.string().required("First name is required"),
     lName: Yup.string().required("Last name is required"),
-    phNumber: Yup.number().required("Phone number is required"),
+    phoneNumber: Yup.number().max(10, "Max 10 digit")
+    .required("Phone Number is required"),
     email: Yup.string().email("Invalid email").required("Email is required"),
   });
 
   const handleBack = () => {
     setIsSignIn(true);
+  };
+
+  const numberValidation = (e) => {
+    var regex = new RegExp("^[0-9]+$");
+    var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+    if (regex.test(str)) {
+      return true;
+    }
+    e.preventDefault();
+    return false;
   };
 
    const dispatch = useDispatch()
@@ -55,7 +66,7 @@ const Partnerwithus = ({ setIsSignIn }) => {
           className="p-4 form-login w-100 rounded-3"
           onSubmit={formik.handleSubmit}
         >
-          <div onClick={handleBack} className="left-arrow">
+          <div onClick={handleBack} className="left-arrow mb-3">
             <Icon icon="ep:arrow-left" width="22" height="22" />
           </div>
           <div className="d-flex flex-row justify-content-center align-items-center gap-2">
@@ -87,7 +98,7 @@ const Partnerwithus = ({ setIsSignIn }) => {
               name="organization"
             />
 
-            {formik.touched.organization && formik.errors.organization && (
+            {formik.errors.organization && (
               <p className="error text-danger m-1 fw-medium">
                 {formik.errors.organization}
               </p>
@@ -107,7 +118,7 @@ const Partnerwithus = ({ setIsSignIn }) => {
                 value={formik.values.fName}
               />
 
-              {formik.touched.fName && formik.errors.fName && (
+              {formik.errors.fName && (
                 <p className="error text-danger fw-medium">
                   {formik.errors.fName}
                 </p>
@@ -124,7 +135,7 @@ const Partnerwithus = ({ setIsSignIn }) => {
                 value={formik.values.lName}
                 type="text"
               />
-              {formik.touched.lName && formik.errors.lName && (
+              {formik.errors.lName && (
                 <p className="error text-danger fw-medium">
                   {formik.errors.lName}
                 </p>
@@ -140,14 +151,18 @@ const Partnerwithus = ({ setIsSignIn }) => {
 
               <Form.Control
                 className="mb-2 shadow input-field"
-                type="number"
+                type="text"
+                maxLength={10}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 name="phNumber"
                 value={formik.values.phNumber}
+                onKeyPress={(e) => {
+                  numberValidation(e);
+                }}
               />
 
-              {formik.touched.phNumber && formik.errors.phNumber && (
+              { formik.errors.phNumber && (
                 <p className="error text-danger fw-medium">
                   {formik.errors.phNumber}
                 </p>
@@ -167,7 +182,7 @@ const Partnerwithus = ({ setIsSignIn }) => {
                 value={formik.values.email}
               />
 
-              {formik.touched.email && formik.errors.email && (
+              {formik.errors.email && (
                 <p className="error text-danger fw-meduim">
                   {formik.errors.email}
                 </p>
@@ -177,7 +192,8 @@ const Partnerwithus = ({ setIsSignIn }) => {
 
           <div className="mx-4">
             <Button className="w-100 mt-3 signin border-0 py-2" type="submit"
-              disabled={!formik.isValid || formik.isSubmitting}>
+              disabled={!formik.isValid || formik.isSubmitting}
+              >
               Submit
             </Button>
           </div>

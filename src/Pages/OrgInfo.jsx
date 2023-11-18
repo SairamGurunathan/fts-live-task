@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AddBanner from "../Assects/Images/addbanner.svg";
 import "react-datepicker/dist/react-datepicker.css";
-
 import {
   Button,
   Card,
@@ -17,7 +16,6 @@ import { useFormik } from "formik";
 import DatePicker from "react-datepicker";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { AccountAction } from "../Redux/Actions/AccountAction";
 import {
   OrgInfoAction,
   OrgInfoEditAction,
@@ -51,16 +49,23 @@ const OrganizationInfo = () => {
     email: Yup.string().email("Invalid email").required("Email is required"),
   });
 
-  const accountSelector = useSelector(
-    (state) => state?.AccountReducer?.account
-  );
+  const numberValidation = (e) => {
+    var regex = new RegExp("^[0-9]+$");
+    var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+    if (regex.test(str)) {
+      return true;
+    }
+    e.preventDefault();
+    return false;
+  };
+
   const orgIdSelector = useSelector(
-    (state) => state?.OrgInfoReducer?.OrgInfo?.data
+    (state) => state?.OrgInfoStore?.OrgInfo?.data
   );
+  console.log(orgIdSelector,"orgIDSelector");
   const accountDataSelector = useSelector(
     (state) => state?.AccountReducer?.account?.data?.orgId
   );
-  // console.log(accountDataSelector,"accountDataSelector");
 
   const handleWeekDaysChange = (e) => {
     if (e.target.checked) {
@@ -69,23 +74,22 @@ const OrganizationInfo = () => {
       setAllChecked(allchecked?.filter((item) => item !== e.target.value));
     }
   };
-  const selectedValuesString = allchecked?.toString();
+  // const selectedValuesString = allchecked?.toString();
 
   const formik = useFormik({
     initialValues: {
-      title: orgIdSelector?.title,
-      streetAddress: orgIdSelector?.streetAddress,
-      city: orgIdSelector?.city,
-      stateProvince: orgIdSelector?.stateProvince,
-      zipCode: orgIdSelector?.zipCode,
-      phoneNumber: orgIdSelector?.phoneNumber,
-      email: orgIdSelector?.email,
+      title: orgIdSelector?.title || "",
+      streetAddress: orgIdSelector?.streetAddress || "",
+      city: orgIdSelector?.city || "",
+      stateProvince: orgIdSelector?.stateProvince || "",
+      zipCode: orgIdSelector?.zipCode || "",
+      phoneNumber: orgIdSelector?.phoneNumber || "",
+      email: orgIdSelector?.email || "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { setSubmitting }) => {
-      console.log("Submitting form...", values);
       try {
-       await dispatch(OrgInfoEditAction(accountDataSelector, payload));
+       dispatch(OrgInfoEditAction(accountDataSelector,payload, values));
       } catch (error) {
         console.log(error);
       }
@@ -93,11 +97,14 @@ const OrganizationInfo = () => {
     },
   });
 
+console.log(formik.values,"val");
   const payload = {
     ...formik.values,
     id: accountDataSelector,
     displayName: true,
   }
+
+  console.log(payload,"payload");
 
   const handleAddTime = () => {
     if (!allchecked || !startTime || !endTime) {
@@ -117,18 +124,15 @@ const OrganizationInfo = () => {
     setDisplayErrorMessage(false);
   };
 
-  useEffect(() => {
-    dispatch(AccountAction());
-    // eslint-disable-next-line
-  }, []);
-
+  
   useEffect(() => {
     if (accountDataSelector !== undefined) {
-      dispatch(OrgInfoAction(accountDataSelector));
+      dispatch(OrgInfoAction(accountDataSelector)
+      );
     }
     // eslint-disable-next-line
   }, [accountDataSelector]);
-// console.log(formik?.errors,"error_formik");
+
   return (
     <>
       <div className="container-fluid">
@@ -153,7 +157,7 @@ const OrganizationInfo = () => {
                     value={formik.values.title}
                   />
 
-                  {formik.touched.title && formik.errors.title && (
+                  {formik.errors.title && (
                     <p className="error text-danger m-1 fw-medium">
                       {formik.errors.title}
                     </p>
@@ -177,7 +181,7 @@ const OrganizationInfo = () => {
                       onBlur={formik.handleBlur}
                       value={formik.values.streetAddress}
                     />
-                    {formik.touched.streetAddress &&
+                    {
                       formik.errors.streetAddress && (
                         <p className="error text-danger m-1 fw-medium">
                           {formik.errors.streetAddress}
@@ -208,7 +212,7 @@ const OrganizationInfo = () => {
                       onBlur={formik.handleBlur}
                       value={formik.values.city}
                     />
-                    {formik.touched.city && formik.errors.city && (
+                    {formik.errors.city && (
                       <p className="error text-danger m-1 fw-medium">
                         {formik.errors.city}
                       </p>
@@ -226,7 +230,7 @@ const OrganizationInfo = () => {
                       onBlur={formik.handleBlur}
                       value={formik.values.stateProvince}
                     />
-                    {formik.touched.stateProvince &&
+                    {
                       formik.errors.stateProvince && (
                         <p className="error text-danger m-1 fw-medium">
                           {formik.errors.stateProvince}
@@ -245,7 +249,7 @@ const OrganizationInfo = () => {
                       onBlur={formik.handleBlur}
                       value={formik.values.zipCode}
                     />
-                    {formik.touched.zipCode && formik.errors.zipCode && (
+                    {formik.errors.zipCode && (
                       <p className="error text-danger m-1 fw-medium">
                         {formik.errors.zipCode}
                       </p>
@@ -260,12 +264,16 @@ const OrganizationInfo = () => {
                     <FormControl
                       required
                       type="text"
+                      maxLength={10}
                       name="phoneNumber"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       value={formik.values.phoneNumber}
+                      onKeyPress={(e) => {
+                        numberValidation(e);
+                      }}
                     />
-                    {formik.touched.phoneNumber &&
+                    {
                       formik.errors.phoneNumber && (
                         <p className="error text-danger m-1 fw-medium">
                           {formik.errors.phoneNumber}
@@ -284,7 +292,7 @@ const OrganizationInfo = () => {
                       onBlur={formik.handleBlur}
                       value={formik.values.email}
                     />
-                    {formik.touched.email && formik.errors.email && (
+                    {formik.errors.email && (
                       <p className="error text-danger m-1 fw-medium">
                         {formik.errors.email}
                       </p>

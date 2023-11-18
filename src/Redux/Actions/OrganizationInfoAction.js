@@ -8,9 +8,10 @@ export const OrgInfoAction = (id) => async(dispatch)=>{
         const response = await axios.get(`/api/v1/organizations/${id}`);
 
         if(response.status === 200){
+            console.log(response,"response");
             dispatch({
                 type: Constants.FETCH_ORGINFO,
-                payload: {data: response.data},
+                payload: {data: response?.data},
               });
         }
     } catch (error) {
@@ -26,7 +27,7 @@ export const OrgInfoEditAction = (id,payload) => async(dispatch)=>{
         if(response.status === 200){
             dispatch({
                 type: Constants.FETCH_ORGINFO,
-                payload: {data: response.data},
+                payload: {data: response?.data},
               });
         }
     } catch (error) {
