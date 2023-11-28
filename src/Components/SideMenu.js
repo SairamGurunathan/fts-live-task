@@ -18,7 +18,7 @@ const SideMenu = () => {
           <li className="nav-item">
             <NavLink
               to="/center"
-              className="nav-link"
+              className="nav-link sidenav"
               activeClassName="active"
               onClick={() => navigate("/center")}
             >
@@ -47,11 +47,11 @@ const SideMenu = () => {
             <li className="nav-item">
               <NavLink
                 to="/facilities"
-                className="nav-link"
+                className="nav-link sidenav"
                 activeClassName="active"
                 onClick={() => navigate("/facilities")}
               >
-                {" "}
+          
                 <div className="d-flex flex-row justify-content-between align-items-center">
                   <div className="d-flex flex-row justify-content-between align-items-center ms-1 gap-1 text-danger">
                     <Icon
@@ -126,7 +126,12 @@ const SideMenu = () => {
 
           {isCenterRoute && (
             <li className="nav-item">
-              <Link to="#" className="nav-link" aria-current="page">
+              <NavLink
+                to="/refunds"
+                className="nav-link sidenav"
+                activeClassName="active"
+                onClick={() => navigate("/refunds")}
+              >
                 <div className="d-flex flex-row justify-content-between align-items-center">
                   <div className="d-flex flex-row justify-content-between align-items-center ms-1 gap-1 text-danger">
                     <Icon
@@ -145,7 +150,7 @@ const SideMenu = () => {
                     />
                   </div>
                 </div>
-              </Link>
+              </NavLink>
             </li>
           )}
 

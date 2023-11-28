@@ -40,7 +40,7 @@ const NavbarHeader = () => {
             alt="logo"
             src={Logo}
             width="210px"
-            className="d-inline-block align-top"
+            className="d-inline-block align-top cursor-pointer"
           />
         </Navbar.Brand>
         <div className="d-flex align-items-center me-auto gap-2">

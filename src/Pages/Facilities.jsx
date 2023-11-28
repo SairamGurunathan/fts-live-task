@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import { Icon } from "@iconify/react";
 import { AccountAction } from "../Redux/Actions/AccountAction";
@@ -6,21 +6,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { FacilitiesAction } from "../Redux/Actions/FacilitiesAction";
 import AddFacilities from "./AddFacilities";
 import { Link } from "react-router-dom";
+import CourtDetails from "./CourtDetails";
+import { CourtDetailsAction } from "../Redux/Actions/CourtDetailsAction";
 
 const Facilities = () => {
   const dispatch = useDispatch();
+  const [showCD, setShowCD] = useState(false)
 
   // const centerID = useSelector((state) => state?.AccountReducer?.account?.data?.centerId)
   const centerID = localStorage.getItem("centerId");
 
+  const handleCourtDetails = (id)=>{
+    dispatch(CourtDetailsAction(id))
+    setShowCD(true)
+  }
 
   const facilitiesSelector = useSelector(
     (state) => state?.FacilitiesReducer?.facilities
   );
-
-//   const handleClickModel = ()=>{
-//     setShow(true)
-// }
 
   useEffect(() => {
     dispatch(AccountAction());
@@ -45,11 +48,11 @@ const Facilities = () => {
 
       {Object.keys(facilitiesSelector).length ? (
                   <Card className=" mx-3 py-1 border-0 rounded-3 pb-3">
-       { Object.keys(facilitiesSelector)?.map((id, index) => (
+       { Object.keys(facilitiesSelector)?.map((title, index) => (
              <div key={index}>
             <div className="row d-flex align-items-center mx-2 mt-2 pb-2">
               <div className="col flex-grow-0">
-                <h5 className="m-0 fw-bold text-nowrap">{id}</h5>
+                <h5 className="m-0 fw-bold text-nowrap">{title}</h5>
               </div>
               <div className="col border-dotted flex-grow-1"></div>
               <div className="col flex-grow-0 d-flex align-items-center ms-auto">
@@ -74,7 +77,7 @@ const Facilities = () => {
                 <p className="font-small mb-2">Actions</p>
               </div>
             </div>
-            {facilitiesSelector[id]?.map((sel, i) => (
+            {facilitiesSelector[title]?.map((sel, i) => (
               <div
                 key={i}
                 className="row border rounded-3 bg-ws mx-3 mb-2 py-2"
@@ -83,14 +86,14 @@ const Facilities = () => {
                   <label>{i + 1}</label>
                 </div>
                 <div className="col-3">
-                  <Link className="text-decoration-none">{sel?.name}</Link>
+                  <Link className="text-decoration-none" onClick={()=>handleCourtDetails(sel?.id)}>{sel?.name}</Link>
                 </div>
                 <div className="col-6">
                   <small>{sel?.features?.join(" | ")}</small>
                 </div>
                 <div className="col-2">
                   <div className="d-flex flex-row align-items-center justify-content-center mt-1 gap-1">
-                    <Icon icon="fa-regular:edit" color="#de342f" />
+                    <Icon icon="fa-regular:edit" color="#de342f" onClick={()=>handleCourtDetails(sel?.id)}/>
                     <div class="vr"></div>
                     <Icon icon="raphael:dollar" color="#de342f" />
                     <div class="vr"></div>
@@ -111,9 +114,7 @@ const Facilities = () => {
         <AddFacilities />
       )}
 
-{/* <AddSportsModel show={show} setShow={setShow} setPopUp = {setPopUp} setSportsTitle={setSportsTitle} />
-
-<AddSportsFormModel show={popUp} setShow={setPopUp} sportsTitle = {sportsTitle}/> */}
+      <CourtDetails showCD = {showCD} setShowCD = {setShowCD} />
     </>
   );
 };

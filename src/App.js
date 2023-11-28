@@ -10,6 +10,7 @@ import NavbarHeader from "./Components/Navbar";
 import SideMenu from "./Components/SideMenu";
 import { Col, Row } from "react-bootstrap";
 import AddFacilities from "./Pages/AddFacilities";
+import Refunds from "./Pages/Refunds";
 
 function App() {
   return (
@@ -33,6 +34,8 @@ function App() {
         <Route path="/addfacilities" element={<AddFacilities/>}/>
 
         <Route path="/facilities" element={<Facilities/>}/>
+
+        <Route path="/refunds" element={<Refunds/>}/>
       </Routes>
         </Col>
         </Row>

@@ -89,9 +89,17 @@ hr{
 .add-center-card{
     min-height: 280px;
 }
+.card-header{
+    max-height: 100px !important;
+}
+.card-img{
+    max-height: 90px !important;
+    min-height: 90px !important;
+    object-fit: cover;
+}
 .add-image{
-    min-height: 100px !important;
-    min-width: 100px !important;
+    min-height: 98px !important;
+    min-width: 98px !important;
 }
 .labels{
     color: gray;
@@ -126,6 +134,15 @@ input[type="file"] {
 .card-bg{
     background-color: #7f7f7f !important;
 }
+.card-img-top:before {
+    background-color: rgba(0,0,0,.5);
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
 .border-dotted{
     border-style: dashed !important;
     border-width: 1px !important;
@@ -155,6 +172,11 @@ input[type="file"] {
     border-radius: 10px !important;
     color: #de342f!important;
 }
+.sidenav.nav-link:hover{
+    background-color: #f7f7f7 !important;
+    border-radius: 10px !important;
+    color: #de342f!important;
+}
 .sidebar{
     height: 100vh !important;
     overflow: hidden !important;
@@ -164,6 +186,7 @@ input[type="file"] {
 }
 .dropdown-item:active{
     background-color: #de342f !important;
+    color: black !important;
 }
 .side{
     position: fixed;

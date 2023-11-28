@@ -5,14 +5,13 @@ import {
     Button,
   Col,
   Form,
-  FormCheck,
-  FormControl,
-  FormLabel,
   Modal,
-  ModalFooter,
   Row,
 } from "react-bootstrap";
 import DatePicker from "react-datepicker";
+import * as Yup from "yup";
+import { useFormik } from "formik";
+
 
 const AddSportsFormModel = ({ show, setShow,sportsTitle}) => {
   const allDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -20,6 +19,16 @@ const AddSportsFormModel = ({ show, setShow,sportsTitle}) => {
   const [isPlayer, setIsPlayer] = useState(false)
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
+
+  const validationSchema = Yup.object().shape({
+    title: Yup.string().required("Enter the Name"),
+    playerAllowedMin: Yup.string().required("Enter Minimun Value"),
+    playerAllowedMax: Yup.string().required("Enter Maximum Value"),
+    durationAllowedMin: Yup.string().required("Enter Minimun Value"),
+    durationAllowedMax: Yup.string().required("Enter Maximum Value"),
+    advanceBookingMin: Yup.string().required("Enter Minimun Value"),
+    advanceBookingMax: Yup.string().required("Enter Maximum Value"),
+  });
 
   const handlePlayer = (e) => {
       if(e.target.checked){
@@ -29,6 +38,7 @@ const AddSportsFormModel = ({ show, setShow,sportsTitle}) => {
       }
     }
 
+    console.log(isPlayer);
     const handleWeekDaysChange = (e) =>{
       if (e.target.checked) {
         setAllChecked([...allchecked, e.target.value]);
@@ -37,6 +47,20 @@ const AddSportsFormModel = ({ show, setShow,sportsTitle}) => {
       }
     }
     // const selectedValuesString = allchecked?.toString();
+    const formik = useFormik({
+      initialValues: {
+        title: "",
+        
+      },
+      validationSchema: validationSchema,
+      onSubmit: async (values, { setSubmitting }) => {
+        try {
+        } catch (error) {
+          console.log(error);
+        }
+        setSubmitting(false);
+      },
+    });
 
   const handleClose = () => setShow(false);
   return (
@@ -55,37 +79,47 @@ const AddSportsFormModel = ({ show, setShow,sportsTitle}) => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form>
-            <FormLabel className="m-0 fw-bold">
+          <Form onSubmit={formik.handleSubmit}>
+            <Form.Label className="m-0 fw-bold" >
               Name
-            </FormLabel>
+            </Form.Label>
             <hr className="w-100 opacity-25" />
             <Form.Group className="d-flex flex-row align-items-center gap-4">
               <div className="col-6">
-                <Form.Control type="text" />
+                <Form.Control type="text"
+                    required
+                    name="title"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.title}
+                />
+                {formik.errors.title && (
+                    <p className="error text-danger m-1 fw-medium">
+                      {formik.errors.title}
+                    </p>)}
               </div>
               <div className="col-6 d-flex">
-                <FormCheck />
-                <FormLabel className="ms-2">Open to Athlitik users</FormLabel>
+                <Form.Check type="checkbox" onChange={handlePlayer}/>
+                <Form.Label className="ms-2">Open to Athlitik users</Form.Label>
               </div>
             </Form.Group>
 
-            <FormLabel className="m-0 fw-bold mt-3">
+            <Form.Label className="m-0 fw-bold mt-3">
              Timings
-            </FormLabel>
+            </Form.Label>
             <hr className="w-100 opacity-25" />
             <Row>
               <Col lg={6}>
                 <div className="d-flex flex-row gap-2 mt-2 ">
                   {allDays?.map((day, index) => (
                     <div className="d-flex flex-row gap-2" key={index}>
-                      <FormCheck
-                        // onChange={handleWeekDaysChange}
+                      <Form.Check
+                        onChange={handleWeekDaysChange}
                         type="checkbox"
                         value={day}
                         checked={allchecked?.includes(day)}
                       />
-                      <FormLabel>{day}</FormLabel>
+                      <Form.Label>{day}</Form.Label>
                     </div>
                   ))}
                 </div>
@@ -134,19 +168,39 @@ const AddSportsFormModel = ({ show, setShow,sportsTitle}) => {
               </Col>
             </Row>
 
-            <FormLabel className="m-0 fw-bold mt-3">
+            <Form.Label className="m-0 fw-bold mt-3">
               Reservation attributes
-            </FormLabel>
+            </Form.Label>
             <hr className="w-100 opacity-25" />
             <Row className="mb-2 d-flex align-items-center">
               <Col lg={4}>
                 <p className="m-0 text-muted">Players allowed</p>
               </Col>
               <Col lg={3}>
-                <Form.Control type="number" placeholder="Min" />
+                <Form.Control type="number" placeholder="Min" 
+                required
+                name="playerAllowedMin"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.playerAllowedMin}/>
+                {formik.errors.title && (
+                    <p className="error text-danger m-1 fw-medium">
+                      {formik.errors.playerAllowedMin}
+                    </p>)}
               </Col>
               <Col lg={3}>
-                <Form.Control type="number" placeholder="Max" />
+                <Form.Control type="number" placeholder="Max" 
+                
+                required
+                name="playerAllowedMax"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.playerAllowedMax}
+                />
+                {formik.errors.title && (
+                    <p className="error text-danger m-1 fw-medium">
+                      {formik.errors.playerAllowedMax}
+                    </p>)}
               </Col>
             </Row>
             <Row className="mb-2 d-flex align-items-center">
@@ -154,10 +208,28 @@ const AddSportsFormModel = ({ show, setShow,sportsTitle}) => {
                 <p className="m-0 text-muted">Duration allowed (hours)</p>
               </Col>
               <Col lg={3}>
-                <Form.Control type="number" placeholder="Min" />
+                <Form.Control type="number" placeholder="Min" 
+                required
+                name="durationAllowedMin"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.durationAllowedMin}/>
+                {formik.errors.title && (
+                    <p className="error text-danger m-1 fw-medium">
+                      {formik.errors.durationAllowedMin}
+                    </p>)}
               </Col>
               <Col lg={3}>
-                <Form.Control type="number" placeholder="Max" />
+                <Form.Control type="number" placeholder="Max" 
+                required
+                name="durationAllowedMax"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.durationAllowedMax}/>
+                {formik.errors.title && (
+                    <p className="error text-danger m-1 fw-medium">
+                      {formik.errors.durationAllowedMax}
+                    </p>)}
               </Col>
             </Row>
             <Row className="mb-2 d-flex align-items-center">
@@ -165,23 +237,41 @@ const AddSportsFormModel = ({ show, setShow,sportsTitle}) => {
                 <p className="m-0 text-muted">Advance booking window (hours)</p>
               </Col>
               <Col lg={3}>
-                <Form.Control type="number" placeholder="Min" />
+                <Form.Control type="number" placeholder="Min" 
+                required
+                name="advanceBookingMin"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.advanceBookingMin}/>
+                {formik.errors.title && (
+                    <p className="error text-danger m-1 fw-medium">
+                      {formik.errors.advanceBookingMin}
+                    </p>)}
               </Col>
               <Col lg={3}>
-                <Form.Control type="number" placeholder="Max" />
+                <Form.Control type="number" placeholder="Max" 
+                required
+                name="advanceBookingMax"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.advanceBookingMax}/>
+                {formik.errors.title && (
+                    <p className="error text-danger m-1 fw-medium">
+                      {formik.errors.advanceBookingMax}
+                    </p>)}
               </Col>
             </Row>
-            <FormLabel className="m-0 fw-bold mt-3">
+            <Form.Label className="m-0 fw-bold mt-3">
               Court highlights
-            </FormLabel>
+            </Form.Label>
             <hr className="w-100 opacity-25" />
-            <FormLabel className="text-muted">
+            <Form.Label className="text-muted">
                 <small className="m-0">Features
                 </small>
-                </FormLabel>
+                </Form.Label>
             <Row className="d-flex flex-row align-items-center">
                 <Col lg={6}>
-                  <FormControl type="text" />
+                  <Form.Control type="text" />
                 </Col>
                 <Col lg={6}>
                   <div className="d-flex flex-nowrap align-items-center">
@@ -190,9 +280,9 @@ const AddSportsFormModel = ({ show, setShow,sportsTitle}) => {
                   </div>
                 </Col>
             </Row>
-            <FormLabel>
+            <Form.Label>
                 <small className="m-0 text-muted">Images</small>
-            </FormLabel>
+            </Form.Label>
             <div>
                                 <label for="file-input">
                                   <img
@@ -206,7 +296,7 @@ const AddSportsFormModel = ({ show, setShow,sportsTitle}) => {
                             </div>
           </Form>
         </Modal.Body>
-        <ModalFooter className="bg-white">
+        <Modal.Footer className="bg-white">
         <div className="d-flex gap-2 justify-content-end">
                       <Button
                         variant="outline-primary"
@@ -218,7 +308,7 @@ const AddSportsFormModel = ({ show, setShow,sportsTitle}) => {
                         Save
                       </Button>
                     </div>
-        </ModalFooter>
+        </Modal.Footer>
       </Modal>
     </>
   );

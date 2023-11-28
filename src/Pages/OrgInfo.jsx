@@ -6,10 +6,6 @@ import {
   Card,
   CardBody,
   Form,
-  FormCheck,
-  FormControl,
-  FormGroup,
-  FormLabel,
 } from "react-bootstrap";
 import { Icon } from "@iconify/react";
 import { useFormik } from "formik";
@@ -146,9 +142,9 @@ console.log(formik.values,"val");
           <Form onSubmit={formik.handleSubmit}>
             <div className="row">
               <div className="col-lg-4 col-md-12 col-sm-12">
-                <FormGroup>
-                  <FormLabel>Organization name*</FormLabel>
-                  <FormControl
+                <Form.Group>
+                  <Form.Label>Organization name*</Form.Label>
+                  <Form.Control
                     type="text"
                     required
                     name="title"
@@ -162,7 +158,7 @@ console.log(formik.values,"val");
                       {formik.errors.title}
                     </p>
                   )}
-                </FormGroup>
+                </Form.Group>
               </div>
             </div>
 
@@ -171,9 +167,9 @@ console.log(formik.values,"val");
               <hr className="w-100 opacity-25" />
               <div className="d-flex row">
                 <div className="col-lg-4">
-                  <FormGroup>
-                    <FormLabel className="labels">Street*</FormLabel>
-                    <FormControl
+                  <Form.Group>
+                    <Form.Label className="labels">Street*</Form.Label>
+                    <Form.Control
                       required
                       type="text"
                       name="streetAddress"
@@ -187,24 +183,24 @@ console.log(formik.values,"val");
                           {formik.errors.streetAddress}
                         </p>
                       )}
-                  </FormGroup>
+                  </Form.Group>
                 </div>
 
                 <div className="col-lg-1">
-                  <FormGroup>
-                    <FormLabel className="labels">Suite</FormLabel>
-                    <FormControl
+                  <Form.Group>
+                    <Form.Label className="labels">Suite</Form.Label>
+                    <Form.Control
                       type="text"
                       name="suite"
                       onChange={formik.handleChange}
                       value={formik.values.suite}
                     />
-                  </FormGroup>
+                  </Form.Group>
                 </div>
                 <div className="col-lg-2">
-                  <FormGroup>
-                    <FormLabel className="labels">City*</FormLabel>
-                    <FormControl
+                  <Form.Group>
+                    <Form.Label className="labels">City*</Form.Label>
+                    <Form.Control
                       required
                       type="text"
                       name="city"
@@ -217,12 +213,12 @@ console.log(formik.values,"val");
                         {formik.errors.city}
                       </p>
                     )}
-                  </FormGroup>
+                  </Form.Group>
                 </div>
                 <div className="col-lg-2">
-                  <FormGroup>
-                    <FormLabel className="labels">State*</FormLabel>
-                    <FormControl
+                  <Form.Group>
+                    <Form.Label className="labels">State*</Form.Label>
+                    <Form.Control
                       required
                       type="text"
                       name="stateProvince"
@@ -236,12 +232,12 @@ console.log(formik.values,"val");
                           {formik.errors.stateProvince}
                         </p>
                       )}
-                  </FormGroup>
+                  </Form.Group>
                 </div>
                 <div className="col-lg-2">
-                  <FormGroup>
-                    <FormLabel className="labels">Zip*</FormLabel>
-                    <FormControl
+                  <Form.Group>
+                    <Form.Label className="labels">Zip*</Form.Label>
+                    <Form.Control
                       required
                       type="number"
                       name="zipCode"
@@ -254,14 +250,14 @@ console.log(formik.values,"val");
                         {formik.errors.zipCode}
                       </p>
                     )}
-                  </FormGroup>
+                  </Form.Group>
                 </div>
               </div>
               <div className="d-flex row mt-2">
                 <div className="flex-column col-lg-4">
-                  <FormGroup>
-                    <FormLabel className="labels">Phone number*</FormLabel>
-                    <FormControl
+                  <Form.Group>
+                    <Form.Label className="labels">Phone number*</Form.Label>
+                    <Form.Control
                       required
                       type="text"
                       maxLength={10}
@@ -279,12 +275,12 @@ console.log(formik.values,"val");
                           {formik.errors.phoneNumber}
                         </p>
                       )}
-                  </FormGroup>
+                  </Form.Group>
                 </div>
                 <div className="flex-column col-lg-4">
-                  <FormGroup>
-                    <FormLabel className="labels">Email*</FormLabel>
-                    <FormControl
+                  <Form.Group>
+                    <Form.Label className="labels">Email*</Form.Label>
+                    <Form.Control
                       required
                       type="email"
                       name="email"
@@ -297,21 +293,21 @@ console.log(formik.values,"val");
                         {formik.errors.email}
                       </p>
                     )}
-                  </FormGroup>
+                  </Form.Group>
                 </div>
               </div>
               <div className="mt-2">
-                <FormLabel className="labels">Business hours*</FormLabel>
+                <Form.Label className="labels">Business hours*</Form.Label>
                 <div className="d-flex flex-row gap-2">
                   {allDays?.map((day, index) => (
                     <div className="d-flex gap-2" key={index}>
-                      <FormCheck
+                      <Form.Check
                         onChange={handleWeekDaysChange}
                         type="checkbox"
                         value={day}
                         checked={allchecked?.includes(day)}
                       />
-                      <FormLabel>{day}</FormLabel>
+                      <Form.Label>{day}</Form.Label>
                     </div>
                   ))}
                 </div>
@@ -376,12 +372,12 @@ console.log(formik.values,"val");
                   <div className="col-lg-4 col-md-6">
                     <div className="row">
                       <div className="col-lg-6">
-                        <FormLabel className="labels">Banner image</FormLabel>
+                        <label className="labels">Banner image</label>
                       </div>
                       <div className="col-lg-6">
-                        <FormLabel className="labels">
+                        <label className="labels">
                           Min:800px x 600px
-                        </FormLabel>
+                        </label>
                       </div>
                     </div>
                     <div>

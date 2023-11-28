@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Card, CardBody, Col, Modal, Row } from 'react-bootstrap'
 import { SportsList } from '../Redux/Actions/SportsPhotosAction'
 import { useDispatch, useSelector } from 'react-redux'

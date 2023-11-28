@@ -12,15 +12,17 @@ const Center = () => {
   const accountDataSelector = useSelector(
     (state) => state.AccountReducer?.account
   );
-  const centerListSelector = useSelector((state)=> state?.CenterReducer?.centerList)
+  const centerListSelector = useSelector(
+    (state) => state?.CenterReducer?.centerList
+  );
   // console.log(centerListSelector);
   //   const startTimeFormat = centerListSelector?.centerHours?.startTime
   //   console.log(startTimeFormat);
 
-  const handleClickFacilities = (i)=>{
-    localStorage.setItem("centerId",centerListSelector[i].id)
-    navigate('/facilities')
-  }
+  const handleClickFacilities = (i) => {
+    localStorage.setItem("centerId", centerListSelector[i].id);
+    navigate("/facilities");
+  };
 
   useEffect(() => {
     dispatch(AccountAction());
@@ -38,58 +40,77 @@ const Center = () => {
       <div className="container-fluid">
         <Row className="mt-4">
           <Col lg={12} md={12} sm={12}>
-            <nav  aria-label="breadcrumb">
+            <nav aria-label="breadcrumb">
               <ol className="breadcrumb fs-16 m-0">
-                <li className="breadcrumb-item active fw-bold text-dark">Center</li>
+                <li className="breadcrumb-item active fw-bold text-dark">
+                  Center
+                </li>
               </ol>
             </nav>
           </Col>
         </Row>
         <hr className="mt-1 w-100 opacity-25" />
 
-
-          <div className="card border-0 rounded-4">
-            <div className="card-body">
-              <div className="row">
-                <div className="col-sm-8 col-md-6 col-lg-3">
-                  <div className="add-center rounded-3 d-flex flex-column align-items-center justify-content-center w-100 my-2">
-                    <img
-                      src={AddBanner}
-                      alt="Add Center"
-                      className="add-banner cursor-pointer"
-                      onClick={() => navigate("/addcenter")}
-                    />
-                    <div className="mt-2">
-                      <p className="text-muted fw-light fs-5">Add Center</p>
-                    </div>
+        <div className="card border-0 rounded-4">
+          <div className="card-body">
+            <div className="row">
+              <div className="col-sm-8 col-md-6 col-lg-3">
+                <div className="add-center rounded-3 d-flex flex-column align-items-center justify-content-center w-100 my-2">
+                  <img
+                    src={AddBanner}
+                    alt="Add Center"
+                    className="add-banner cursor-pointer"
+                    onClick={() => navigate("/addcenter")}
+                  />
+                  <div className="mt-2">
+                    <p className="text-muted fw-light fs-5">Add Center</p>
                   </div>
                 </div>
-                {centerListSelector.map((acc, index) => (
-                <div className="col-sm-8 col-md-6 col-lg-3" onClick={()=>handleClickFacilities(index)}>           
-                    <Card className="add-center-card mt-2" key={index}>
-                      <CardHeader className="border-0 card-bg ">
-                        <p className="m-0 pt-3 mt-5 text-white text-capitalize">{acc?.title}</p>
-                      </CardHeader>
-                      <CardBody className="py-1 card-content cursor-pointer">
-                        <small className="m-0">{acc?.streetAddress}</small>
-                        <div className="d-flex mb-3">
+              </div>
+              {centerListSelector.map((acc, index) => (
+                <div
+                  className="col-sm-8 col-md-6 col-lg-3"
+                  onClick={() => handleClickFacilities(index)}
+                >
+                  <Card className="add-center-card my-2" key={index}>
+                    <CardHeader className="border-0 card-bg">
+                      {acc?.photos[0]?.url ? (
+                        <img
+                          src={acc?.photos[0]?.url}
+                          alt="photos"
+                          className="w-100 card-img"
+                        />
+                      ) : (
+                        ""
+                      )}
+                      <p className="m-0 pt-3 mt-5 text-white text-capitalize">
+                        {acc?.title}
+                      </p>
+                    </CardHeader>
+
+                    <CardBody className="py-1 card-content cursor-pointer">
+                      <small className="m-0">{acc?.streetAddress}</small>
+                      <div className="d-flex mb-3">
                         <small className="m-0">{acc?.city},</small>
                         <small className="m-0">{acc?.stateProvince}</small>
-                        </div>
-                        <p className="text-muted labels m-0">Business hours</p>
-                        <p className="m-0">
-                          {acc?.centerHours?.map((time,index)=>(
-                          <small key={index}>{time?.weekday}{(time?.startTime)} to {time?.endTime}</small>))}
-                        </p>
-                        {/* <button className="btn btn-outline btn-link text-decoration-none cursor-pointer">Show More...</button> */}
-                      </CardBody>
-                    </Card>       
+                      </div>
+                      <p className="text-muted labels m-0">Business hours</p>
+                      <p className="m-0">
+                        {acc?.centerHours?.map((time, index) => (
+                          <small key={index}>
+                            {time?.weekday}
+                            {time?.startTime} to {time?.endTime}
+                          </small>
+                        ))}
+                      </p>
+                    </CardBody>
+                  </Card>
                 </div>
-                 ))}
-              </div>
+              ))}
             </div>
           </div>
         </div>
+      </div>
     </>
   );
 };
