@@ -8,7 +8,6 @@ const CourtDetails = ({showCD,setShowCD}) => {
     const handleClose = () => setShowCD(false);
 
     const courtDetailSelector = useSelector((state)=>state?.CourtDetailsReducer?.courtDetails)
-    console.log(courtDetailSelector);
 
     useEffect(()=>{
       dispatch(AccountAction()) 

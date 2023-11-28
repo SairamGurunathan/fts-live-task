@@ -96,6 +96,15 @@ hr{
     max-height: 90px !important;
     min-height: 90px !important;
     object-fit: cover;
+    
+}
+.custom-index {
+    position: relative;
+    z-index: 99;
+}
+.card-img-top {
+    position: relative;
+
 }
 .add-image{
     min-height: 98px !important;
@@ -135,7 +144,7 @@ input[type="file"] {
     background-color: #7f7f7f !important;
 }
 .card-img-top:before {
-    background-color: rgba(0,0,0,.5);
+    background-color: #00000080 !important;
     content: "";
     height: 100%;
     left: 0;
@@ -160,7 +169,7 @@ input[type="file"] {
     content: var(--bs-breadcrumb-divider,">") !important;
 }
 .card-content{
-    min-height: 175px;
+    min-height: 175px !important;
 }
 .card-content:hover{
     border: 1px solid red;
@@ -194,4 +203,10 @@ input[type="file"] {
 }
 .side ul{
     width: 15.5% !important;
+}
+.apply{
+    background-color: #de342f !important;
+}
+.crd-title{
+    max-width: 200px !important;
 }

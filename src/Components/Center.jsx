@@ -15,9 +15,6 @@ const Center = () => {
   const centerListSelector = useSelector(
     (state) => state?.CenterReducer?.centerList
   );
-  // console.log(centerListSelector);
-  //   const startTimeFormat = centerListSelector?.centerHours?.startTime
-  //   console.log(startTimeFormat);
 
   const handleClickFacilities = (i) => {
     localStorage.setItem("centerId", centerListSelector[i].id);
@@ -72,24 +69,28 @@ const Center = () => {
                   className="col-sm-8 col-md-6 col-lg-3"
                   onClick={() => handleClickFacilities(index)}
                 >
-                  <Card className="add-center-card my-2" key={index}>
-                    <CardHeader className="border-0 card-bg">
+                  <Card className="add-center-card custom-index my-2" key={index}>
+                    <CardHeader className="border-0 card-bg card-img-top p-0">
                       {acc?.photos[0]?.url ? (
                         <img
                           src={acc?.photos[0]?.url}
                           alt="photos"
-                          className="w-100 card-img"
+                          className="card-img"
                         />
                       ) : (
-                        ""
+                        <img 
+                        src=""
+                        alt=""
+                          className="card-img"/>
                       )}
-                      <p className="m-0 pt-3 mt-5 text-white text-capitalize">
-                        {acc?.title}
-                      </p>
+                      <div className="pt-3 mt-5 text-white text-capitalize card-img-overlay">
+                        <h6 className="d-inline-block text-truncate crd-title">{acc?.title}</h6>
+                      </div>
                     </CardHeader>
 
-                    <CardBody className="py-1 card-content cursor-pointer">
-                      <small className="m-0">{acc?.streetAddress}</small>
+                    <CardBody className="py-2 card-content cursor-pointer location px-lg-2 px-md-1">
+                      <div className="d-inline-block text-truncate">
+                      <small className="m-0">{acc?.streetAddress}</small></div>
                       <div className="d-flex mb-3">
                         <small className="m-0">{acc?.city},</small>
                         <small className="m-0">{acc?.stateProvince}</small>

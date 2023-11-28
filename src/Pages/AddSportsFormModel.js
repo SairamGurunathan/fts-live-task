@@ -8,17 +8,16 @@ import {
   Modal,
   Row,
 } from "react-bootstrap";
-import DatePicker from "react-datepicker";
 import * as Yup from "yup";
 import { useFormik } from "formik";
+import DatePickerStart from "../Components/DatePickerStart";
+import DatePickerEnd from "../Components/DatePickerEnd";
 
 
 const AddSportsFormModel = ({ show, setShow,sportsTitle}) => {
   const allDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const [allchecked, setAllChecked] = useState("");
   const [isPlayer, setIsPlayer] = useState(false)
-  const [startTime, setStartTime] = useState(null);
-  const [endTime, setEndTime] = useState(null);
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Enter the Name"),
@@ -126,36 +125,12 @@ const AddSportsFormModel = ({ show, setShow,sportsTitle}) => {
               </Col>
               <Col lg={6}>
                 <div className="d-flex align-items-center ps-3">
-                  <DatePicker
-                    className="form-control ps-1 cursor-pointer "
-                    popperPlacement="bottom"
-                    selected={startTime}
-                    onChange={(time) => setStartTime(time)}
-                    showTimeSelect
-                    showTimeSelectOnly
-                    timeFormat="h:mm aa"
-                    timeIntervals={30}
-                    timeCaption="Time"
-                    dateFormat="h:mm aa"
-                    placeholderText="Start time"
-                  />
+                 <DatePickerStart />
                   <div className="arrow-select1">
                     <Icon icon="fe:arrow-down" />
                   </div>
 
-                  <DatePicker
-                    className="form-control ps-1 cursor-pointer "
-                    popperPlacement="bottom"
-                    selected={endTime}
-                    onChange={(time) => setEndTime(time)}
-                    showTimeSelect
-                    showTimeSelectOnly
-                    timeFormat="h:mm aa"
-                    timeIntervals={30}
-                    timeCaption="Time"
-                    dateFormat="h:mm aa"
-                    placeholderText="End time"
-                  />
+                  <DatePickerEnd />
                   <div className="arrow-select1">
                     <Icon icon="fe:arrow-down" />
                   </div>

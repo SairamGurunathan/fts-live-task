@@ -4,7 +4,6 @@ import { Button, Card, CardBody, Col, Form, Row } from "react-bootstrap";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { fetchCenter } from "../Redux/Actions/AddcenterAction";
-import DatePicker from "react-datepicker";
 import { Icon } from "@iconify/react";
 import { useDispatch, useSelector } from "react-redux";
 import { TimeZone } from "../Redux/Actions/TimeZoneAction";
@@ -14,6 +13,8 @@ import { useNavigate } from "react-router-dom";
 import AddBannerImage from "./AddBannerImage";
 import AddImage from "./AddImage";
 import { photosAction } from "../Redux/Actions/PhotosAction";
+import DatePickerStart from "../Components/DatePickerStart";
+import DatePickerEnd from "../Components/DatePickerEnd";
 
 const AddCenter = () => {
   const allDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -28,7 +29,6 @@ const AddCenter = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
 
   
-
   const timezoneSelector = useSelector(
     (state) => state?.AccountReducer?.timezone
   );
@@ -73,9 +73,35 @@ const AddCenter = () => {
       email: "",
     },
     validationSchema: validationSchema,
-    onSubmit: ({ setSubmitting }) => {
+    onSubmit: (values,{ setSubmitting }) => {
       setAllChecked("");
       try {
+        const payload = {
+    displayName: isPlayer,
+    ...values,
+    organization: { id: accountSelector?.data?.orgId },
+    centerHours: [
+      {
+        weekday: selectedValuesString,
+        startTime: startTime,
+        endTime: endTime,
+        createdAt: moment().utc(),
+        updatedAt: moment().utc(),
+      },
+    ],
+    createdAt: moment().utc(),
+    updatedAt: moment().utc(),
+    centerusers: [
+      {
+        user: {
+          id: accountSelector?.data?.id,
+        },
+      },
+    ],
+    timezone: {
+      id: selectedTimeZone,
+    },
+  };
         dispatch(fetchCenter(payload));
         dispatch(photosAction(formData))
       } catch (error) {
@@ -88,7 +114,6 @@ const AddCenter = () => {
   const handleAddTime = () => {
     if (!allchecked || !startTime || !endTime) {
       setDisplayErrorMessage(true);
-
       return;
     }
 
@@ -125,32 +150,7 @@ const AddCenter = () => {
   };
   const selectedValuesString = allchecked?.toString();
 
-  const payload = {
-    displayName: isPlayer,
-    ...formik.values,
-    organization: { id: accountSelector?.data?.orgId },
-    centerHours: [
-      {
-        weekday: selectedValuesString,
-        startTime: startTime,
-        endTime: endTime,
-        createdAt: moment().utc(),
-        updatedAt: moment().utc(),
-      },
-    ],
-    createdAt: moment().utc(),
-    updatedAt: moment().utc(),
-    centerusers: [
-      {
-        user: {
-          id: accountSelector?.data?.id,
-        },
-      },
-    ],
-    timezone: {
-      id: selectedTimeZone,
-    },
-  };
+  
 
     const formData = new FormData()
 
@@ -384,36 +384,12 @@ const AddCenter = () => {
                 </div>
 
                 <div className="d-flex align-items-baseline mt-2">
-                  <DatePicker
-                    className="form-control ps-1 cursor-pointer "
-                    popperPlacement="bottom"
-                    selected={startTime}
-                    onChange={(time) => setStartTime(time)}
-                    showTimeSelect
-                    showTimeSelectOnly
-                    timeFormat="h:mm aa"
-                    timeIntervals={30}
-                    timeCaption="Time"
-                    dateFormat="h:mm aa"
-                    placeholderText="Please select start time"
-                  />
+                  <DatePickerStart />
                   <div className="arrow-select-center">
                     <Icon icon="fe:arrow-down" />
                   </div>
 
-                  <DatePicker
-                    className="form-control ps-1 cursor-pointer "
-                    popperPlacement="bottom"
-                    selected={endTime}
-                    onChange={(time) => setEndTime(time)}
-                    showTimeSelect
-                    showTimeSelectOnly
-                    timeFormat="h:mm aa"
-                    timeIntervals={30}
-                    timeCaption="Time"
-                    dateFormat="h:mm aa"
-                    placeholderText="Please select end time"
-                  />
+                  <DatePickerEnd />
                   <div className="arrow-select-center">
                     <Icon icon="fe:arrow-down" />
                   </div>

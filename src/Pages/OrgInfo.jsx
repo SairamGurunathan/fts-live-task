@@ -1,15 +1,9 @@
 import React, { useEffect, useState } from "react";
 import AddBanner from "../Assects/Images/addbanner.svg";
 import "react-datepicker/dist/react-datepicker.css";
-import {
-  Button,
-  Card,
-  CardBody,
-  Form,
-} from "react-bootstrap";
+import { Button, Card, CardBody, Form } from "react-bootstrap";
 import { Icon } from "@iconify/react";
 import { useFormik } from "formik";
-import DatePicker from "react-datepicker";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -18,6 +12,8 @@ import {
 } from "../Redux/Actions/OrganizationInfoAction";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import DatePickerStart from "../Components/DatePickerStart";
+import DatePickerEnd from "../Components/DatePickerEnd";
 
 const OrganizationInfo = () => {
   const allDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -58,7 +54,7 @@ const OrganizationInfo = () => {
   const orgIdSelector = useSelector(
     (state) => state?.OrgInfoStore?.OrgInfo?.data
   );
-  console.log(orgIdSelector,"orgIDSelector");
+  console.log(orgIdSelector, "orgIDSelector");
   const accountDataSelector = useSelector(
     (state) => state?.AccountReducer?.account?.data?.orgId
   );
@@ -85,7 +81,7 @@ const OrganizationInfo = () => {
     validationSchema: validationSchema,
     onSubmit: async (values, { setSubmitting }) => {
       try {
-       dispatch(OrgInfoEditAction(accountDataSelector,payload, values));
+        dispatch(OrgInfoEditAction(accountDataSelector, payload, values));
       } catch (error) {
         console.log(error);
       }
@@ -93,14 +89,14 @@ const OrganizationInfo = () => {
     },
   });
 
-console.log(formik.values,"val");
+  console.log(formik.values, "val");
   const payload = {
     ...formik.values,
     id: accountDataSelector,
     displayName: true,
-  }
+  };
 
-  console.log(payload,"payload");
+  console.log(payload, "payload");
 
   const handleAddTime = () => {
     if (!allchecked || !startTime || !endTime) {
@@ -120,11 +116,9 @@ console.log(formik.values,"val");
     setDisplayErrorMessage(false);
   };
 
-  
   useEffect(() => {
     if (accountDataSelector !== undefined) {
-      dispatch(OrgInfoAction(accountDataSelector)
-      );
+      dispatch(OrgInfoAction(accountDataSelector));
     }
     // eslint-disable-next-line
   }, [accountDataSelector]);
@@ -177,12 +171,11 @@ console.log(formik.values,"val");
                       onBlur={formik.handleBlur}
                       value={formik.values.streetAddress}
                     />
-                    {
-                      formik.errors.streetAddress && (
-                        <p className="error text-danger m-1 fw-medium">
-                          {formik.errors.streetAddress}
-                        </p>
-                      )}
+                    {formik.errors.streetAddress && (
+                      <p className="error text-danger m-1 fw-medium">
+                        {formik.errors.streetAddress}
+                      </p>
+                    )}
                   </Form.Group>
                 </div>
 
@@ -226,12 +219,11 @@ console.log(formik.values,"val");
                       onBlur={formik.handleBlur}
                       value={formik.values.stateProvince}
                     />
-                    {
-                      formik.errors.stateProvince && (
-                        <p className="error text-danger m-1 fw-medium">
-                          {formik.errors.stateProvince}
-                        </p>
-                      )}
+                    {formik.errors.stateProvince && (
+                      <p className="error text-danger m-1 fw-medium">
+                        {formik.errors.stateProvince}
+                      </p>
+                    )}
                   </Form.Group>
                 </div>
                 <div className="col-lg-2">
@@ -269,12 +261,11 @@ console.log(formik.values,"val");
                         numberValidation(e);
                       }}
                     />
-                    {
-                      formik.errors.phoneNumber && (
-                        <p className="error text-danger m-1 fw-medium">
-                          {formik.errors.phoneNumber}
-                        </p>
-                      )}
+                    {formik.errors.phoneNumber && (
+                      <p className="error text-danger m-1 fw-medium">
+                        {formik.errors.phoneNumber}
+                      </p>
+                    )}
                   </Form.Group>
                 </div>
                 <div className="flex-column col-lg-4">
@@ -313,36 +304,12 @@ console.log(formik.values,"val");
                 </div>
               </div>
               <div className="d-flex align-items-baseline mt-2">
-                <DatePicker
-                  className="form-control ps-1 cursor-pointer "
-                  popperPlacement="bottom"
-                  selected={startTime}
-                  onChange={(time) => setStartTime(time)}
-                  showTimeSelect
-                  showTimeSelectOnly
-                  timeFormat="h:mm aa"
-                  timeIntervals={30}
-                  timeCaption="Time"
-                  dateFormat="h:mm aa"
-                  placeholderText="Please select start time"
-                />
+                <DatePickerStart />
                 <div className="arrow-select-orginfo">
                   <Icon icon="fe:arrow-down" />
                 </div>
 
-                <DatePicker
-                  className="form-control ps-1 cursor-pointer "
-                  popperPlacement="bottom"
-                  selected={endTime}
-                  onChange={(time) => setEndTime(time)}
-                  showTimeSelect
-                  showTimeSelectOnly
-                  timeFormat="h:mm aa"
-                  timeIntervals={30}
-                  timeCaption="Time"
-                  dateFormat="h:mm aa"
-                  placeholderText="Please select end time"
-                />
+                <DatePickerEnd />
                 <div className="arrow-select-orginfo">
                   <Icon icon="fe:arrow-down" />
                 </div>
@@ -375,9 +342,7 @@ console.log(formik.values,"val");
                         <label className="labels">Banner image</label>
                       </div>
                       <div className="col-lg-6">
-                        <label className="labels">
-                          Min:800px x 600px
-                        </label>
+                        <label className="labels">Min:800px x 600px</label>
                       </div>
                     </div>
                     <div>

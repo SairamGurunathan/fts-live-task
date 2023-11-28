@@ -42,7 +42,7 @@
 // export default WeekDays
 
 import React, { useState } from 'react';
-import { Form } from 'react-bootstrap'; // Assuming you are using Bootstrap for styling
+import { Form } from 'react-bootstrap';
 
 const WeekDays = () => {
   const weekdays = [

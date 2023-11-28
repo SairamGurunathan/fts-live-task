@@ -74,7 +74,7 @@ const Refunds = () => {
           </CardBody>
         </Card>
       </div>
-      <Filter showFilter={showFilter}/>
+      <Filter showFilter={showFilter} setShowFilter={setShowFilter}/>
     </>
   );
 };

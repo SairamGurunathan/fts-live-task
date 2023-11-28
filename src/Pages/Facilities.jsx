@@ -8,18 +8,31 @@ import AddFacilities from "./AddFacilities";
 import { Link } from "react-router-dom";
 import CourtDetails from "./CourtDetails";
 import { CourtDetailsAction } from "../Redux/Actions/CourtDetailsAction";
+import AddSportsModel from "./AddSportsModel";
+import AddSportsFormModel from "./AddSportsFormModel";
+import { DeleteFacilities } from "../Redux/Actions/DeleteFacilitiesAction";
 
 const Facilities = () => {
   const dispatch = useDispatch();
+  const [show, setShow] = useState(false)
+  const [popUp, setPopUp] = useState(false)
+  const [sportsTitle, setSportsTitle] = useState("")
   const [showCD, setShowCD] = useState(false)
 
-  // const centerID = useSelector((state) => state?.AccountReducer?.account?.data?.centerId)
   const centerID = localStorage.getItem("centerId");
 
   const handleCourtDetails = (id)=>{
     dispatch(CourtDetailsAction(id))
     setShowCD(true)
   }
+
+  const handleDeleteFacilities = (id)=>{
+    dispatch(DeleteFacilities(id))
+  }
+
+  const handleClickModel = ()=>{
+    setShow(true)
+}
 
   const facilitiesSelector = useSelector(
     (state) => state?.FacilitiesReducer?.facilities
@@ -55,10 +68,10 @@ const Facilities = () => {
                 <h5 className="m-0 fw-bold text-nowrap">{title}</h5>
               </div>
               <div className="col border-dotted flex-grow-1"></div>
-              <div className="col flex-grow-0 d-flex align-items-center ms-auto">
+              <div className="col flex-grow-0 d-flex align-items-center ms-auto" onClick={handleClickModel}>
                 <Icon icon="gridicons:add" color="#2d77d2" />
                 <small className="text-primary fs-6"
-                // onClick={handleClickModel}
+              
                 >Add</small>
               </div>
             </div>
@@ -101,7 +114,7 @@ const Facilities = () => {
                     <div class="vr"></div>
                     <Icon icon="icon-park-outline:copy" color="#de342f" />
                     <div class="vr"></div>
-                    <Icon icon="subway:delete" color="#de342f" />
+                    <Icon icon="subway:delete" color="#de342f" onClick={()=>handleDeleteFacilities(sel?.id)}/>
                   </div>
                 </div>
               </div>
@@ -115,6 +128,9 @@ const Facilities = () => {
       )}
 
       <CourtDetails showCD = {showCD} setShowCD = {setShowCD} />
+      <AddSportsModel show={show} setShow={setShow} setPopUp = {setPopUp} setSportsTitle={setSportsTitle} />
+
+      <AddSportsFormModel show={popUp} setShow={setPopUp} sportsTitle = {sportsTitle}/> 
     </>
   );
 };
