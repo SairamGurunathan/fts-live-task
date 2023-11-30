@@ -58,7 +58,6 @@ const Filter = ({showFilter, setShowFilter}) => {
                   <Button
                     variant="outline-primary"
                     className="border-0 text-danger"
-                    // onClick={() => navigate("/center")}
                   >
                     Clear
                   </Button>

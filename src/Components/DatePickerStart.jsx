@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import DatePicker from "react-datepicker";
 
 
-const DatePickerStart = () => {
-    const [startTime, setStartTime] = useState(null);
+const DatePickerStart = ({startTime, setStartTime}) => {
   return (
     <>
         <DatePicker

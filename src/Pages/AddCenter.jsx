@@ -197,7 +197,7 @@ const AddCenter = () => {
                     <Form.Label>Name*</Form.Label>
                     <Form.Control
                       type="text"
-                      required
+                     
                       name="title"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
@@ -225,7 +225,7 @@ const AddCenter = () => {
                     <Form.Group>
                       <Form.Label className="labels">Street*</Form.Label>
                       <Form.Control
-                        required
+                        
                         type="text"
                         name="streetAddress"
                         onChange={formik.handleChange}
@@ -255,7 +255,7 @@ const AddCenter = () => {
                     <Form.Group>
                       <Form.Label className="labels">City*</Form.Label>
                       <Form.Control
-                        required
+                        
                         type="text"
                         name="city"
                         onChange={formik.handleChange}
@@ -273,7 +273,7 @@ const AddCenter = () => {
                     <Form.Group>
                       <Form.Label className="labels">State*</Form.Label>
                       <Form.Control
-                        required
+                      
                         type="text"
                         name="stateProvince"
                         onChange={formik.handleChange}
@@ -291,7 +291,7 @@ const AddCenter = () => {
                     <Form.Group>
                       <Form.Label className="labels">Zip*</Form.Label>
                       <Form.Control
-                        required
+                      
                         type="number"
                         name="zipCode"
                         onChange={formik.handleChange}
@@ -311,7 +311,7 @@ const AddCenter = () => {
                     <Form.Group>
                       <Form.Label className="labels">Phone number*</Form.Label>
                       <Form.Control
-                        required
+                      
                         type="text"
                         maxLength={10}
                         name="phoneNumber"
@@ -333,7 +333,6 @@ const AddCenter = () => {
                     <Form.Group>
                       <Form.Label className="labels">Email*</Form.Label>
                       <Form.Control
-                        required
                         type="email"
                         name="email"
                         onChange={formik.handleChange}
@@ -384,12 +383,12 @@ const AddCenter = () => {
                 </div>
 
                 <div className="d-flex align-items-baseline mt-2">
-                  <DatePickerStart />
+                  <DatePickerStart startTime = {startTime} setStartTime = {setStartTime}/>
                   <div className="arrow-select-center">
                     <Icon icon="fe:arrow-down" />
                   </div>
 
-                  <DatePickerEnd />
+                  <DatePickerEnd endTime = {endTime} setEndTime = {setEndTime}/>
                   <div className="arrow-select-center">
                     <Icon icon="fe:arrow-down" />
                   </div>
@@ -405,7 +404,7 @@ const AddCenter = () => {
                 ) : (
                   selectedTimes.map((timeRange, index) => (
                     <div key={index} className="text-muted mt-2">
-                      {timeRange.days.join(", ")}: {timeRange.startTime} -{" "}
+                      {timeRange.days.join(", ")}: {timeRange.startTime} - {" "}
                       {timeRange.endTime}
                     </div>
                   ))
@@ -427,7 +426,7 @@ const AddCenter = () => {
                 <hr className="w-100 opacity-25" />
                 <div className="d-flex gap-2 justify-content-end">
                   <Button
-                    variant="outline-primary"
+                    variant="outline-light"
                     className="border-0 text-danger"
                     onClick={() => navigate("/center")}
                   >

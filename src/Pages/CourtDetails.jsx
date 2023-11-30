@@ -2,10 +2,18 @@ import React, { useEffect } from 'react'
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { AccountAction } from '../Redux/Actions/AccountAction';
+import AddSportsFormModel from './AddSportsFormModel';
 
-const CourtDetails = ({showCD,setShowCD}) => {
+const CourtDetails = ({show,setShow,setPopUp,popUp,setIsEdit}) => {
   const dispatch = useDispatch()
-    const handleClose = () => setShowCD(false);
+    const handleClose = () => {
+      setShow(false)
+    setPopUp(false)}
+    const handleEdit = () => {
+      setIsEdit(true)
+      setPopUp(true)
+      setShow(false)
+    }
 
     const courtDetailSelector = useSelector((state)=>state?.CourtDetailsReducer?.courtDetails)
 
@@ -13,10 +21,10 @@ const CourtDetails = ({showCD,setShowCD}) => {
       dispatch(AccountAction()) 
         // eslint-disable-next-line
     },[])
-    console.log(courtDetailSelector?.center?.displayName)
   return (
+    <>
     <Modal
-        show={showCD}
+        show={show}
         onHide={handleClose}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
@@ -111,18 +119,20 @@ const CourtDetails = ({showCD,setShowCD}) => {
         <Modal.Footer className="bg-white">
         <div className="d-flex gap-2 justify-content-end">
                       <Button
-                        variant="outline-primary"
+                        variant="outline-light"
                         className="border-0 text-danger"
                         onClick={handleClose}
                       >
                         Cancel
                       </Button>
-                      <Button type="submit" className="btn-danger text-white">
+                      <Button className="btn-danger text-white" onClick={handleEdit}>
                         Edit
                       </Button>
                     </div>
         </Modal.Footer>
       </Modal>
+      <AddSportsFormModel show={popUp} setShow={setPopUp} /> 
+      </>
   )
 }
 

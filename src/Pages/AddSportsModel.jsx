@@ -7,7 +7,6 @@ import { AccountAction } from '../Redux/Actions/AccountAction'
 const AddSportsModel = ({show,setShow,setPopUp,setSportsTitle}) => {
     const dispatch = useDispatch()
     
-
     const handlePopUp = (title) => {
       setPopUp(true)
       setShow(false)
@@ -16,7 +15,7 @@ const AddSportsModel = ({show,setShow,setPopUp,setSportsTitle}) => {
     const handleClose = () => setShow(false);
 
     const sportsListSelector = useSelector((state) => state?.SportsListReducer?.sportsList)
-
+    
     useEffect(()=>{
       dispatch(AccountAction()) 
         if(sportsListSelector !== undefined){
@@ -43,7 +42,7 @@ const AddSportsModel = ({show,setShow,setPopUp,setSportsTitle}) => {
                 <Row className='row-gap-4'>
                 {sportsListSelector?.data?.map((sports,index)=>(
                     <Col lg={3}>
-                            <Card onClick={()=>handlePopUp(sports?.title)}>
+                            <Card onClick={()=>handlePopUp(sports)} className='cursor-pointer'>
                             <CardBody key={index} className='d-flex flex-column align-items-center justify-content-center'>
                                 <img src={sports?.url} alt='img-sport'/>
                                 <p className='m-0 fw-bold'>{sports?.title}</p>

@@ -59,8 +59,9 @@ const NavbarHeader = () => {
         </div>
 
         <div className="d-flex align-items-center gap-1 me-1">
-          <Icon icon="mdi:user-circle" className="fs-3" />
+          <Icon icon="mdi:user-circle" className="fs-3 cursor-pointer" />
           <NavDropdown
+          
             title={profileName && profileName.length>0?profileName:""}
             id="collapsible-nav-dropdown"
             className="text-white fs-6 "

@@ -140,7 +140,7 @@ const OrganizationInfo = () => {
                   <Form.Label>Organization name*</Form.Label>
                   <Form.Control
                     type="text"
-                    required
+                    
                     name="title"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
@@ -164,7 +164,7 @@ const OrganizationInfo = () => {
                   <Form.Group>
                     <Form.Label className="labels">Street*</Form.Label>
                     <Form.Control
-                      required
+                      
                       type="text"
                       name="streetAddress"
                       onChange={formik.handleChange}
@@ -194,7 +194,7 @@ const OrganizationInfo = () => {
                   <Form.Group>
                     <Form.Label className="labels">City*</Form.Label>
                     <Form.Control
-                      required
+                      
                       type="text"
                       name="city"
                       onChange={formik.handleChange}
@@ -212,7 +212,7 @@ const OrganizationInfo = () => {
                   <Form.Group>
                     <Form.Label className="labels">State*</Form.Label>
                     <Form.Control
-                      required
+                      
                       type="text"
                       name="stateProvince"
                       onChange={formik.handleChange}
@@ -230,7 +230,7 @@ const OrganizationInfo = () => {
                   <Form.Group>
                     <Form.Label className="labels">Zip*</Form.Label>
                     <Form.Control
-                      required
+                      
                       type="number"
                       name="zipCode"
                       onChange={formik.handleChange}
@@ -250,7 +250,7 @@ const OrganizationInfo = () => {
                   <Form.Group>
                     <Form.Label className="labels">Phone number*</Form.Label>
                     <Form.Control
-                      required
+                      
                       type="text"
                       maxLength={10}
                       name="phoneNumber"
@@ -272,7 +272,7 @@ const OrganizationInfo = () => {
                   <Form.Group>
                     <Form.Label className="labels">Email*</Form.Label>
                     <Form.Control
-                      required
+                      
                       type="email"
                       name="email"
                       onChange={formik.handleChange}
@@ -366,7 +366,7 @@ const OrganizationInfo = () => {
               <hr className="w-100 opacity-25" />
               <div className="d-flex gap-2 justify-content-end">
                 <Button
-                  variant="outline-primary"
+                  variant="outline-light"
                   className="border-0 text-danger"
                   onClick={() => navigate("/center")}
                 >

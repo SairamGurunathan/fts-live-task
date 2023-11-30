@@ -18,6 +18,7 @@ const Facilities = () => {
   const [popUp, setPopUp] = useState(false)
   const [sportsTitle, setSportsTitle] = useState("")
   const [showCD, setShowCD] = useState(false)
+  const [isEdit, setIsEdit] = useState(false)
 
   const centerID = localStorage.getItem("centerId");
 
@@ -31,6 +32,7 @@ const Facilities = () => {
   }
 
   const handleClickModel = ()=>{
+    setIsEdit(false)
     setShow(true)
 }
 
@@ -68,10 +70,9 @@ const Facilities = () => {
                 <h5 className="m-0 fw-bold text-nowrap">{title}</h5>
               </div>
               <div className="col border-dotted flex-grow-1"></div>
-              <div className="col flex-grow-0 d-flex align-items-center ms-auto" onClick={handleClickModel}>
+              <div className="col flex-grow-0 d-flex align-items-center ms-auto cursor-pointer" onClick={handleClickModel}>
                 <Icon icon="gridicons:add" color="#2d77d2" />
                 <small className="text-primary fs-6"
-              
                 >Add</small>
               </div>
             </div>
@@ -127,10 +128,9 @@ const Facilities = () => {
         <AddFacilities />
       )}
 
-      <CourtDetails showCD = {showCD} setShowCD = {setShowCD} />
+      <CourtDetails show = {showCD} setShow = {setShowCD} setPopUp = {setPopUp} setIsEdit = {setIsEdit}/>
       <AddSportsModel show={show} setShow={setShow} setPopUp = {setPopUp} setSportsTitle={setSportsTitle} />
-
-      <AddSportsFormModel show={popUp} setShow={setPopUp} sportsTitle = {sportsTitle}/> 
+      <AddSportsFormModel show={popUp} setShow={setPopUp} sportsTitle = {sportsTitle} isEdit= {isEdit} setIsEdit = {setIsEdit}/> 
     </>
   );
 };
