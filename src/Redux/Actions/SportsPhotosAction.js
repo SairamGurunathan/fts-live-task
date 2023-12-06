@@ -3,7 +3,7 @@ import { Constants } from "../Constants/Constants";
 
 export const SportsList = ()=> async (dispatch)=> {
     try {
-        const res = await axios.get("/api/v1/sport-photos")
+        const res = await axios.get("api/v1/sport-photos")
 
         if(res.status === 200){
             dispatch({

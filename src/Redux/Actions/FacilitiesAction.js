@@ -3,7 +3,7 @@ import { Constants } from "../Constants/Constants";
 
 export const FacilitiesAction = (id)=> async(dispatch)=>{
     try {
-        const response = await axios.get(`/api/v1/facilities?centerId.equals=${id}`)
+        const response = await axios.get(`api/v1/facilities?centerId.equals=${id}`)
         const { data } = response;
   
       dispatch({

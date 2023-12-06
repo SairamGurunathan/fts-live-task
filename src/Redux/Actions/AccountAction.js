@@ -6,7 +6,6 @@ export const AccountAction = () => async(dispatch) =>{
 
     try{
         const response = await axios.get('api/account');
-      console.log(response);
         if(response.status === 200){
           localStorage.setItem("orgID",response?.data?.orgId)
           localStorage.setItem("firstName",response?.data?.firstName)

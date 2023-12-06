@@ -39,23 +39,15 @@ const NavbarHeader = () => {
           <img
             alt="logo"
             src={Logo}
-            width="210px"
+            width="230px"
             className="d-inline-block align-top cursor-pointer"
           />
         </Navbar.Brand>
-        <div className="d-flex align-items-center me-auto gap-2">
+        <div className="d-flex align-items-center me-auto ms-2">
           <div className="text-capitalize">
           <h4 className="m-0">{orgSelector?.orgName ? orgSelector?.orgName : ""}</h4>
           </div>
-          {/* <div className="vr border border-1"></div>
-          <div className="ms-3">
-          <NavDropdown>
-            <NavDropdown.Item>
-            </NavDropdown.Item>
-            <NavDropdown.Divider className="w-100" />
-            <NavDropdown.Item onClick={handleLogout}>Log Out</NavDropdown.Item>
-          </NavDropdown>
-          </div> */}
+
         </div>
 
         <div className="d-flex align-items-center gap-1 me-1">

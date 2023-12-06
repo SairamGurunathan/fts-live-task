@@ -176,11 +176,22 @@ input[type="file"] {
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
+.active-side, .side .nav-link:hover {
+    background-color: #f7f7f7;
+    border-radius: 10px;
+    color: #de342f!important;
+}
 .nav-link.active{
     background-color: #434346 !important;
     border-radius: 10px !important;
     color: white !important;
 }
+#refund  .nav-link {
+    color: #424243;
+    font-size: 14px;
+    padding: 6px 20px;
+}
+
 /* .refund-nav .nav-link {
     color: #424243 !important;
     font-size: 14px;
@@ -232,4 +243,29 @@ th {
 }
 .refund-drop .dropdown-toggle::after {
     display: none !important;
+}
+.font-alert{
+    font-size: 8px !important;
+}
+tr {
+    border-radius: 10px !important;
+    height: 50px;
+}
+tr td:first-child {
+    border-bottom-left-radius: 10px;
+    border-left: 1px solid #dbd8d8;
+    border-top-left-radius: 10px;
+    padding-left: 20px;
+}
+tr td:last-child {
+    border-bottom-right-radius: 10px;
+    border-right: 1px solid #dbd8d8;
+    border-top-right-radius: 10px;
+}
+.table-borderless>:not(:first-child) {
+    border-top-width: 0;
+}
+tr td {
+    border-bottom: 1px solid #dbd8d8!important;
+    border-top: 1px solid #dbd8d8;
 }

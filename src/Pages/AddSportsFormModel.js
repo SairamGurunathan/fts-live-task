@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AddImages from "../Assects/Images/addimage.svg";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import * as Yup from "yup";
@@ -7,10 +7,11 @@ import { useFormik } from "formik";
 import DatePickerStart from "../Components/DatePickerStart";
 import DatePickerEnd from "../Components/DatePickerEnd";
 import moment from "moment";
-import { useDispatch } from "react-redux";
-import { FacilitiesFormAction } from "../Redux/Actions/FacilitiesFormAction";
+import { useDispatch, useSelector } from "react-redux";
+import Swal from 'sweetalert2';
+import { FacilitiesEditFormAction, FacilitiesFormAction } from "../Redux/Actions/FacilitiesFormAction";
 
-const AddSportsFormModel = ({ show, setShow, sportsTitle, isEdit }) => {
+const AddSportsFormModel = ({ show, setShow, sportsTitle, isEdit, response, editID }) => {
   const allDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const [allchecked, setAllChecked] = useState("");
   const [isPlayer, setIsPlayer] = useState(false);
@@ -78,11 +79,13 @@ const AddSportsFormModel = ({ show, setShow, sportsTitle, isEdit }) => {
   };
   const selectedValuesString = allchecked?.toString();
 
+  const facilitieDataSelector = useSelector((state) => state?.AddSportsFormReducer?.addSports)
+console.log(facilitieDataSelector);
   const formik = useFormik({
     initialValues: {
       title: "",
-      playerAllowedMin: "",
-      playerAllowedMax: "",
+      playerAllowedMin:"",
+      playerAllowedMax:"",
       durationAllowedMin: "",
       durationAllowedMax: "",
       advanceBookingMin: "",
@@ -90,18 +93,42 @@ const AddSportsFormModel = ({ show, setShow, sportsTitle, isEdit }) => {
     },
     validationSchema: validationSchema,
     onSubmit: async ({ setSubmitting }) => {
-      setAllChecked("");
-      setStartTime("");
-      setEndTime("");
-      formik.resetForm()
+  if (!isEdit) {
+    setAllChecked("");
+    setStartTime("");
+    setEndTime("");
+    formik.resetForm();
+
+    try {
+      dispatch(FacilitiesFormAction(payLoad));
+      setShow(false);
+      Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: 'Facility record has been created successfully',
+        showConfirmButton: false,
+        showCloseButton: true,
+
+      });
+
+    } catch (error) {
+      console.log(error);
+    }
+
+    setSubmitting(false);
+  }
+    else{
       try {
-        dispatch(FacilitiesFormAction(payLoad));
+        dispatch(FacilitiesEditFormAction(editID,payloadEdit));
         setShow(false)
+        formik.resetForm()
       } catch (error) {
         console.log(error);
       }
       setSubmitting(false);
-    },
+    }
+  }
+      
   });
 
   const payLoad = {
@@ -156,9 +183,86 @@ const AddSportsFormModel = ({ show, setShow, sportsTitle, isEdit }) => {
       },
     ],
   };
-console.log(sportsTitle);
-  console.log(payLoad, "payload");
-  const handleClose = () => setShow(false);
+console.log(formik.values,"values");
+  const payloadEdit = {
+    reservationAttribute: {
+      advanceBookingMax: formik.values.advanceBookingMax,
+      advanceBookingMin: formik.values.advanceBookingMin,
+      durationAllowedMax: formik.values.durationAllowedMax,
+      durationAllowedMin: formik.values.durationAllowedMin,
+      playerAllowedMax: formik.values.playerAllowedMax,
+      playerAllowedMin: formik.values.playerAllowedMin,
+      facility: facilitieDataSelector?.reservationAttribute?.facility,
+      id: facilitieDataSelector?.reservationAttribute?.id,
+    },
+    id : facilitieDataSelector?.id,
+    title: formik.values.title,
+    displayName : isPlayer,
+    defaultPlayDuration: "30",
+    sku: "Edit",
+    createdBy : userID,
+    photos : null,
+    description: "center courts facility",
+    workingPlans: {
+      sunday: 0,
+      monday: 1,
+      tuesday: 1,
+      wednesday: 0,
+      thursday: 0,
+      friday: 0,
+      saturday: 1,
+      startTime: startTime,
+      endTime: endTime,
+    },
+    center: {
+      id: centerID,
+    },
+    sport: {
+      id: facilitieDataSelector?.sport?.id,
+    },
+    facilityHours: [
+      {
+        id : facilitieDataSelector?.facilityHours?.id,
+        weekday: selectedValuesString,
+        startTime: startTime,
+        endTime: endTime,
+        createdAt: moment().utc(),
+        updatedAt: moment().utc(),
+      },
+    ],
+    createdAt: moment().utc(),
+    updatedAt: moment().utc(),
+    updatedBy: userID,
+    
+    facilityMetas: [
+      {
+        id : facilitieDataSelector?.facilityMetas?.id,
+        value: formik.values.features,
+      },
+    ],
+  };
+  const handleClose = () => {
+    setShow(false)
+    formik.resetForm()
+  };
+
+
+  useEffect(()=>{
+    try{
+      formik.setFieldValue("title", response?.title || "");
+      formik.setFieldValue("playerAllowedMin", response?.reservationAttribute?.playerAllowedMin || "");
+      formik.setFieldValue("playerAllowedMax", response?.reservationAttribute?.playerAllowedMax || "");
+      formik.setFieldValue("durationAllowedMin", response?.reservationAttribute?.durationAllowedMin || "");
+      formik.setFieldValue("durationAllowedMax", response?.reservationAttribute?.durationAllowedMax || "");
+      formik.setFieldValue("advanceBookingMin", response?.reservationAttribute?.advanceBookingMin || "");
+      formik.setFieldValue("advanceBookingMax", response?.reservationAttribute?.advanceBookingMax || "");
+      formik.setFieldValue("features",response?.facilityMetas?.map((val)=>(val?.value)))
+    } catch (error) {
+      console.log(error);
+    }
+    // eslint-disable-next-line
+  },[response])
+
   return (
     <>
       <Modal
@@ -189,7 +293,7 @@ console.log(sportsTitle);
                     name="title"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    value={formik.values.title}
+                    value={formik.values.title}                    
                   />
                 </div>
                 <div className="col-6 d-flex ">
@@ -199,7 +303,7 @@ console.log(sportsTitle);
                   </Form.Label>
                 </div>
               </Form.Group>
-              {formik.errors.title && (
+              {formik.touched.title && formik.errors.title && (
                 <p className="error text-danger m-1 fw-medium">
                   {formik.errors.title}
                 </p>
@@ -281,7 +385,7 @@ console.log(sportsTitle);
                       numberValidation(e);
                     }}
                   />
-                  {formik.errors.playerAllowedMin && (
+                  {formik.touched.playerAllowedMin && formik.errors.playerAllowedMin && (
                     <p className="error text-danger m-1 fw-medium">
                       {formik.errors.playerAllowedMin}
                     </p>
@@ -299,7 +403,7 @@ console.log(sportsTitle);
                       numberValidation(e);
                     }}
                   />
-                  {formik.errors.playerAllowedMax && (
+                  {formik.touched.playerAllowedMax && formik.errors.playerAllowedMax && (
                     <p className="error text-danger m-1 fw-medium">
                       {formik.errors.playerAllowedMax}
                     </p>
@@ -322,7 +426,7 @@ console.log(sportsTitle);
                       numberValidation(e);
                     }}
                   />
-                  {formik.errors.durationAllowedMin && (
+                  {formik.touched.durationAllowedMin && formik.errors.durationAllowedMin && (
                     <p className="error text-danger m-1 fw-medium">
                       {formik.errors.durationAllowedMin}
                     </p>
@@ -340,7 +444,7 @@ console.log(sportsTitle);
                       numberValidation(e);
                     }}
                   />
-                  {formik.errors.durationAllowedMax && (
+                  {formik.touched.durationAllowedMax && formik.errors.durationAllowedMax && (
                     <p className="error text-danger m-1 fw-medium">
                       {formik.errors.durationAllowedMax}
                     </p>
@@ -365,7 +469,7 @@ console.log(sportsTitle);
                       numberValidation(e);
                     }}
                   />
-                  {formik.errors.advanceBookingMin && (
+                  {formik.touched.advanceBookingMin && formik.errors.advanceBookingMin && (
                     <p className="error text-danger m-1 fw-medium">
                       {formik.errors.advanceBookingMin}
                     </p>
@@ -383,7 +487,7 @@ console.log(sportsTitle);
                       numberValidation(e);
                     }}
                   />
-                  {formik.errors.advanceBookingMax && (
+                  {formik.touched.advanceBookingMax && formik.errors.advanceBookingMax && (
                     <p className="error text-danger m-1 fw-medium">
                       {formik.errors.advanceBookingMax}
                     </p>

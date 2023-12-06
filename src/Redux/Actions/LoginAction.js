@@ -14,8 +14,6 @@ export const fetchLogin = ({email,password,setIsAuthenticated}) => async (dispat
     if (response.status === 200) {
       localStorage.setItem("accessToken", response.data.accessToken);
       localStorage.setItem("refreshToken", response.data.refreshToken); 
-      
-      // console.log('Login Successful');
       window.location.href = "/center"
       setIsAuthenticated(true);
     } else {

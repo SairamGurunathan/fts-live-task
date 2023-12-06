@@ -12,7 +12,6 @@ import { AccountAction } from "../Redux/Actions/AccountAction";
 import { useNavigate } from "react-router-dom";
 import AddBannerImage from "./AddBannerImage";
 import AddImage from "./AddImage";
-import { photosAction } from "../Redux/Actions/PhotosAction";
 import DatePickerStart from "../Components/DatePickerStart";
 import DatePickerEnd from "../Components/DatePickerEnd";
 
@@ -102,8 +101,9 @@ const AddCenter = () => {
       id: selectedTimeZone,
     },
   };
-        dispatch(fetchCenter(payload));
-        dispatch(photosAction(formData))
+
+        dispatch(fetchCenter(payload,formData));
+        
       } catch (error) {
         console.log(error);
       }

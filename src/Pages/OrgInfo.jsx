@@ -14,13 +14,14 @@ import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import DatePickerStart from "../Components/DatePickerStart";
 import DatePickerEnd from "../Components/DatePickerEnd";
+import Swal from "sweetalert2";
 
 const OrganizationInfo = () => {
   const allDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const navigate = useNavigate();
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
-  const [allchecked, setAllChecked] = useState("");
+  const [allchecked, setAllChecked] = useState([]);
   const dispatch = useDispatch();
   const [selectedTimes, setSelectedTimes] = useState([]);
   const [displayErrorMessage, setDisplayErrorMessage] = useState(false);
@@ -54,7 +55,7 @@ const OrganizationInfo = () => {
   const orgIdSelector = useSelector(
     (state) => state?.OrgInfoStore?.OrgInfo?.data
   );
-  console.log(orgIdSelector, "orgIDSelector");
+
   const accountDataSelector = useSelector(
     (state) => state?.AccountReducer?.account?.data?.orgId
   );
@@ -67,21 +68,30 @@ const OrganizationInfo = () => {
     }
   };
   // const selectedValuesString = allchecked?.toString();
-
+  const handleClear = () => {
+    setSelectedTimes([]);
+  };
   const formik = useFormik({
     initialValues: {
-      title: orgIdSelector?.title || "",
-      streetAddress: orgIdSelector?.streetAddress || "",
-      city: orgIdSelector?.city || "",
-      stateProvince: orgIdSelector?.stateProvince || "",
-      zipCode: orgIdSelector?.zipCode || "",
-      phoneNumber: orgIdSelector?.phoneNumber || "",
-      email: orgIdSelector?.email || "",
+      title: "",
+      streetAddress: "",
+      city: "",
+      stateProvince: "",
+      zipCode: "",
+      phoneNumber: "",
+      email: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { setSubmitting }) => {
       try {
         dispatch(OrgInfoEditAction(accountDataSelector, payload, values));
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Organization has been updated successfully.",
+          showConfirmButton: false,
+          showCloseButton: true,
+        });
       } catch (error) {
         console.log(error);
       }
@@ -89,14 +99,11 @@ const OrganizationInfo = () => {
     },
   });
 
-  console.log(formik.values, "val");
   const payload = {
     ...formik.values,
     id: accountDataSelector,
     displayName: true,
   };
-
-  console.log(payload, "payload");
 
   const handleAddTime = () => {
     if (!allchecked || !startTime || !endTime) {
@@ -113,6 +120,7 @@ const OrganizationInfo = () => {
     setSelectedTimes([...selectedTimes, selectedTimeRange]);
     setStartTime(null);
     setEndTime(null);
+    setAllChecked(null);
     setDisplayErrorMessage(false);
   };
 
@@ -122,6 +130,21 @@ const OrganizationInfo = () => {
     }
     // eslint-disable-next-line
   }, [accountDataSelector]);
+
+  useEffect(() => {
+    try {
+      formik.setFieldValue("title", orgIdSelector?.title || "");
+      formik.setFieldValue("streetAddress", orgIdSelector?.streetAddress || "");
+      formik.setFieldValue("city", orgIdSelector?.city || "");
+      formik.setFieldValue("stateProvince", orgIdSelector?.stateProvince || "");
+      formik.setFieldValue("zipCode", orgIdSelector?.zipCode || "");
+      formik.setFieldValue("phoneNumber", orgIdSelector?.phoneNumber || "");
+      formik.setFieldValue("email", orgIdSelector?.email || "");
+    } catch (error) {
+      console.log(error);
+    }
+    // eslint-disable-next-line
+  }, [orgIdSelector]);
 
   return (
     <>
@@ -140,14 +163,14 @@ const OrganizationInfo = () => {
                   <Form.Label>Organization name*</Form.Label>
                   <Form.Control
                     type="text"
-                    
                     name="title"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     value={formik.values.title}
+                    disabled={formik.values.title ? true : false}
                   />
 
-                  {formik.errors.title && (
+                  {formik.touched.title && formik.errors.title && (
                     <p className="error text-danger m-1 fw-medium">
                       {formik.errors.title}
                     </p>
@@ -164,14 +187,13 @@ const OrganizationInfo = () => {
                   <Form.Group>
                     <Form.Label className="labels">Street*</Form.Label>
                     <Form.Control
-                      
                       type="text"
                       name="streetAddress"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       value={formik.values.streetAddress}
                     />
-                    {formik.errors.streetAddress && (
+                    {formik.touched.streetAddress && formik.errors.streetAddress && (
                       <p className="error text-danger m-1 fw-medium">
                         {formik.errors.streetAddress}
                       </p>
@@ -194,14 +216,13 @@ const OrganizationInfo = () => {
                   <Form.Group>
                     <Form.Label className="labels">City*</Form.Label>
                     <Form.Control
-                      
                       type="text"
                       name="city"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       value={formik.values.city}
                     />
-                    {formik.errors.city && (
+                    {formik.touched.city && formik.errors.city && (
                       <p className="error text-danger m-1 fw-medium">
                         {formik.errors.city}
                       </p>
@@ -212,14 +233,13 @@ const OrganizationInfo = () => {
                   <Form.Group>
                     <Form.Label className="labels">State*</Form.Label>
                     <Form.Control
-                      
                       type="text"
                       name="stateProvince"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       value={formik.values.stateProvince}
                     />
-                    {formik.errors.stateProvince && (
+                    {formik.touched.stateProvince && formik.errors.stateProvince && (
                       <p className="error text-danger m-1 fw-medium">
                         {formik.errors.stateProvince}
                       </p>
@@ -230,14 +250,13 @@ const OrganizationInfo = () => {
                   <Form.Group>
                     <Form.Label className="labels">Zip*</Form.Label>
                     <Form.Control
-                      
                       type="number"
                       name="zipCode"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       value={formik.values.zipCode}
                     />
-                    {formik.errors.zipCode && (
+                    {formik.touched.zipCode && formik.errors.zipCode && (
                       <p className="error text-danger m-1 fw-medium">
                         {formik.errors.zipCode}
                       </p>
@@ -250,7 +269,6 @@ const OrganizationInfo = () => {
                   <Form.Group>
                     <Form.Label className="labels">Phone number*</Form.Label>
                     <Form.Control
-                      
                       type="text"
                       maxLength={10}
                       name="phoneNumber"
@@ -261,7 +279,7 @@ const OrganizationInfo = () => {
                         numberValidation(e);
                       }}
                     />
-                    {formik.errors.phoneNumber && (
+                    {formik.touched.phoneNumber && formik.errors.phoneNumber && (
                       <p className="error text-danger m-1 fw-medium">
                         {formik.errors.phoneNumber}
                       </p>
@@ -272,14 +290,14 @@ const OrganizationInfo = () => {
                   <Form.Group>
                     <Form.Label className="labels">Email*</Form.Label>
                     <Form.Control
-                      
                       type="email"
                       name="email"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       value={formik.values.email}
+                      disabled={formik.values.email ? true : false}
                     />
-                    {formik.errors.email && (
+                    {formik.touched.title && formik.errors.email && (
                       <p className="error text-danger m-1 fw-medium">
                         {formik.errors.email}
                       </p>
@@ -304,12 +322,15 @@ const OrganizationInfo = () => {
                 </div>
               </div>
               <div className="d-flex align-items-baseline mt-2">
-                <DatePickerStart />
+                <DatePickerStart
+                  startTime={startTime}
+                  setStartTime={setStartTime}
+                />
                 <div className="arrow-select-orginfo">
                   <Icon icon="fe:arrow-down" />
                 </div>
 
-                <DatePickerEnd />
+                <DatePickerEnd endTime={endTime} setEndTime={setEndTime} />
                 <div className="arrow-select-orginfo">
                   <Icon icon="fe:arrow-down" />
                 </div>
@@ -319,18 +340,25 @@ const OrganizationInfo = () => {
                 </div>
               </div>
 
-              {displayErrorMessage ? (
+              {displayErrorMessage && (
                 <div className="text-danger mt-2">
                   Please Enter All The Details In Business Hours.
                 </div>
-              ) : (
-                selectedTimes?.map((timeRange, index) => (
-                  <div key={index} className="text-muted mt-2">
-                    {timeRange.days.join(", ")}: {timeRange.startTime} -{" "}
-                    {timeRange.endTime}
-                  </div>
-                ))
               )}
+              {selectedTimes?.length &&
+                selectedTimes?.map((timeRange, index) => (
+                  <div key={index} className="text-muted mt-3">
+                    {timeRange.days.join(", ")}: {timeRange.startTime} -{" "}
+                    {timeRange.endTime}{" "}
+                    <Icon
+                      icon="pajamas:close-xs"
+                      color="#de342f"
+                      width="20"
+                      height="20"
+                      onClick={handleClear}
+                    />{" "}
+                  </div>
+                ))}
 
               <div className="mt-3">
                 <strong>Upload images</strong>

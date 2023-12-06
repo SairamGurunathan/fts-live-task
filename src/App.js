@@ -1,5 +1,6 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import 'react-loading-skeleton/dist/skeleton.css';
 import Login from "./Pages/Login";
 import { Route, Routes } from "react-router-dom";
 import OrganizationInfo from "./Pages/OrgInfo";

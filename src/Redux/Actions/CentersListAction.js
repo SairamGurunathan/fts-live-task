@@ -13,6 +13,6 @@ export const CentersListAction = (id) => async (dispatch) => {
       });
       
     } catch (error) {
-      console.error('An error occurred during add center:', error);
+      console.error(error);
     } 
   };

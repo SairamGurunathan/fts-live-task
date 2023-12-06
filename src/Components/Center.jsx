@@ -5,6 +5,7 @@ import { Card, CardBody, CardHeader, Col, Row } from "react-bootstrap";
 import { AccountAction } from "../Redux/Actions/AccountAction";
 import { useDispatch, useSelector } from "react-redux";
 import { CentersListAction } from "../Redux/Actions/CentersListAction";
+import Skeleton from "react-loading-skeleton";
 
 const Center = () => {
   const navigate = useNavigate();
@@ -32,6 +33,16 @@ const Center = () => {
     }
     // eslint-disable-next-line
   }, [accountDataSelector]);
+
+  const renderSkeletonLoader = () => {
+    return (
+      <div className="col-sm-8 col-md-6 col-lg-3">
+        <Card className="add-center-card custom-index my-2">
+          <Skeleton height={270}/>
+        </Card>
+      </div>
+    );
+  };
   return (
     <>
       <div className="container-fluid">
@@ -64,7 +75,11 @@ const Center = () => {
                   </div>
                 </div>
               </div>
-              {centerListSelector.map((acc, index) => (
+              {centerListSelector.length === 0 ? 
+              Array.from({ length: 3 }, (_, index) => (
+                renderSkeletonLoader(index)
+              )) :
+              centerListSelector.map((acc, index) => (
                 <div
                   className="col-sm-8 col-md-6 col-lg-3"
                   onClick={() => handleClickFacilities(index)}

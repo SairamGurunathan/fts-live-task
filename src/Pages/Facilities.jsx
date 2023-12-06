@@ -11,6 +11,9 @@ import { CourtDetailsAction } from "../Redux/Actions/CourtDetailsAction";
 import AddSportsModel from "./AddSportsModel";
 import AddSportsFormModel from "./AddSportsFormModel";
 import { DeleteFacilities } from "../Redux/Actions/DeleteFacilitiesAction";
+import { FacilitiesFormGetAction } from "../Redux/Actions/FacilitiesFormAction";
+import Swal from 'sweetalert2';
+import Skeleton from "react-loading-skeleton";
 
 const Facilities = () => {
   const dispatch = useDispatch();
@@ -19,17 +22,48 @@ const Facilities = () => {
   const [sportsTitle, setSportsTitle] = useState("")
   const [showCD, setShowCD] = useState(false)
   const [isEdit, setIsEdit] = useState(false)
+  const [editID, setEditID] = useState("")
+
 
   const centerID = localStorage.getItem("centerId");
 
   const handleCourtDetails = (id)=>{
     dispatch(CourtDetailsAction(id))
+   setEditID(id)
+    dispatch(FacilitiesFormGetAction(id))
     setShowCD(true)
   }
 
-  const handleDeleteFacilities = (id)=>{
-    dispatch(DeleteFacilities(id))
-  }
+  const handleDeleteFacilities = (id,title,sport) => {
+    Swal.fire({
+      title: '<header style="color:#de342f;">DELETE</header>',
+      icon: 'subway:delete',
+      html: `
+        <div className="card">
+          <Icon icon="subway:delete" color="#de342f"/>
+          <small>Are you sure you want to delete 
+          <span className="fw-bolder">${title}</span>-<span className="fw-bolder">${sport}</span> ?</small>
+        </div>`,
+      showCloseButton: true,
+      showCancelButton: true,
+      cancelButtonText: 'Cancel', 
+      confirmButtonText: 'Delete',
+      cancelButtonColor: '#3085d6',  
+      confirmButtonColor: '#d33',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(DeleteFacilities(id));
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'The record has been successfully deleted.',
+          showConfirmButton: false,
+          showCloseButton: true,
+        });
+      }
+    });
+  };
+  
 
   const handleClickModel = ()=>{
     setIsEdit(false)
@@ -39,6 +73,8 @@ const Facilities = () => {
   const facilitiesSelector = useSelector(
     (state) => state?.FacilitiesReducer?.facilities
   );
+  const facilitiesGetSelector = useSelector((state)=>state?.AddSportsFormReducer?.addSports
+  )
 
   useEffect(() => {
     dispatch(AccountAction());
@@ -52,6 +88,24 @@ const Facilities = () => {
     // eslint-disable-next-line
   }, [centerID]);
 
+  const facilitiesSkeleton = (index)=>{
+    return (
+      <div className="row border rounded-3 bg-ws mx-3 mb-2 py-2" key={index}>
+                <div className="col-1 ps-4">
+                  <Skeleton count={1}/>
+                </div>
+                <div className="col-3">
+                <Skeleton count={1}/>
+                </div>
+                <div className="col-6">
+                <Skeleton count={1}/>
+                </div>
+                <div className="col-2">
+                <Skeleton count={1}/>
+                </div>
+              </div>
+    )
+}
   return (
     <>
       <div className="container-fluid">
@@ -61,9 +115,9 @@ const Facilities = () => {
         </div>
       </div>
 
-      {Object.keys(facilitiesSelector).length ? (
+      {facilitiesSelector && Object.keys(facilitiesSelector).length ? (
                   <Card className=" mx-3 py-1 border-0 rounded-3 pb-3">
-       { Object.keys(facilitiesSelector)?.map((title, index) => (
+       {facilitiesSelector && Object.keys(facilitiesSelector)?.map((title, index) => (
              <div key={index}>
             <div className="row d-flex align-items-center mx-2 mt-2 pb-2">
               <div className="col flex-grow-0">
@@ -91,7 +145,11 @@ const Facilities = () => {
                 <p className="font-small mb-2">Actions</p>
               </div>
             </div>
-            {facilitiesSelector[title]?.map((sel, i) => (
+            {facilitiesSelector.length === 0 ? 
+              Array.from({ length: 4 }, (_, index) => (
+                facilitiesSkeleton(index)
+              )) :
+            facilitiesSelector[title]?.map((sel, i) => (
               <div
                 key={i}
                 className="row border rounded-3 bg-ws mx-3 mb-2 py-2"
@@ -115,7 +173,7 @@ const Facilities = () => {
                     <div class="vr"></div>
                     <Icon icon="icon-park-outline:copy" color="#de342f" />
                     <div class="vr"></div>
-                    <Icon icon="subway:delete" color="#de342f" onClick={()=>handleDeleteFacilities(sel?.id)}/>
+                    <Icon icon="subway:delete" color="#de342f" onClick={()=>handleDeleteFacilities(sel?.id,title,sel?.name)}/>
                   </div>
                 </div>
               </div>
@@ -130,7 +188,7 @@ const Facilities = () => {
 
       <CourtDetails show = {showCD} setShow = {setShowCD} setPopUp = {setPopUp} setIsEdit = {setIsEdit}/>
       <AddSportsModel show={show} setShow={setShow} setPopUp = {setPopUp} setSportsTitle={setSportsTitle} />
-      <AddSportsFormModel show={popUp} setShow={setPopUp} sportsTitle = {sportsTitle} isEdit= {isEdit} setIsEdit = {setIsEdit}/> 
+      <AddSportsFormModel show={popUp} setShow={setPopUp} sportsTitle = {sportsTitle} isEdit= {isEdit} setIsEdit = {setIsEdit} response={facilitiesGetSelector} editID={editID}/> 
     </>
   );
 };
