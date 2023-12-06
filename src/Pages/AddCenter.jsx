@@ -14,6 +14,8 @@ import AddBannerImage from "./AddBannerImage";
 import AddImage from "./AddImage";
 import DatePickerStart from "../Components/DatePickerStart";
 import DatePickerEnd from "../Components/DatePickerEnd";
+import Swal from "sweetalert2";
+
 
 const AddCenter = () => {
   const allDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -34,6 +36,7 @@ const AddCenter = () => {
   const accountSelector = useSelector(
     (state) => state?.AccountReducer?.account
   );
+  console.log(accountSelector);
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Name is required"),
@@ -102,8 +105,16 @@ const AddCenter = () => {
     },
   };
 
-        dispatch(fetchCenter(payload,formData));
+        dispatch(fetchCenter(payload,formData ));
         
+        navigate("/center")
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Center record has been created successfully.",
+          showConfirmButton: false,
+          showCloseButton: true,
+        });
       } catch (error) {
         console.log(error);
       }
@@ -150,21 +161,23 @@ const AddCenter = () => {
   };
   const selectedValuesString = allchecked?.toString();
 
-  
-
     const formData = new FormData()
 
-    formData.append('centerId',accountSelector?.data?.centerId)
+    
     formData.append('userId',accountSelector?.data?.id)
     formData.append('file_0',selectedFiles)
     formData.append('tags_0',"banner")
-
 
   useEffect(() => {
     dispatch(TimeZone());
     dispatch(AccountAction());
     // eslint-disable-next-line
   }, []);
+
+  // useEffect(() => {
+  //   if(formData.selectedFiles)
+  //   // eslint-disable-next-line
+  // }, [formData.selectedFiles]);
 
   return (
     <>
@@ -353,6 +366,7 @@ const AddCenter = () => {
                       <Form.Label className="labels">Time Zone*</Form.Label>
                       <Form.Select
                         value={selectedTimeZone}
+                        name="timezone"
                         onChange={(event) => handleTimeZone(event)}
                       >
                         <option>Select the TimeZone</option>

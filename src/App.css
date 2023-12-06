@@ -176,6 +176,12 @@ input[type="file"] {
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
+.side .nav-link:hover .d-flex .icon {
+    color: #de342f !important;
+  }
+  .side .nav-link:hover .side-text {
+    color: #de342f !important;
+  }
 .active-side, .side .nav-link:hover {
     background-color: #f7f7f7;
     border-radius: 10px;
@@ -192,16 +198,15 @@ input[type="file"] {
     padding: 6px 20px;
 }
 
-/* .refund-nav .nav-link {
+.refund-nav .nav-link {
     color: #424243 !important;
     font-size: 14px;
 }
-
 .sidenav.nav-link:hover{
     background-color: #f7f7f7 !important;
     border-radius: 10px !important;
     color: #de342f!important;
-} */
+}
 .sidebar{
     height: 100vh !important;
     overflow: hidden !important;

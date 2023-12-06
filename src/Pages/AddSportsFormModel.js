@@ -80,7 +80,7 @@ const AddSportsFormModel = ({ show, setShow, sportsTitle, isEdit, response, edit
   const selectedValuesString = allchecked?.toString();
 
   const facilitieDataSelector = useSelector((state) => state?.AddSportsFormReducer?.addSports)
-console.log(facilitieDataSelector);
+
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -177,13 +177,9 @@ console.log(facilitieDataSelector);
     updatedAt: moment().utc(),
     updatedBy: userID,
     video: null,
-    facilityMetas: [
-      {
-        value: formik.values.features,
-      },
-    ],
+    facilityMetas: formik.values.features,
   };
-console.log(formik.values,"values");
+
   const payloadEdit = {
     reservationAttribute: {
       advanceBookingMax: formik.values.advanceBookingMax,
