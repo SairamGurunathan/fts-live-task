@@ -59,7 +59,8 @@ const OrganizationInfo = () => {
   const accountDataSelector = useSelector(
     (state) => state?.AccountReducer?.account?.data?.orgId
   );
-
+  const photoSelector = useSelector((state) => state?.OrgPhotosReducer?.photos);
+  console.log(photoSelector);
   const handleWeekDaysChange = (e) => {
     if (e.target.checked) {
       setAllChecked([...allchecked, e.target.value]);
@@ -193,11 +194,12 @@ const OrganizationInfo = () => {
                       onBlur={formik.handleBlur}
                       value={formik.values.streetAddress}
                     />
-                    {formik.touched.streetAddress && formik.errors.streetAddress && (
-                      <p className="error text-danger m-1 fw-medium">
-                        {formik.errors.streetAddress}
-                      </p>
-                    )}
+                    {formik.touched.streetAddress &&
+                      formik.errors.streetAddress && (
+                        <p className="error text-danger m-1 fw-medium">
+                          {formik.errors.streetAddress}
+                        </p>
+                      )}
                   </Form.Group>
                 </div>
 
@@ -239,11 +241,12 @@ const OrganizationInfo = () => {
                       onBlur={formik.handleBlur}
                       value={formik.values.stateProvince}
                     />
-                    {formik.touched.stateProvince && formik.errors.stateProvince && (
-                      <p className="error text-danger m-1 fw-medium">
-                        {formik.errors.stateProvince}
-                      </p>
-                    )}
+                    {formik.touched.stateProvince &&
+                      formik.errors.stateProvince && (
+                        <p className="error text-danger m-1 fw-medium">
+                          {formik.errors.stateProvince}
+                        </p>
+                      )}
                   </Form.Group>
                 </div>
                 <div className="col-lg-2">
@@ -279,11 +282,12 @@ const OrganizationInfo = () => {
                         numberValidation(e);
                       }}
                     />
-                    {formik.touched.phoneNumber && formik.errors.phoneNumber && (
-                      <p className="error text-danger m-1 fw-medium">
-                        {formik.errors.phoneNumber}
-                      </p>
-                    )}
+                    {formik.touched.phoneNumber &&
+                      formik.errors.phoneNumber && (
+                        <p className="error text-danger m-1 fw-medium">
+                          {formik.errors.phoneNumber}
+                        </p>
+                      )}
                   </Form.Group>
                 </div>
                 <div className="flex-column col-lg-4">
@@ -373,16 +377,35 @@ const OrganizationInfo = () => {
                         <label className="labels">Min:800px x 600px</label>
                       </div>
                     </div>
-                    <div>
-                      <label for="file-input">
-                        <img
-                          src={AddBanner}
-                          alt="add"
-                          width="100%"
-                          className="border border-2 rounded-3"
-                        />
-                      </label>
-                      <input id="file-input" type="file" size="60" />
+                    <div className="d-flex justify-content-between">
+                      {photoSelector ? (
+                        photoSelector.map((photo, index) => (
+                          <div
+                            key={index}
+                            className="card-addlocation square"
+                            style={{
+                              backgroundImage: `url('${photo.url}')`,
+                              paddingTop: "25px",
+                            }}
+                          >
+                            <input
+                              id={`file-input-${index}`}
+                              type="file"
+                              size="60"
+                            />
+                          </div>
+                        ))
+                      ) : (
+                        <label for="file-input">
+                          <img
+                            src={AddBanner}
+                            alt="add"
+                            width="100%"
+                            className="border border-2 rounded-3"
+                          />
+                          <input id="file-input" type="file" size="60" />
+                        </label>
+                      )}
                     </div>
                   </div>
                 </div>

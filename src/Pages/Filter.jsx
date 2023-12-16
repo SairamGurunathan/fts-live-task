@@ -44,7 +44,9 @@ const Filter = ({showFilter, setShowFilter}) => {
     size="md"
     aria-labelledby="contained-modal-title-vcenter"
     centered
-    className="my-modal">
+    className="my-modal"
+  backdrop="static"
+  keyboard={false}>
         <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
           <small>Refunds filter</small>

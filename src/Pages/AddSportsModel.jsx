@@ -17,7 +17,6 @@ const AddSportsModel = ({show,setShow,setPopUp,setSportsTitle}) => {
     const sportsListSelector = useSelector((state) => state?.SportsListReducer?.sportsList)
     
     useEffect(()=>{
-      dispatch(AccountAction()) 
         if(sportsListSelector !== undefined){
             dispatch(SportsList(sportsListSelector));
           }
@@ -32,6 +31,8 @@ const AddSportsModel = ({show,setShow,setPopUp,setSportsTitle}) => {
       aria-labelledby="contained-modal-title-vcenter"
       centered
       className="my-modal"
+  backdrop="static"
+  keyboard={false}
     >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">

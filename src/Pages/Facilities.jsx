@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import { Icon } from "@iconify/react";
-import { AccountAction } from "../Redux/Actions/AccountAction";
 import { useDispatch, useSelector } from "react-redux";
 import { FacilitiesAction } from "../Redux/Actions/FacilitiesAction";
 import AddFacilities from "./AddFacilities";
@@ -37,10 +36,8 @@ const Facilities = () => {
   const handleDeleteFacilities = (id,title,sport) => {
     Swal.fire({
       title: '<header style="color:#de342f;">DELETE</header>',
-      icon: 'subway:delete',
       html: `
         <div className="card">
-          <Icon icon="subway:delete" color="#de342f"/>
           <small>Are you sure you want to delete 
           <span className="fw-bolder">${title}</span>-<span className="fw-bolder">${sport}</span> ?</small>
         </div>`,
@@ -64,7 +61,6 @@ const Facilities = () => {
     });
   };
   
-
   const handleClickModel = ()=>{
     setIsEdit(false)
     setShow(true)
@@ -73,20 +69,15 @@ const Facilities = () => {
   const facilitiesSelector = useSelector(
     (state) => state?.FacilitiesReducer?.facilities
   );
-  const facilitiesGetSelector = useSelector((state)=>state?.AddSportsFormReducer?.addSports
-  )
-
-  useEffect(() => {
-    dispatch(AccountAction());
-    // eslint-disable-next-line
-  }, []);
-
+  const facilitiesGetSelector = useSelector((state)=>state?.AddSportsFormReducer?.addSports)
+// console.log(facilitiesGetSelector);
   useEffect(() => {
     if (centerID !== undefined) {
       dispatch(FacilitiesAction(centerID));
     }
     // eslint-disable-next-line
   }, [centerID]);
+  
 
   const facilitiesSkeleton = (index)=>{
     return (

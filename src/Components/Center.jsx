@@ -18,7 +18,7 @@ const Center = () => {
   );
 
   const handleClickFacilities = (i) => {
-    localStorage.setItem("centerId", centerListSelector[i].id);
+    localStorage.setItem("centerId", centerListSelector[i]?.id);
     navigate("/facilities");
   };
 
@@ -79,7 +79,7 @@ const Center = () => {
               Array.from({ length: 3 }, (_, index) => (
                 renderSkeletonLoader(index)
               )) :
-              centerListSelector.map((acc, index) => (
+              centerListSelector?.map((acc, index) => (
                 <div
                   className="col-sm-8 col-md-6 col-lg-3"
                   onClick={() => handleClickFacilities(index)}

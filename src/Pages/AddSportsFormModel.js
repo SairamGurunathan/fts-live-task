@@ -8,20 +8,38 @@ import DatePickerStart from "../Components/DatePickerStart";
 import DatePickerEnd from "../Components/DatePickerEnd";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
-import Swal from 'sweetalert2';
-import { FacilitiesEditFormAction, FacilitiesFormAction } from "../Redux/Actions/FacilitiesFormAction";
+import {
+  FacilitiesEditFormAction,
+  FacilitiesFormAction,
+} from "../Redux/Actions/FacilitiesFormAction";
+import Swal from "sweetalert2";
+import { FacilitiesAction } from "../Redux/Actions/FacilitiesAction";
+import { DeleteFacilitiesMetas } from "../Redux/Actions/DeleteFacilitiesMetaAction";
 
-const AddSportsFormModel = ({ show, setShow, sportsTitle, isEdit, response, editID }) => {
+const AddSportsFormModel = ({
+  show,
+  setShow,
+  sportsTitle,
+  isEdit,
+  response,
+  editID,
+}) => {
   const allDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const [allchecked, setAllChecked] = useState("");
   const [isPlayer, setIsPlayer] = useState(false);
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [selectedTimes, setSelectedTimes] = useState([]);
+  const [newFeatures, setNewFeatures] = useState("");
+  const [features, setFeatures] = useState([]);
+  const [isAddButtonDisabled, setIsAddButtonDisabled] = useState(true);
   const [displayErrorMessage, setDisplayErrorMessage] = useState(false);
+  const [apiData, setApiData] = useState([]);
   const dispatch = useDispatch();
   const userID = localStorage.getItem("userID");
-
+  const facilitiesMetasSelector = useSelector(
+    (state) => state?.FacilitiesMetasReducer?.facilitesMetas
+  );
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Enter the Name"),
@@ -79,13 +97,22 @@ const AddSportsFormModel = ({ show, setShow, sportsTitle, isEdit, response, edit
   };
   const selectedValuesString = allchecked?.toString();
 
-  const facilitieDataSelector = useSelector((state) => state?.AddSportsFormReducer?.addSports)
+  const facilitieDataSelector = useSelector(
+    (state) => state?.AddSportsFormReducer?.addSports
+  );
+
+  const mappedData = features?.map((feature) => {
+    return { value: feature?.value };
+  });
+  const statusCode = useSelector(
+    (state) => state?.AddSportsFormReducer?.addSports?.statusCode
+  );
 
   const formik = useFormik({
     initialValues: {
       title: "",
-      playerAllowedMin:"",
-      playerAllowedMax:"",
+      playerAllowedMin: "",
+      playerAllowedMax: "",
       durationAllowedMin: "",
       durationAllowedMax: "",
       advanceBookingMin: "",
@@ -93,42 +120,33 @@ const AddSportsFormModel = ({ show, setShow, sportsTitle, isEdit, response, edit
     },
     validationSchema: validationSchema,
     onSubmit: async ({ setSubmitting }) => {
-  if (!isEdit) {
-    setAllChecked("");
-    setStartTime("");
-    setEndTime("");
-    formik.resetForm();
-
-    try {
-      dispatch(FacilitiesFormAction(payLoad));
-      setShow(false);
-      Swal.fire({
-        position: 'center',
-        icon: 'success',
-        title: 'Facility record has been created successfully',
-        showConfirmButton: false,
-        showCloseButton: true,
-
-      });
-
-    } catch (error) {
-      console.log(error);
-    }
-
-    setSubmitting(false);
-  }
-    else{
-      try {
-        dispatch(FacilitiesEditFormAction(editID,payloadEdit));
-        setShow(false)
-        formik.resetForm()
-      } catch (error) {
-        console.log(error);
+      if (!isEdit) {
+        setAllChecked("");
+        setStartTime("");
+        setEndTime("");
+        formik.resetForm();
+        try {
+          dispatch(FacilitiesFormAction(payLoad));
+          setShow(false);
+          setFeatures([]);
+          setApiData([]);
+        } catch (error) {
+          console.log(error);
+        }
+        setSubmitting(false);
+      } else {
+        try {
+          dispatch(FacilitiesEditFormAction(editID, payloadEdit));
+          setShow(false);
+          setFeatures([]);
+          setApiData([]);
+          formik.resetForm();
+        } catch (error) {
+          console.log(error);
+        }
+        setSubmitting(false);
       }
-      setSubmitting(false);
-    }
-  }
-      
+    },
   });
 
   const payLoad = {
@@ -141,11 +159,11 @@ const AddSportsFormModel = ({ show, setShow, sportsTitle, isEdit, response, edit
       playerAllowedMin: formik.values.playerAllowedMin,
     },
     title: formik.values.title,
-    displayName : isPlayer,
+    displayName: isPlayer,
     defaultPlayDuration: "30",
     sku: sku,
-    createdBy : userID,
-    photos : null,
+    createdBy: userID,
+    photos: null,
     description: "center courts facility",
     workingPlans: {
       sunday: 0,
@@ -177,7 +195,7 @@ const AddSportsFormModel = ({ show, setShow, sportsTitle, isEdit, response, edit
     updatedAt: moment().utc(),
     updatedBy: userID,
     video: null,
-    facilityMetas: formik.values.features,
+    facilityMetas: mappedData,
   };
 
   const payloadEdit = {
@@ -191,13 +209,13 @@ const AddSportsFormModel = ({ show, setShow, sportsTitle, isEdit, response, edit
       facility: facilitieDataSelector?.reservationAttribute?.facility,
       id: facilitieDataSelector?.reservationAttribute?.id,
     },
-    id : facilitieDataSelector?.id,
+    id: facilitieDataSelector?.id,
     title: formik.values.title,
-    displayName : isPlayer,
+    displayName: isPlayer,
     defaultPlayDuration: "30",
     sku: "Edit",
-    createdBy : userID,
-    photos : null,
+    createdBy: userID,
+    photos: null,
     description: "center courts facility",
     workingPlans: {
       sunday: 0,
@@ -218,7 +236,7 @@ const AddSportsFormModel = ({ show, setShow, sportsTitle, isEdit, response, edit
     },
     facilityHours: [
       {
-        id : facilitieDataSelector?.facilityHours?.id,
+        id: facilitieDataSelector?.facilityHours?.id,
         weekday: selectedValuesString,
         startTime: startTime,
         endTime: endTime,
@@ -229,35 +247,97 @@ const AddSportsFormModel = ({ show, setShow, sportsTitle, isEdit, response, edit
     createdAt: moment().utc(),
     updatedAt: moment().utc(),
     updatedBy: userID,
-    
-    facilityMetas: [
-      {
-        id : facilitieDataSelector?.facilityMetas?.id,
-        value: formik.values.features,
-      },
-    ],
+
+    facilityMetas: mappedData,
   };
+
   const handleClose = () => {
-    setShow(false)
-    formik.resetForm()
+    setShow(false);
+    setFeatures([]);
+    setApiData([]);
+    setNewFeatures("");
+    formik.resetForm();
   };
 
+  const handleChange = (e) => {
+    setNewFeatures(e.target.value);
+    setIsAddButtonDisabled(!e.target.value.trim());
+  };
 
-  useEffect(()=>{
-    try{
+  const handleFeatures = () => {
+    if (newFeatures.trim() !== "") {
+      setFeatures([...features, { value: newFeatures }]);
+      setNewFeatures("");
+      setIsAddButtonDisabled(true);
+    }
+  };
+
+  const handleRemoveFeature = (index) => {
+    const updatedFeatures = [...features];
+    updatedFeatures.splice(index, 1);
+    setFeatures(updatedFeatures);
+  };
+
+  const handledeleteFeature = (id) => {
+    dispatch(DeleteFacilitiesMetas(id, editID));
+    setApiData(facilitiesMetasSelector);
+  };
+
+  const combinedFeatures = [apiData, ...features];
+
+  useEffect(() => {
+    try {
       formik.setFieldValue("title", response?.title || "");
-      formik.setFieldValue("playerAllowedMin", response?.reservationAttribute?.playerAllowedMin || "");
-      formik.setFieldValue("playerAllowedMax", response?.reservationAttribute?.playerAllowedMax || "");
-      formik.setFieldValue("durationAllowedMin", response?.reservationAttribute?.durationAllowedMin || "");
-      formik.setFieldValue("durationAllowedMax", response?.reservationAttribute?.durationAllowedMax || "");
-      formik.setFieldValue("advanceBookingMin", response?.reservationAttribute?.advanceBookingMin || "");
-      formik.setFieldValue("advanceBookingMax", response?.reservationAttribute?.advanceBookingMax || "");
-      formik.setFieldValue("features",response?.facilityMetas?.map((val)=>(val?.value)))
+      formik.setFieldValue(
+        "playerAllowedMin",
+        response?.reservationAttribute?.playerAllowedMin || ""
+      );
+      formik.setFieldValue(
+        "playerAllowedMax",
+        response?.reservationAttribute?.playerAllowedMax || ""
+      );
+      formik.setFieldValue(
+        "durationAllowedMin",
+        response?.reservationAttribute?.durationAllowedMin || ""
+      );
+      formik.setFieldValue(
+        "durationAllowedMax",
+        response?.reservationAttribute?.durationAllowedMax || ""
+      );
+      formik.setFieldValue(
+        "advanceBookingMin",
+        response?.reservationAttribute?.advanceBookingMin || ""
+      );
+      formik.setFieldValue(
+        "advanceBookingMax",
+        response?.reservationAttribute?.advanceBookingMax || ""
+      );
+      setApiData(response?.facilityMetas);
     } catch (error) {
       console.log(error);
     }
     // eslint-disable-next-line
-  },[response])
+  }, [response]);
+
+  useEffect(() => {
+    if (statusCode === 201) {
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Facility record has been created successfully",
+        showConfirmButton: false,
+        showCloseButton: true,
+      });
+      dispatch(FacilitiesAction(centerID));
+    }
+    // eslint-disable-next-line
+  }, [statusCode]);
+
+  useEffect(() => {
+    setApiData(facilitiesMetasSelector, ...combinedFeatures);
+    dispatch(FacilitiesAction(centerID));
+    // eslint-disable-next-line
+  }, [facilitiesMetasSelector]);
 
   return (
     <>
@@ -268,13 +348,16 @@ const AddSportsFormModel = ({ show, setShow, sportsTitle, isEdit, response, edit
         aria-labelledby="contained-modal-title-vcenter"
         centered
         className="my-modal"
+        backdrop="static"
+        keyboard={false}
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            {isEdit ? <small className="m-0">Edit
-            </small> : <small className="m-0">
-              Add {sportsTitle?.title}</small>
-              }
+            {isEdit ? (
+              <small className="m-0">Edit</small>
+            ) : (
+              <small className="m-0">Add {sportsTitle?.title}</small>
+            )}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body className="p-0">
@@ -289,7 +372,7 @@ const AddSportsFormModel = ({ show, setShow, sportsTitle, isEdit, response, edit
                     name="title"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    value={formik.values.title}                    
+                    value={formik.values.title}
                   />
                 </div>
                 <div className="col-6 d-flex ">
@@ -381,11 +464,12 @@ const AddSportsFormModel = ({ show, setShow, sportsTitle, isEdit, response, edit
                       numberValidation(e);
                     }}
                   />
-                  {formik.touched.playerAllowedMin && formik.errors.playerAllowedMin && (
-                    <p className="error text-danger m-1 fw-medium">
-                      {formik.errors.playerAllowedMin}
-                    </p>
-                  )}
+                  {formik.touched.playerAllowedMin &&
+                    formik.errors.playerAllowedMin && (
+                      <p className="error text-danger m-1 fw-medium">
+                        {formik.errors.playerAllowedMin}
+                      </p>
+                    )}
                 </Col>
                 <Col lg={3}>
                   <Form.Control
@@ -399,11 +483,12 @@ const AddSportsFormModel = ({ show, setShow, sportsTitle, isEdit, response, edit
                       numberValidation(e);
                     }}
                   />
-                  {formik.touched.playerAllowedMax && formik.errors.playerAllowedMax && (
-                    <p className="error text-danger m-1 fw-medium">
-                      {formik.errors.playerAllowedMax}
-                    </p>
-                  )}
+                  {formik.touched.playerAllowedMax &&
+                    formik.errors.playerAllowedMax && (
+                      <p className="error text-danger m-1 fw-medium">
+                        {formik.errors.playerAllowedMax}
+                      </p>
+                    )}
                 </Col>
               </Row>
               <Row className="mb-2 d-flex ">
@@ -422,11 +507,12 @@ const AddSportsFormModel = ({ show, setShow, sportsTitle, isEdit, response, edit
                       numberValidation(e);
                     }}
                   />
-                  {formik.touched.durationAllowedMin && formik.errors.durationAllowedMin && (
-                    <p className="error text-danger m-1 fw-medium">
-                      {formik.errors.durationAllowedMin}
-                    </p>
-                  )}
+                  {formik.touched.durationAllowedMin &&
+                    formik.errors.durationAllowedMin && (
+                      <p className="error text-danger m-1 fw-medium">
+                        {formik.errors.durationAllowedMin}
+                      </p>
+                    )}
                 </Col>
                 <Col lg={3}>
                   <Form.Control
@@ -440,11 +526,12 @@ const AddSportsFormModel = ({ show, setShow, sportsTitle, isEdit, response, edit
                       numberValidation(e);
                     }}
                   />
-                  {formik.touched.durationAllowedMax && formik.errors.durationAllowedMax && (
-                    <p className="error text-danger m-1 fw-medium">
-                      {formik.errors.durationAllowedMax}
-                    </p>
-                  )}
+                  {formik.touched.durationAllowedMax &&
+                    formik.errors.durationAllowedMax && (
+                      <p className="error text-danger m-1 fw-medium">
+                        {formik.errors.durationAllowedMax}
+                      </p>
+                    )}
                 </Col>
               </Row>
               <Row className="mb-2 d-flex ">
@@ -465,11 +552,12 @@ const AddSportsFormModel = ({ show, setShow, sportsTitle, isEdit, response, edit
                       numberValidation(e);
                     }}
                   />
-                  {formik.touched.advanceBookingMin && formik.errors.advanceBookingMin && (
-                    <p className="error text-danger m-1 fw-medium">
-                      {formik.errors.advanceBookingMin}
-                    </p>
-                  )}
+                  {formik.touched.advanceBookingMin &&
+                    formik.errors.advanceBookingMin && (
+                      <p className="error text-danger m-1 fw-medium">
+                        {formik.errors.advanceBookingMin}
+                      </p>
+                    )}
                 </Col>
                 <Col lg={3}>
                   <Form.Control
@@ -483,11 +571,12 @@ const AddSportsFormModel = ({ show, setShow, sportsTitle, isEdit, response, edit
                       numberValidation(e);
                     }}
                   />
-                  {formik.touched.advanceBookingMax && formik.errors.advanceBookingMax && (
-                    <p className="error text-danger m-1 fw-medium">
-                      {formik.errors.advanceBookingMax}
-                    </p>
-                  )}
+                  {formik.touched.advanceBookingMax &&
+                    formik.errors.advanceBookingMax && (
+                      <p className="error text-danger m-1 fw-medium">
+                        {formik.errors.advanceBookingMax}
+                      </p>
+                    )}
                 </Col>
               </Row>
               <Form.Label className="m-0 fw-bold mt-3">
@@ -502,18 +591,63 @@ const AddSportsFormModel = ({ show, setShow, sportsTitle, isEdit, response, edit
                   <Form.Control
                     type="text"
                     name="features"
-                    onChange={formik.handleChange}
+                    onChange={handleChange}
                     onBlur={formik.handleBlur}
-                    value={formik.values.features}
+                    value={newFeatures}
                   />
                 </Col>
                 <Col lg={6}>
-                  <div className="d-flex flex-nowrap align-items-center cursor-pointer">
+                  <div
+                    className="d-flex flex-nowrap align-items-center cursor-pointer"
+                    disabled={isAddButtonDisabled}
+                  >
                     <Icon icon="gridicons:add" color="#2d77d2" />
-                    <small className="text-primary fs-6">Add</small>
+                    <small
+                      className="text-primary fs-6"
+                      onClick={handleFeatures}
+                    >
+                      Add
+                    </small>
                   </div>
                 </Col>
               </Row>
+              {
+                <div className="mt-1">
+                  {Array.isArray(apiData) && apiData.length > 0
+                    ? apiData.map((apiItem, index) => (
+                        <span
+                          key={index}
+                          className="badge rounded-pill bg-white text-dark fw-normal border me-1"
+                        >
+                          {apiItem.value}
+                          <Icon
+                            icon="pajamas:close-xs"
+                            color="#de342f"
+                            width="20"
+                            height="20"
+                            onClick={() => handledeleteFeature(apiItem.id)}
+                          />
+                        </span>
+                      ))
+                    : null}
+
+                  {features.map((feature, index) => (
+                    <span
+                      key={index}
+                      className="badge rounded-pill bg-white text-dark fw-normal border me-1"
+                    >
+                      {feature.value}
+                      <Icon
+                        icon="pajamas:close-xs"
+                        color="#de342f"
+                        width="20"
+                        height="20"
+                        onClick={() => handleRemoveFeature(index)}
+                      />
+                    </span>
+                  ))}
+                </div>
+              }
               <Form.Label>
                 <small className="m-0 text-muted">Images</small>
               </Form.Label>
@@ -537,11 +671,15 @@ const AddSportsFormModel = ({ show, setShow, sportsTitle, isEdit, response, edit
               >
                 Cancel
               </Button>
-              {isEdit ? <Button type="submit" className="btn-danger text-white">
-                Update
-              </Button> : <Button type="submit" className="btn-danger text-white">
-                Save
-              </Button>}
+              {isEdit ? (
+                <Button type="submit" className="btn-danger text-white">
+                  Update
+                </Button>
+              ) : (
+                <Button type="submit" className="btn-danger text-white">
+                  Save
+                </Button>
+              )}
             </div>
           </Form>
         </Modal.Body>

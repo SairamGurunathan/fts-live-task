@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const interceptor = () => {
-  const baseURL = 'https://dev-api.playzeon.com/'
+  const baseURL = 'https://3970-103-137-148-190.ngrok-free.app/'
 
   axios.defaults.baseURL = baseURL
   axios.interceptors.request.use((config)=>{
@@ -10,6 +10,7 @@ const interceptor = () => {
       config.baseURL = baseURL;
       config.headers.Authorization = `Bearer ${token}`
     }
+    config.headers['ngrok-skip-browser-warning'] = 'true';
     return config;
   },
   (error)=> Promise.reject(error)

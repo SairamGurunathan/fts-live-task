@@ -29,14 +29,12 @@ const AddCenter = () => {
   const [displayErrorMessage, setDisplayErrorMessage] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
 
-  
   const timezoneSelector = useSelector(
     (state) => state?.AccountReducer?.timezone
   );
   const accountSelector = useSelector(
     (state) => state?.AccountReducer?.account
   );
-  console.log(accountSelector);
 
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Name is required"),
@@ -162,8 +160,6 @@ const AddCenter = () => {
   const selectedValuesString = allchecked?.toString();
 
     const formData = new FormData()
-
-    
     formData.append('userId',accountSelector?.data?.id)
     formData.append('file_0',selectedFiles)
     formData.append('tags_0',"banner")
@@ -173,11 +169,6 @@ const AddCenter = () => {
     dispatch(AccountAction());
     // eslint-disable-next-line
   }, []);
-
-  // useEffect(() => {
-  //   if(formData.selectedFiles)
-  //   // eslint-disable-next-line
-  // }, [formData.selectedFiles]);
 
   return (
     <>

@@ -1,11 +1,9 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { AccountAction } from '../Redux/Actions/AccountAction';
+import { useSelector } from 'react-redux';
 import AddSportsFormModel from './AddSportsFormModel';
 
 const CourtDetails = ({show,setShow,setPopUp,popUp,setIsEdit}) => {
-  const dispatch = useDispatch()
     const handleClose = () => {
       setShow(false)
     setPopUp(false)}
@@ -16,11 +14,7 @@ const CourtDetails = ({show,setShow,setPopUp,popUp,setIsEdit}) => {
     }
 
     const courtDetailSelector = useSelector((state)=>state?.CourtDetailsReducer?.courtDetails)
-
-    useEffect(()=>{
-      dispatch(AccountAction()) 
-        // eslint-disable-next-line
-    },[])
+    
   return (
     <>
     <Modal
@@ -30,6 +24,8 @@ const CourtDetails = ({show,setShow,setPopUp,popUp,setIsEdit}) => {
         aria-labelledby="contained-modal-title-vcenter"
         centered
         className="my-modal"
+  backdrop="static"
+  keyboard={false}
       >
         <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">

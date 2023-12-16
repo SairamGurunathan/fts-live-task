@@ -14,7 +14,7 @@ const SideMenu = () => {
   return (
     <>
       <div className="d-flex flex-column px-2 pt-3 bg-white vh-100 side">
-        <ul className="nav nav-pills side flex-column mb-auto">
+        <ul className="nav nav-pills side flex-column mb-auto gap-1">
           <li className="nav-item">
             <NavLink
               to="/center"

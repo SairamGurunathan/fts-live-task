@@ -274,3 +274,33 @@ tr td {
     border-bottom: 1px solid #dbd8d8!important;
     border-top: 1px solid #dbd8d8;
 }
+.card-addlocation {
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 10px;
+    flex-shrink: 0;
+    height: 150px;
+    margin-left: 10px;
+    width: 150px;
+}
+.square {
+    background-position: 50%;
+    background-size: cover;
+    border-radius: 5px;
+    max-height: 100px;
+    min-height: 100px;
+    position: relative;
+}
+.square:before {
+    background-color: #30303099;
+    border-radius: 5px;
+    bottom: 0;
+    content: "";
+    height: 0;
+    left: 0;
+    position: absolute;
+    top: 0;
+    transition: height .5s ease-out;
+    width: 100%;
+}

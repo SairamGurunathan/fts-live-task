@@ -4,6 +4,9 @@ import { SportsListReducer } from "./SportsListReducer";
 import { CourtDetailsReducer } from "./CourtDetailsReducer";
 import { AddSportsFormReducer } from "./AddSportsReducer";
 import { RefundFilterDetailsReducer, RefundFilterReducer } from "./RefundFilterReducer";
+import { FacilitiesMetasReducer } from "./FacilitiesMetasReducer";
+import { OrgPhotosReducer } from "./OrgPhotosReducer";
+import { FacilitiesPhotoReducer } from "./FacilititesPhotoReducer";
 const reducers = combineReducers({
   offersListData: OffersListReducer,
   AccountReducer: AccountReducer,
@@ -15,6 +18,9 @@ const reducers = combineReducers({
   AddSportsFormReducer : AddSportsFormReducer,
   RefundFilterReducer : RefundFilterReducer,
   RefundFilterDetailsReducer : RefundFilterDetailsReducer,
+  FacilitiesMetasReducer : FacilitiesMetasReducer,
+  OrgPhotosReducer : OrgPhotosReducer,
+  FacilitiesPhotoReducer : FacilitiesPhotoReducer,
 });
 
 export default reducers;

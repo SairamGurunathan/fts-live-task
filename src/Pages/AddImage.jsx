@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import AddImages from "../Assects/Images/addimage.svg";
 
-
 const AddImage = () => {
 
     const [selectedAddFiles, setSelectedAddFiles] = useState([]);
@@ -15,7 +14,7 @@ const AddImage = () => {
           reader.onloadend = () => {
             setAddImgPreview([...addImgPreview, reader.result]);
           };
-    
+
           reader.readAsDataURL(file);
           setSelectedAddFiles([...selectedAddFiles, file]);
         }
