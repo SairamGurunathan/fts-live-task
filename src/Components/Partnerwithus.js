@@ -11,8 +11,7 @@ const Partnerwithus = ({ setIsSignIn }) => {
     organization: Yup.string().required("Organization name is required"),
     fName: Yup.string().required("First name is required"),
     lName: Yup.string().required("Last name is required"),
-    phoneNumber: Yup.number().max(10, "Max 10 digit")
-    .required("Phone Number is required"),
+    phoneNumber: Yup.string().max(10, "Max 10 digit").required("Phone Number is required"),
     email: Yup.string().email("Invalid email").required("Email is required"),
   });
 
@@ -155,16 +154,16 @@ const Partnerwithus = ({ setIsSignIn }) => {
                 maxLength={10}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                name="phNumber"
-                value={formik.values.phNumber}
+                name="phoneNumber"
+                value={formik.values.phoneNumber}
                 onKeyPress={(e) => {
                   numberValidation(e);
                 }}
               />
 
-              { formik.errors.phNumber && (
+              { formik.errors.phoneNumber && (
                 <p className="error text-danger fw-medium">
-                  {formik.errors.phNumber}
+                  {formik.errors.phoneNumber}
                 </p>
               )}
             </Form.Group>

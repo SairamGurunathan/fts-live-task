@@ -60,7 +60,7 @@ const OrganizationInfo = () => {
     (state) => state?.AccountReducer?.account?.data?.orgId
   );
   const photoSelector = useSelector((state) => state?.OrgPhotosReducer?.photos);
-  console.log(photoSelector);
+console.log(photoSelector);
   const handleWeekDaysChange = (e) => {
     if (e.target.checked) {
       setAllChecked([...allchecked, e.target.value]);
@@ -378,16 +378,17 @@ const OrganizationInfo = () => {
                       </div>
                     </div>
                     <div className="d-flex justify-content-between">
-                      {photoSelector ? (
-                        photoSelector.map((photo, index) => (
+                      {photoSelector && photoSelector.length > 0 ? (
+                        photoSelector?.map((photo, index) => (
                           <div
                             key={index}
                             className="card-addlocation square"
-                            style={{
-                              backgroundImage: `url('${photo.url}')`,
-                              paddingTop: "25px",
-                            }}
                           >
+                            <img 
+                            alt="img"
+                            src={photo?.url}
+                            style={{padding:"25px"}}
+                            />
                             <input
                               id={`file-input-${index}`}
                               type="file"
@@ -396,12 +397,12 @@ const OrganizationInfo = () => {
                           </div>
                         ))
                       ) : (
-                        <label for="file-input">
+                        <label htmlFor="file-input">
                           <img
-                            src={AddBanner}
+                            src={photoSelector ? AddBanner : ""}
                             alt="add"
                             width="100%"
-                            className="border border-2 rounded-3"
+                            className="border border-2 rounded-3 mt-2"
                           />
                           <input id="file-input" type="file" size="60" />
                         </label>

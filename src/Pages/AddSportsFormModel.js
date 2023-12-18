@@ -1,6 +1,5 @@
 import { Icon } from "@iconify/react";
 import React, { useEffect, useState } from "react";
-import AddImages from "../Assects/Images/addimage.svg";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import * as Yup from "yup";
 import { useFormik } from "formik";
@@ -15,6 +14,7 @@ import {
 import Swal from "sweetalert2";
 import { FacilitiesAction } from "../Redux/Actions/FacilitiesAction";
 import { DeleteFacilitiesMetas } from "../Redux/Actions/DeleteFacilitiesMetaAction";
+import AddFacilityImage from "./AddFacilityImage";
 
 const AddSportsFormModel = ({
   show,
@@ -37,10 +37,13 @@ const AddSportsFormModel = ({
   const [apiData, setApiData] = useState([]);
   const dispatch = useDispatch();
   const userID = localStorage.getItem("userID");
+  const [facilitySelect,setFacilitySelect] = useState([])
+  const [selectChange, setSelectChange] =  useState([])
+
   const facilitiesMetasSelector = useSelector(
     (state) => state?.FacilitiesMetasReducer?.facilitesMetas
   );
-
+  
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Enter the Name"),
     playerAllowedMin: Yup.number().required("Enter Minimun Value"),
@@ -126,11 +129,12 @@ const AddSportsFormModel = ({
         setEndTime("");
         formik.resetForm();
         try {
-          dispatch(FacilitiesFormAction(payLoad));
+          dispatch(FacilitiesFormAction(payLoad,formData));
           setShow(false);
           setFeatures([]);
           setApiData([]);
-        } catch (error) {
+          
+         } catch (error) {
           console.log(error);
         }
         setSubmitting(false);
@@ -257,7 +261,10 @@ const AddSportsFormModel = ({
     setApiData([]);
     setNewFeatures("");
     formik.resetForm();
+    setSelectChange([])
+
   };
+console.log(selectChange);
 
   const handleChange = (e) => {
     setNewFeatures(e.target.value);
@@ -284,6 +291,11 @@ const AddSportsFormModel = ({
   };
 
   const combinedFeatures = [apiData, ...features];
+
+  const formData = new FormData()
+    formData.append('userId',userID)
+    formData.append('file_0', facilitySelect)
+    formData.append('tags_0',"photo")
 
   useEffect(() => {
     try {
@@ -313,6 +325,7 @@ const AddSportsFormModel = ({
         response?.reservationAttribute?.advanceBookingMax || ""
       );
       setApiData(response?.facilityMetas);
+
     } catch (error) {
       console.log(error);
     }
@@ -320,6 +333,7 @@ const AddSportsFormModel = ({
   }, [response]);
 
   useEffect(() => {
+    
     if (statusCode === 201) {
       Swal.fire({
         position: "center",
@@ -652,15 +666,9 @@ const AddSportsFormModel = ({
                 <small className="m-0 text-muted">Images</small>
               </Form.Label>
               <div>
-                <label for="file-input">
-                  <img
-                    src={AddImages}
-                    alt="add"
-                    className="border border-2 rounded-3 add-image"
-                  />
-                </label>
 
-                <input id="file-input" type="file" size="60" />
+                <AddFacilityImage setFacilitySelect={setFacilitySelect} selectChange={selectChange} setSelectChange={setSelectChange}/>
+
               </div>
             </div>
             <div className="d-flex gap-1 justify-content-end bg-white p-2">

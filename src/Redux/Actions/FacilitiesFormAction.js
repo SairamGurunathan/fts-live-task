@@ -1,17 +1,25 @@
 import axios from "axios";
 import { Constants } from "../Constants/Constants";
 import { FacilitiesAction } from "./FacilitiesAction";
+import { FacilitiesGetPhotosAction, FacilitiesPostPhotosAction } from "./FacilitiesPhotoAction";
+// import { AccountAction } from "./AccountAction";
 
-export const FacilitiesFormAction = (payload) => async (dispatch) => {
+export const FacilitiesFormAction = (payload,formData) => async (dispatch) => {
 
   try {
     const response = await axios.post("api/v1/facilities", payload);
-    
-      await dispatch({
-        type: Constants.FETCH_ADD_SPORTSFORM,
-        payload: { data: response?.data, statusCode: response?.status },
-      });
 
+      if (response?.status === 201) {
+        const facilityId = response?.data?.id
+        formData.append('facilityId',response?.data?.id)
+        await dispatch(FacilitiesPostPhotosAction(facilityId,formData))   
+        await dispatch({
+          type: Constants.FETCH_ADD_SPORTSFORM,
+          payload: { data: response?.data, statusCode: response?.status },
+        });     
+      } else {
+        console.error('Center not created');
+      }
       return response?.data;
 
   } catch (error) {
@@ -24,6 +32,7 @@ export const FacilitiesFormGetAction = (id) => async (dispatch) => {
     const response = await axios.get(`api/v1/facility/${id}`);
     const { data } = response;
     if (response?.status === 200) {
+      dispatch(FacilitiesGetPhotosAction(id))
       dispatch({
         type: Constants.FETCH_ADD_SPORTSFORM,
         payload: data,
@@ -41,6 +50,7 @@ export const FacilitiesEditFormAction = (id, payload) => async (dispatch) => {
 
     if (response?.status === 200) {
       dispatch(FacilitiesAction(centerID))
+      dispatch(FacilitiesGetPhotosAction(id))
       dispatch({
         type: Constants.FETCH_ADD_SPORTSFORM,
         payload: { data: response?.data },

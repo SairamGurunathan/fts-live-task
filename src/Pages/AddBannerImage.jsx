@@ -12,7 +12,7 @@ const AddBannerImage = ({setSelectedFiles}) => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);
-      };
+      }
       reader.readAsDataURL(files);
     } else {
       setImagePreview(null);

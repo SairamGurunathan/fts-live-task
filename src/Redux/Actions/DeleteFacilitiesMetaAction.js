@@ -3,7 +3,7 @@ import { Constants } from "../Constants/Constants";
 
 export const DeleteFacilitiesMetas = (id,editID) =>async(dispatch) => {
     try {
-        const response = await axios.delete(`/api/facility-metas/${id}`)
+        const response = await axios.delete(`api/facility-metas/${id}`)
         
         if(response?.status === 204){
             dispatch(FacilitiesMetasGetAction(editID))
@@ -17,7 +17,7 @@ export const DeleteFacilitiesMetas = (id,editID) =>async(dispatch) => {
 
 export const FacilitiesMetasGetAction = (facilityId) => async (dispatch) => {
     try {
-      const response = await axios.get(`/api/facility-metas?facilityId.equals=${facilityId}`);
+      const response = await axios.get(`api/facility-metas?facilityId.equals=${facilityId}`);
       const { data } = response;
       if (response?.status === 200) {
         dispatch({

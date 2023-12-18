@@ -5,8 +5,9 @@ import AddSportsFormModel from './AddSportsFormModel';
 
 const CourtDetails = ({show,setShow,setPopUp,popUp,setIsEdit}) => {
     const handleClose = () => {
-      setShow(false)
-    setPopUp(false)}
+    setShow(false)
+    setPopUp(false)
+  }
     const handleEdit = () => {
       setIsEdit(true)
       setPopUp(true)
@@ -14,7 +15,8 @@ const CourtDetails = ({show,setShow,setPopUp,popUp,setIsEdit}) => {
     }
 
     const courtDetailSelector = useSelector((state)=>state?.CourtDetailsReducer?.courtDetails)
-    
+  const select = useSelector((state)=>state?.FacilitiesPhotoReducer?.facilitiesPhotos)
+
   return (
     <>
     <Modal
@@ -109,8 +111,22 @@ const CourtDetails = ({show,setShow,setPopUp,popUp,setIsEdit}) => {
             
             </div>
             <label className='text-muted'>Images</label>
-            {courtDetailSelector?.photo ? <img src={courtDetailSelector?.photo} alt="photos" className='img-thumbnail float-start' /> : <p className='m-3 p-3'></p>}
-            
+              {select ?
+                (select?.map((photo)=>(
+                  <div>
+                  <img 
+                  src={photo?.url}
+                  className='mt-2'
+                  alt='img'
+                  style={{height:"120px", overflow:"auto"}}
+                  />
+                  </div>
+                )) ):
+                (<div className="border border-4 col-2 mt-2"
+                style={{height:"120px", overflow:"auto"}}
+                >
+                  </div>)
+              }
         </Modal.Body>
         <Modal.Footer className="bg-white">
         <div className="d-flex gap-2 justify-content-end">

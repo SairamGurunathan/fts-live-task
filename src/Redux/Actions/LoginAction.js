@@ -6,7 +6,7 @@ export const fetchLogin = ({email,password,setIsAuthenticated}) => async (dispat
   
 
   try { 
-    const response = await axios.post('https://dev-api.playzeon.com/api/user-management/login', {
+    const response = await axios.post('api/user-management/login', {
       userName : email,
       password : password
     });
@@ -35,7 +35,7 @@ export const fetchLogin = ({email,password,setIsAuthenticated}) => async (dispat
 export const fetchPartner = ({organization,fName,lName,phNumber,email,role}) => async (dispatch) => {
  
   try {
-    const response = await axios.post('https://dev-api.playzeon.com/api/user-management/create/organization', {
+    const response = await axios.post('api/user-management/create/organization', {
         phoneNumber: phNumber,
         orgName: organization,
         firstName: fName,

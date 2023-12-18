@@ -6,7 +6,7 @@ export const FacilitiesGetPhotosAction = (id) => async (dispatch) => {
       const response = await axios.get(`api/v1/facility/${id}/url`)
       
       const { data } = response;
-      if(data?.status === 200){
+      if(response?.status === 200){
       dispatch({
         type: Constants.FETCH_FACILITIES_PHOTO,
         payload: data,
@@ -18,7 +18,6 @@ export const FacilitiesGetPhotosAction = (id) => async (dispatch) => {
   };
 
 export const FacilitiesPostPhotosAction = (id,payload) => async() =>{
-
     try{
         await axios.post(`api/v1/facility/photos?facilityId=${id}`,payload);
     }

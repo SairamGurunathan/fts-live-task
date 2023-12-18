@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const interceptor = () => {
-  const baseURL = 'https://3970-103-137-148-190.ngrok-free.app/'
+  const baseURL = 'https://c588-2405-201-e059-b805-ac57-a7d9-1bb6-4138.ngrok-free.app/'
 
   axios.defaults.baseURL = baseURL
   axios.interceptors.request.use((config)=>{
