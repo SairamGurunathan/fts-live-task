@@ -7,6 +7,7 @@ import { RefundFilterDetailsReducer, RefundFilterReducer } from "./RefundFilterR
 import { FacilitiesMetasReducer } from "./FacilitiesMetasReducer";
 import { OrgPhotosReducer } from "./OrgPhotosReducer";
 import { FacilitiesPhotoReducer } from "./FacilititesPhotoReducer";
+import resetReducer from "./ResetReducer";
 const reducers = combineReducers({
   offersListData: OffersListReducer,
   AccountReducer: AccountReducer,
@@ -21,6 +22,7 @@ const reducers = combineReducers({
   FacilitiesMetasReducer : FacilitiesMetasReducer,
   OrgPhotosReducer : OrgPhotosReducer,
   FacilitiesPhotoReducer : FacilitiesPhotoReducer,
+  resetReducer : resetReducer,
 });
 
 export default reducers;

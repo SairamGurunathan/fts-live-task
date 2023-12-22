@@ -31,7 +31,8 @@ const Facilities = () => {
     dispatch(FacilitiesFormGetAction(id));
     setShowCD(true);
   };
-
+  
+  // console.log(showCD,"showCD");
   const handleDeleteFacilities = (id, title, sport) => {
     Swal.fire({
       title: '<header style="color:#de342f;">DELETE</header>',
@@ -163,7 +164,7 @@ const Facilities = () => {
                           <small>{sel?.features?.join(" | ")}</small>
                         </div>
                         <div className="col-2">
-                          <div className="d-flex flex-row align-items-center justify-content-center gap-1 cursor-pointer">
+                          <div className="d-flex flex-row align-items-center justify-content-center gap-2 cursor-pointer">
                             <OverlayTrigger
                               placement={"bottom"}
                               overlay={

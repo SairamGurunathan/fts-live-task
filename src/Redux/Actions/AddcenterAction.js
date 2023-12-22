@@ -9,7 +9,7 @@ export const fetchCenter = (payload,formData) => async (dispatch) => {
       const response = await axios.post('api/v1/centers', payload)
       const { data } = response;
 
-      if (response.status === 201) {  
+      if (data?.status === 201) {  
         formData.append('centerId',data?.id)
         dispatch(AccountAction());
         dispatch(photosAction(formData))   

@@ -15,6 +15,7 @@ import Swal from "sweetalert2";
 import { FacilitiesAction } from "../Redux/Actions/FacilitiesAction";
 import { DeleteFacilitiesMetas } from "../Redux/Actions/DeleteFacilitiesMetaAction";
 import AddFacilityImage from "./AddFacilityImage";
+import { ResetAction } from "../Redux/Actions/ResetAction";
 
 const AddSportsFormModel = ({
   show,
@@ -262,9 +263,8 @@ const AddSportsFormModel = ({
     setNewFeatures("");
     formik.resetForm();
     setSelectChange([])
-
+    dispatch(ResetAction());
   };
-console.log(selectChange);
 
   const handleChange = (e) => {
     setNewFeatures(e.target.value);
@@ -666,9 +666,7 @@ console.log(selectChange);
                 <small className="m-0 text-muted">Images</small>
               </Form.Label>
               <div>
-
-                <AddFacilityImage setFacilitySelect={setFacilitySelect} selectChange={selectChange} setSelectChange={setSelectChange}/>
-
+                <AddFacilityImage setFacilitySelect={setFacilitySelect} facilitySelect={facilitySelect} selectChange={selectChange} setSelectChange={setSelectChange}/>
               </div>
             </div>
             <div className="d-flex gap-1 justify-content-end bg-white p-2">

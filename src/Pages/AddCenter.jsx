@@ -18,7 +18,17 @@ import Swal from "sweetalert2";
 
 
 const AddCenter = () => {
-  const allDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  // const allDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const weekdays = [
+    { fullName: 'Sunday', halfName: 'Sun', index: 0 },
+    { fullName: 'Monday', halfName: 'Mon', index: 1 },
+    { fullName: 'Tuesday', halfName: 'Tue', index: 2 },
+    { fullName: 'Wednesday', halfName: 'Wed', index: 3 },
+    { fullName: 'Thursday', halfName: 'Thu', index: 4 },
+    { fullName: 'Friday', halfName: 'Fri', index: 5 },
+    { fullName: 'Saturday', halfName: 'Sat', index: 6 },
+  ];
+  const [selectedFullNames, setSelectedFullNames] = useState([]);
   const navigate = useNavigate();
   const [selectedTimeZone, setSelectedTimeZone] = useState("");
   const [startTime, setStartTime] = useState("");
@@ -29,13 +39,8 @@ const AddCenter = () => {
   const [displayErrorMessage, setDisplayErrorMessage] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
 
-  const timezoneSelector = useSelector(
-    (state) => state?.AccountReducer?.timezone
-  );
-  const accountSelector = useSelector(
-    (state) => state?.AccountReducer?.account
-  );
-
+  const timezoneSelector = useSelector((state) => state?.AccountReducer?.timezone);
+  const accountSelector = useSelector((state) => state?.AccountReducer?.account);
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Name is required"),
     streetAddress: Yup.string().required("Street is required"),
@@ -43,10 +48,7 @@ const AddCenter = () => {
     city: Yup.string().required("City is required"),
     stateProvince: Yup.string().required("State is required"),
     zipCode: Yup.number().required("Zip is required"),
-    phoneNumber: Yup.string()
-      .max(10, "Max 10 digit")
-      .required("Phone Number is required"),
-    // .matches( /^\d{3}-\d{3}-\d{4}$/),
+    phoneNumber: Yup.string().max(10, "Max 10 digit").required("Phone Number is required"),
     email: Yup.string().email("Invalid email").required("Email is required"),
   });
   const dispatch = useDispatch();
@@ -82,9 +84,9 @@ const AddCenter = () => {
     organization: { id: accountSelector?.data?.orgId },
     centerHours: [
       {
-        weekday: selectedValuesString,
-        startTime: startTime,
-        endTime: endTime,
+        weekday: selectedFullNames.join(", "),
+        startTime: moment(startTime).format("h:mm a"),
+        endTime: moment(endTime).format("h:mm a"),
         createdAt: moment().utc(),
         updatedAt: moment().utc(),
       },
@@ -102,9 +104,7 @@ const AddCenter = () => {
       id: selectedTimeZone,
     },
   };
-
         dispatch(fetchCenter(payload,formData ));
-        
         navigate("/center")
         Swal.fire({
           position: "center",
@@ -120,9 +120,13 @@ const AddCenter = () => {
     },
   });
 
+  const handleClear = () => {
+    setSelectedTimes([]);
+  };
+
   const handleAddTime = () => {
     if (!allchecked || !startTime || !endTime) {
-      setDisplayErrorMessage(true);
+      setDisplayErrorMessage(true); 
       return;
     }
 
@@ -133,8 +137,9 @@ const AddCenter = () => {
     };
 
     setSelectedTimes([...selectedTimes, selectedTimeRange]);
-    setStartTime();
-    setEndTime();
+    setStartTime("");
+    setEndTime("");
+    setAllChecked('')
     setDisplayErrorMessage(false);
   };
 
@@ -149,15 +154,17 @@ const AddCenter = () => {
       setIsPlayer(false);
     }
   };
-
   const handleWeekDaysChange = (e) => {
+    const selectedFullName = weekdays.find((day) => day.halfName === e.target.value)?.fullName;
+  
     if (e.target.checked) {
       setAllChecked([...allchecked, e.target.value]);
+      setSelectedFullNames([...selectedFullNames, selectedFullName]);
     } else {
       setAllChecked(allchecked?.filter((item) => item !== e.target.value));
+      setSelectedFullNames(selectedFullNames.filter((name) => name !== selectedFullName));
     }
   };
-  const selectedValuesString = allchecked?.toString();
 
     const formData = new FormData()
     formData.append('userId',accountSelector?.data?.id)
@@ -373,15 +380,15 @@ const AddCenter = () => {
                 <div className="mt-2">
                   <Form.Label className="labels">Business hours*</Form.Label>
                   <div className="d-flex flex-row gap-2">
-                    {allDays?.map((day, index) => (
+                    {weekdays?.map(({halfName, index}) => (
                       <div className="d-flex gap-2" key={index}>
                         <Form.Check
                           onChange={handleWeekDaysChange}
                           type="checkbox"
-                          value={day}
-                          checked={allchecked?.includes(day)}
+                          value={halfName}
+                          checked={allchecked?.includes(halfName)}
                         />
-                        <Form.Label>{day}</Form.Label>
+                        <Form.Label>{halfName}</Form.Label>
                       </div>
                     ))}
                   </div>
@@ -402,18 +409,25 @@ const AddCenter = () => {
                     <small className="text-primary fs-6">Add</small>
                   </div>
                 </div>
-                {displayErrorMessage ? (
-                  <div className="text-danger mt-2">
-                    Please Enter All The Details In Business Hours.
+                {displayErrorMessage && (
+                <div className="text-danger mt-2">
+                  Please Enter All The Details In Business Hours.
+                </div>
+              )}
+              {selectedTimes?.length &&
+                selectedTimes?.map((timeRange, index) => (
+                  <div key={index} className="text-muted mt-3">
+                    {timeRange?.days?.join(", ")}: {timeRange?.startTime} -{" "}
+                    {timeRange?.endTime}{" "}
+                    <Icon
+                      icon="pajamas:close-xs"
+                      color="#de342f"
+                      width="20"
+                      height="20"
+                      onClick={handleClear}
+                    />{" "}
                   </div>
-                ) : (
-                  selectedTimes.map((timeRange, index) => (
-                    <div key={index} className="text-muted mt-2">
-                      {timeRange.days.join(", ")}: {timeRange.startTime} - {" "}
-                      {timeRange.endTime}
-                    </div>
-                  ))
-                )}
+                ))}
 
                 <div className="mt-3">
                   <strong>Upload images</strong>

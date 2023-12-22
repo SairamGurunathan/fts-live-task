@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import AddImages from "../Assects/Images/addimage.svg";
 import { useSelector } from "react-redux";
 
-const AddFacilityImage = ({setFacilitySelect,selectChange,setSelectChange}) => {
+const AddFacilityImage = ({facilitySelect,setFacilitySelect,selectChange,setSelectChange}) => {
   const [facilityImagePreview, setFacilityImagePreview] = useState(null);
   const select = useSelector((state)=>state?.FacilitiesPhotoReducer?.facilitiesPhotos)
 
 const handleFiles = (e) => {
     const files = e.target.files[0];
     setFacilitySelect(files);
+    setSelectChange([...facilitySelect, facilityImagePreview])
 
     if (files) {
       const reader = new FileReader();
@@ -22,7 +23,6 @@ const handleFiles = (e) => {
   };
 
   useEffect(()=>{
-  
     setSelectChange(select)
     // eslint-disable-next-line
   },[select])
@@ -43,18 +43,20 @@ const handleFiles = (e) => {
       
         <label for="file-input">
           {!facilityImagePreview && (
+            <div className="mt-2">
             <img
               src={AddImages}
               alt="add"
-              className="border border-2 rounded-3 img-fluid mt-2"
+              className="border border-2 rounded-3"
               style={{height:"120px", overflow:"auto"}}
             />
+            </div>
           )}
           {(facilityImagePreview && (
             <img
               src={facilityImagePreview}
               alt="Preview"
-              className="border border-2"
+              className="border border-2 mt-2"
               style={{height:"120px", overflow:"auto"}}
             />
           ))}

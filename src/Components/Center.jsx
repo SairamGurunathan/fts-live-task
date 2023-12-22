@@ -6,10 +6,23 @@ import { AccountAction } from "../Redux/Actions/AccountAction";
 import { useDispatch, useSelector } from "react-redux";
 import { CentersListAction } from "../Redux/Actions/CentersListAction";
 import Skeleton from "react-loading-skeleton";
+import moment from "moment/moment";
 
 const Center = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+//   const abbrevation =(fullDay)=>{
+//     const shortDays = {
+//     Sunday: 'Sun',
+//     Monday: 'Mon',
+//     Tuesday: 'Tue',
+//     Wednesday: 'Wed',
+//     Thursday: 'Thu',
+//     Friday: 'Fri',
+//     Saturday: 'Sat',
+//   };
+//   return (shortDays[fullDay] || fullDay);
+// }
   const accountDataSelector = useSelector(
     (state) => state.AccountReducer?.account
   );
@@ -112,12 +125,17 @@ const Center = () => {
                       </div>
                       <p className="text-muted labels m-0">Business hours</p>
                       <p className="m-0">
-                        {acc?.centerHours?.map((time, index) => (
+                        {acc?.centerHours?.map((time, index) => {
+                          time.startTime=(moment(time?.startTime,"hh:mm a"));
+                          time.endTime=(moment(time?.endTime,"hh:mm a"));
+
+                          return(
                           <small key={index}>
-                            {time?.weekday}
-                            {time?.startTime} to {time?.endTime}
+                            {(time?.weekday)}{" : "}
+                            {moment(time?.startTime).format('hh:mm a')} to {moment(time?.endTime).format('hh:mm a')}
                           </small>
-                        ))}
+                          )
+                          })}
                       </p>
                     </CardBody>
                   </Card>
