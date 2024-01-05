@@ -52,15 +52,9 @@ const OrganizationInfo = () => {
     return false;
   };
 
-  const orgIdSelector = useSelector(
-    (state) => state?.OrgInfoStore?.OrgInfo?.data
-  );
-
-  const accountDataSelector = useSelector(
-    (state) => state?.AccountReducer?.account?.data?.orgId
-  );
+  const orgIdSelector = useSelector((state) => state?.OrgInfoStore?.OrgInfo?.data);
+  const accountDataSelector = useSelector((state) => state?.AccountReducer?.account?.data?.orgId);
   const photoSelector = useSelector((state) => state?.OrgPhotosReducer?.photos);
-console.log(photoSelector);
   const handleWeekDaysChange = (e) => {
     if (e.target.checked) {
       setAllChecked([...allchecked, e.target.value]);
@@ -141,11 +135,22 @@ console.log(photoSelector);
       formik.setFieldValue("zipCode", orgIdSelector?.zipCode || "");
       formik.setFieldValue("phoneNumber", orgIdSelector?.phoneNumber || "");
       formik.setFieldValue("email", orgIdSelector?.email || "");
+      const businessHours = orgIdSelector?.organizationHours || [];
+      const mappedSelectedTimes = businessHours.map((businessHour) => {
+        return {
+          startTime: businessHour.startTime, 
+          endTime: businessHour.endTime, 
+          days: businessHour.weekday, 
+        };
+      });
+      setSelectedTimes(mappedSelectedTimes);
     } catch (error) {
       console.log(error);
     }
     // eslint-disable-next-line
   }, [orgIdSelector]);
+
+  
 
   return (
     <>
@@ -349,10 +354,10 @@ console.log(photoSelector);
                   Please Enter All The Details In Business Hours.
                 </div>
               )}
-              {selectedTimes?.length &&
+              {selectedTimes?.length>0 &&
                 selectedTimes?.map((timeRange, index) => (
                   <div key={index} className="text-muted mt-3">
-                    {timeRange.days.join(", ")}: {timeRange.startTime} -{" "}
+                    {timeRange.days}: {timeRange.startTime} -{" "}
                     {timeRange.endTime}{" "}
                     <Icon
                       icon="pajamas:close-xs"

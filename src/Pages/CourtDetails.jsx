@@ -76,7 +76,7 @@ const CourtDetails = ({ show, setShow, setPopUp, popUp, setIsEdit }) => {
                             <p>{moment(time?.startTime).format('hh:mm a')} to {moment(time?.endTime).format('hh:mm a')}</p>
                           </small>)
                            } else {
-                            return null; // Skip mapping when either startTime or endTime is null
+                            return null;
                           }
                           })}
               </p>

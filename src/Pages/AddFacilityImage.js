@@ -35,7 +35,7 @@ const handleFiles = (e) => {
                   <img 
                   src={photo?.url}
                   className='mt-2'
-                  alt='img'
+                  alt='add-img'
                   style={{height:"120px", overflow:"auto"}}
                   />
                   </div>

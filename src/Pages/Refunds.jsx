@@ -7,16 +7,48 @@ import { AccountAction } from "../Redux/Actions/AccountAction";
 import FilterDetails from "./FilterDetails";
 import { RefundFilterDetailsAction } from "../Redux/Actions/FilterDetailsAction";
 import moment from "moment";
+import { RefundFilterAction } from "../Redux/Actions/RefundFilterAction";
 
 const Refunds = () => {
   const dispatch = useDispatch();
   const [showFilter, setShowFilter] = useState(false);
   const [showFD, setShowFD] = useState(false)
   const [tableData, setTableData] = useState([]);
+  const [reservationNumber, setReservationNumber] = useState('');
+  const [name, setName] = useState(false);
+  const [booking, setBooking] = useState(false);
+  const [reservation, setReservation] = useState(false);
 
-  const handleFilter = () => {
-    setShowFilter(true);
+  const [bookingDate, setBookingDate] = useState({
+    from: '',
+    to: ''
+  });
+
+  const [reservationDate, setReservationDate] = useState
+  ({
+    from: '',
+    to: ''
+  });
+
+  const handleReservationNumberChange = (e)=>{
+    setReservationNumber(e.target.value)
+  }
+
+  const handleBookingDateChange = (event, type) => {
+    setBookingDate({
+      ...bookingDate,
+      [type]: event.target.value
+    });
   };
+
+  const handleReservationDateChange = (event, type) => {
+    setReservationDate({
+      ...reservationDate,
+      [type]: event.target.value
+    });
+  };
+
+  const handleFilter = () => {setShowFilter(true)};
   
   const filterSelector = useSelector((state) => state?.RefundFilterReducer?.filter?.data?.content);
 
@@ -24,6 +56,42 @@ const Refunds = () => {
     setShowFD(true)
     dispatch(RefundFilterDetailsAction(id))
   }
+  const handleNameChange = () => {
+    setName(true);
+    setBooking(false);
+    setReservation(false);
+  };
+  
+  const handleReservationChange = () => {
+    setName(false);
+    setBooking(false);
+    setReservation(true);
+  };
+  
+  const handleBookingChange = () => {
+    setName(false);
+    setBooking(true);
+    setReservation(false);
+  };
+  const formattedBookingFromDate = bookingDate.from ? moment(bookingDate.from).utc().toISOString() : '';
+    const formattedBookingToDate = bookingDate.to ? moment(bookingDate.to).utc().toISOString() : '';
+    const formattedReservationFromDate = reservationDate.from ? moment(reservationDate.from).utc().toISOString() : '';
+    const formattedReservationToDate = reservationDate.to ? moment(reservationDate.to).utc().toISOString() : '';
+
+  const handleFormSubmit = () => {
+    
+      dispatch(
+        RefundFilterAction(
+          reservationNumber,
+          formattedBookingFromDate,
+          formattedBookingToDate,
+          formattedReservationFromDate,
+          formattedReservationToDate,
+          name,booking,reservation
+        )
+      );
+      setShowFilter(false)
+      }
 
   useEffect(() => {
     setTableData(filterSelector || []);
@@ -35,7 +103,24 @@ const Refunds = () => {
     return () => {
       setTableData([]);
     };
+    
   }, []);
+
+  useEffect(()=>{
+    if(name || booking || reservation){
+      dispatch(
+        RefundFilterAction(
+          reservationNumber,
+          formattedBookingFromDate,
+          formattedBookingToDate,
+          formattedReservationFromDate,
+          formattedReservationToDate,
+          name,booking,reservation
+        )
+      );
+    }
+    // eslint-disable-next-line
+  },[name, booking, reservation, formattedBookingFromDate, formattedBookingToDate, formattedReservationFromDate, formattedReservationToDate])
 
   return (
     <>
@@ -94,9 +179,12 @@ const Refunds = () => {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                  <Dropdown.Item>Name</Dropdown.Item>
-                  <Dropdown.Item>Booked</Dropdown.Item>
-                  <Dropdown.Item>Reservation Date</Dropdown.Item>
+                  <Dropdown.Item onClick={handleNameChange}>Name</Dropdown.Item>
+                  <Dropdown.Item onClick={handleBookingChange}>Booked</Dropdown.Item>
+                  <Dropdown.Item onClick={handleReservationChange}>Reservation Date</Dropdown.Item>
+                  {/* <Dropdown.Item >Name</Dropdown.Item>
+                  <Dropdown.Item >Booked</Dropdown.Item>
+                  <Dropdown.Item >Reservation Date</Dropdown.Item> */}
                 </Dropdown.Menu>
               </Dropdown>
             </div>
@@ -142,7 +230,7 @@ const Refunds = () => {
           </CardBody>
         </Card>
       </div>
-      <Filter showFilter={showFilter} setShowFilter={setShowFilter} />
+      <Filter showFilter={showFilter} setShowFilter={setShowFilter} handleFormSubmit={handleFormSubmit} bookingDate={bookingDate} reservationDate={reservationDate} reservationNumber={reservationNumber} handleBookingDateChange={handleBookingDateChange} handleReservationNumberChange={handleReservationNumberChange} handleReservationDateChange={handleReservationDateChange} />
       <FilterDetails showFD ={showFD} setShowFD = {setShowFD}/>
     </>
   );

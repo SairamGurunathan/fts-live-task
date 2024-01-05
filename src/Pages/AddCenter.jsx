@@ -78,19 +78,22 @@ const AddCenter = () => {
     onSubmit: (values,{ setSubmitting }) => {
       setAllChecked("");
       try {
+        let centerHours = [];
+
+    if (selectedTimes.length > 0) {
+      centerHours = selectedTimes.map((timeRange) => ({
+        weekday: timeRange.days.join(", "),
+        startTime: moment(timeRange.startTime, "h:mm a").format("h:mm a"),
+        endTime: moment(timeRange.endTime, "h:mm a").format("h:mm a"),
+        createdAt: moment().utc(),
+        updatedAt: moment().utc(),
+      }));
+    }
         const payload = {
     displayName: isPlayer,
     ...values,
     organization: { id: accountSelector?.data?.orgId },
-    centerHours: [
-      {
-        weekday: selectedFullNames.join(", "),
-        startTime: moment(startTime).format("h:mm a"),
-        endTime: moment(endTime).format("h:mm a"),
-        createdAt: moment().utc(),
-        updatedAt: moment().utc(),
-      },
-    ],
+    centerHours,
     createdAt: moment().utc(),
     updatedAt: moment().utc(),
     centerusers: [
@@ -104,8 +107,8 @@ const AddCenter = () => {
       id: selectedTimeZone,
     },
   };
-        dispatch(fetchCenter(payload,formData ));
-        navigate("/center")
+        dispatch(fetchCenter(payload,formData));
+        navigate("/center");
         Swal.fire({
           position: "center",
           icon: "success",
@@ -414,7 +417,7 @@ const AddCenter = () => {
                   Please Enter All The Details In Business Hours.
                 </div>
               )}
-              {selectedTimes?.length &&
+              {selectedTimes?.length>0 &&
                 selectedTimes?.map((timeRange, index) => (
                   <div key={index} className="text-muted mt-3">
                     {timeRange?.days?.join(", ")}: {timeRange?.startTime} -{" "}

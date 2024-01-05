@@ -297,6 +297,10 @@ const AddSportsFormModel = ({
     formData.append('file_0', facilitySelect)
     formData.append('tags_0',"photo")
 
+  const handleClear = () => {
+    setSelectedTimes([]);
+  };
+
   useEffect(() => {
     try {
       formik.setFieldValue("title", response?.title || "");
@@ -325,7 +329,15 @@ const AddSportsFormModel = ({
         response?.reservationAttribute?.advanceBookingMax || ""
       );
       setApiData(response?.facilityMetas);
-
+      const businessHours = response?.facilityHours || [];
+      const mappedSelectedTimes = businessHours?.map((businessHour) => {
+        return {
+          startTime: businessHour?.startTime, 
+          endTime: businessHour?.endTime, 
+          days: businessHour?.weekday, 
+        };
+      });
+      setSelectedTimes(mappedSelectedTimes);
     } catch (error) {
       console.log(error);
     }
@@ -445,19 +457,26 @@ const AddSportsFormModel = ({
                   </div>
                 </Col>
               </Row>
-              {displayErrorMessage ? (
+              {displayErrorMessage && (
                 <div className="text-danger mt-2">
                   Please Enter All The Details In Business Hours.
                 </div>
-              ) : (
-                selectedTimes.map((timeRange, index) => (
-                  <div key={index} className="text-muted mt-2">
-                    {timeRange.days.join(", ")}: {timeRange.startTime} -{" "}
-                    {timeRange.endTime}
-                  </div>
-                ))
               )}
-
+             {selectedTimes?.length > 0 &&
+  selectedTimes
+    .filter(timeRange => timeRange?.days && timeRange?.startTime && timeRange?.endTime)
+    .map((timeRange, index) => (
+      <div key={index} className="text-muted mt-3">
+        {timeRange.days}: {timeRange.startTime} - {timeRange.endTime}{" "}
+        <Icon
+          icon="pajamas:close-xs"
+          color="#de342f"
+          width="20"
+          height="20"
+          onClick={handleClear}
+        />{" "}
+      </div>
+    ))}
               <Form.Label className="m-0 fw-bold mt-3">
                 Reservation attributes
               </Form.Label>

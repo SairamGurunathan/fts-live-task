@@ -1,41 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap'
-import { useDispatch } from 'react-redux';
-import { RefundFilterAction } from '../Redux/Actions/RefundFilterAction';
 
-const Filter = ({showFilter, setShowFilter}) => {
-  const dispatch = useDispatch()
+const Filter = ({showFilter, setShowFilter,handleFormSubmit,reservationDate,reservationNumber,bookingDate,handleBookingDateChange,handleReservationNumberChange,handleReservationDateChange}) => {
     const handleClose = () => setShowFilter(false);
-    const [bookingDate, setBookingDate] = useState({
-      from: '',
-      to: ''
-    });
-  
-    const [reservationDate, setReservationDate] = useState
-    ({
-      from: '',
-      to: ''
-    });
-
-    const handleBookingDateChange = (event, type) => {
-      setBookingDate({
-        ...bookingDate,
-        [type]: event.target.value
-      });
-    };
-  
-    const handleReservationDateChange = (event, type) => {
-      setReservationDate({
-        ...reservationDate,
-        [type]: event.target.value
-      });
-    };
-
-    const handleFormSubmit = () => {
-      dispatch(RefundFilterAction(bookingDate.from,bookingDate.to,reservationDate.from,reservationDate.to))
-      setShowFilter(false)
-    }
-  
+    
   return (
     <>
     <Modal
@@ -58,7 +26,7 @@ const Filter = ({showFilter, setShowFilter}) => {
                 <Form.Label>
                 Reservation number
                 </Form.Label>
-                <Form.Control/>
+                <Form.Control type='text' value={reservationNumber} onChange={handleReservationNumberChange}/>
                 </Col>
             </Row>
                     

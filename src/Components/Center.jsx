@@ -126,15 +126,19 @@ const Center = () => {
                       <p className="text-muted labels m-0">Business hours</p>
                       <p className="m-0">
                         {acc?.centerHours?.map((time, index) => {
+                          if (time.startTime && time.endTime) {
+                            time.startTime=(moment(time?.startTime,"hh:mm a"));
+                            time.endTime=(moment(time?.endTime,"hh:mm a"));
                           time.startTime=(moment(time?.startTime,"hh:mm a"));
                           time.endTime=(moment(time?.endTime,"hh:mm a"));
-
                           return(
                           <small key={index}>
                             {(time?.weekday)}{" : "}
                             {moment(time?.startTime).format('hh:mm a')} to {moment(time?.endTime).format('hh:mm a')}
-                          </small>
-                          )
+                          </small>)
+                          } else {
+                            return null;
+                          }
                           })}
                       </p>
                     </CardBody>
