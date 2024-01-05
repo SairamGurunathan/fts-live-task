@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import AddImages from "../Assects/Images/addimage.svg";
 import { useSelector } from "react-redux";
+import AddImages from "../Assects/Images/addimage.svg";
 
 const AddFacilityImage = ({facilitySelect,setFacilitySelect,selectChange,setSelectChange}) => {
   const [facilityImagePreview, setFacilityImagePreview] = useState(null);

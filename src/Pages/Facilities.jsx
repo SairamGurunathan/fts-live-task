@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Button, Card, OverlayTrigger, Tooltip } from "react-bootstrap";
-import { Icon } from "@iconify/react";
 import { useDispatch, useSelector } from "react-redux";
-import { FacilitiesAction } from "../Redux/Actions/FacilitiesAction";
-import AddFacilities from "./AddFacilities";
 import { Link } from "react-router-dom";
-import CourtDetails from "./CourtDetails";
-import { CourtDetailsAction } from "../Redux/Actions/CourtDetailsAction";
-import AddSportsModel from "./AddSportsModel";
-import AddSportsFormModel from "./AddSportsFormModel";
-import { DeleteFacilities } from "../Redux/Actions/DeleteFacilitiesAction";
-import { FacilitiesFormGetAction } from "../Redux/Actions/FacilitiesFormAction";
 import Swal from "sweetalert2";
 import Skeleton from "react-loading-skeleton";
+import { Icon } from "@iconify/react";
+import AddFacilities from "./AddFacilities";
+import CourtDetails from "./CourtDetails";
+import AddSportsModel from "./AddSportsModel";
+import AddSportsFormModel from "./AddSportsFormModel";
+import { CourtDetailsAction } from "../Redux/Actions/CourtDetailsAction";
+import { FacilitiesAction } from "../Redux/Actions/FacilitiesAction";
+import { DeleteFacilities } from "../Redux/Actions/DeleteFacilitiesAction";
+import { FacilitiesFormGetAction } from "../Redux/Actions/FacilitiesFormAction";
 
 const Facilities = () => {
   const dispatch = useDispatch();
@@ -32,7 +32,6 @@ const Facilities = () => {
     setShowCD(true);
   };
   
-  // console.log(showCD,"showCD");
   const handleDeleteFacilities = (id, title, sport) => {
     Swal.fire({
       title: '<header style="color:#de342f;">DELETE</header>',

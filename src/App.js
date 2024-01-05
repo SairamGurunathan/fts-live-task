@@ -1,8 +1,5 @@
-import "./App.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import 'react-loading-skeleton/dist/skeleton.css';
-import Login from "./Pages/Login";
 import { Route, Routes } from "react-router-dom";
+import Login from "./Pages/Login";
 import OrganizationInfo from "./Pages/OrgInfo";
 import Facilities from "./Pages/Facilities";
 import AddCenter from "./Pages/AddCenter";
@@ -12,6 +9,9 @@ import SideMenu from "./Components/SideMenu";
 import { Col, Row } from "react-bootstrap";
 import AddFacilities from "./Pages/AddFacilities";
 import Refunds from "./Pages/Refunds";
+import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import 'react-loading-skeleton/dist/skeleton.css';
 
 function App() {
   return (

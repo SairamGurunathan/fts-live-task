@@ -1,12 +1,12 @@
-import { Icon } from "@iconify/react";
 import React, { useEffect, useState } from "react";
 import { Card, CardBody, Col, Dropdown, Row, Table } from "react-bootstrap";
-import Filter from "./Filter";
-import { useDispatch, useSelector } from "react-redux";
-import { AccountAction } from "../Redux/Actions/AccountAction";
-import FilterDetails from "./FilterDetails";
-import { RefundFilterDetailsAction } from "../Redux/Actions/FilterDetailsAction";
 import moment from "moment";
+import { useDispatch, useSelector } from "react-redux";
+import { Icon } from "@iconify/react";
+import Filter from "./Filter";
+import FilterDetails from "./FilterDetails";
+import { AccountAction } from "../Redux/Actions/AccountAction";
+import { RefundFilterDetailsAction } from "../Redux/Actions/FilterDetailsAction";
 import { RefundFilterAction } from "../Redux/Actions/RefundFilterAction";
 
 const Refunds = () => {
@@ -182,9 +182,6 @@ const Refunds = () => {
                   <Dropdown.Item onClick={handleNameChange}>Name</Dropdown.Item>
                   <Dropdown.Item onClick={handleBookingChange}>Booked</Dropdown.Item>
                   <Dropdown.Item onClick={handleReservationChange}>Reservation Date</Dropdown.Item>
-                  {/* <Dropdown.Item >Name</Dropdown.Item>
-                  <Dropdown.Item >Booked</Dropdown.Item>
-                  <Dropdown.Item >Reservation Date</Dropdown.Item> */}
                 </Dropdown.Menu>
               </Dropdown>
             </div>

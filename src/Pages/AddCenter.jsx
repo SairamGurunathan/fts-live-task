@@ -1,24 +1,22 @@
 import React, { useEffect, useState } from "react";
-import "react-datepicker/dist/react-datepicker.css";
 import { Button, Card, CardBody, Col, Form, Row } from "react-bootstrap";
-import * as Yup from "yup";
 import { useFormik } from "formik";
-import { fetchCenter } from "../Redux/Actions/AddcenterAction";
-import { Icon } from "@iconify/react";
 import { useDispatch, useSelector } from "react-redux";
-import { TimeZone } from "../Redux/Actions/TimeZoneAction";
-import moment from "moment";
-import { AccountAction } from "../Redux/Actions/AccountAction";
 import { useNavigate } from "react-router-dom";
+import * as Yup from "yup";
+import moment from "moment";
+import Swal from "sweetalert2";
+import { Icon } from "@iconify/react";
+import { fetchCenter } from "../Redux/Actions/AddcenterAction";
+import { TimeZone } from "../Redux/Actions/TimeZoneAction";
+import { AccountAction } from "../Redux/Actions/AccountAction";
 import AddBannerImage from "./AddBannerImage";
 import AddImage from "./AddImage";
 import DatePickerStart from "../Components/DatePickerStart";
 import DatePickerEnd from "../Components/DatePickerEnd";
-import Swal from "sweetalert2";
-
+import "react-datepicker/dist/react-datepicker.css";
 
 const AddCenter = () => {
-  // const allDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const weekdays = [
     { fullName: 'Sunday', halfName: 'Sun', index: 0 },
     { fullName: 'Monday', halfName: 'Mon', index: 1 },

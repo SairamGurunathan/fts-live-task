@@ -1,6 +1,6 @@
 import axios from "axios";
-import { Constants } from "../Constants/Constants";
 import { orgPhotosAction } from "./OrgPhotos";
+import { Constants } from "../Constants/Constants";
 
 export const OrgInfoAction = (id) => async(dispatch)=>{
     const centerID = localStorage.getItem("centerId");

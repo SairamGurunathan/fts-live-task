@@ -1,28 +1,18 @@
 import React, { useEffect } from "react";
-import AddBanner from "../Assects/Images/addplus.svg";
 import { useNavigate } from "react-router-dom";
 import { Card, CardBody, CardHeader, Col, Row } from "react-bootstrap";
-import { AccountAction } from "../Redux/Actions/AccountAction";
 import { useDispatch, useSelector } from "react-redux";
-import { CentersListAction } from "../Redux/Actions/CentersListAction";
 import Skeleton from "react-loading-skeleton";
 import moment from "moment/moment";
+import AddBanner from "../Assects/Images/addplus.svg";
+import { CentersListAction } from "../Redux/Actions/CentersListAction";
+import { AccountAction } from "../Redux/Actions/AccountAction";
+
 
 const Center = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-//   const abbrevation =(fullDay)=>{
-//     const shortDays = {
-//     Sunday: 'Sun',
-//     Monday: 'Mon',
-//     Tuesday: 'Tue',
-//     Wednesday: 'Wed',
-//     Thursday: 'Thu',
-//     Friday: 'Fri',
-//     Saturday: 'Sat',
-//   };
-//   return (shortDays[fullDay] || fullDay);
-// }
+
   const accountDataSelector = useSelector(
     (state) => state.AccountReducer?.account
   );

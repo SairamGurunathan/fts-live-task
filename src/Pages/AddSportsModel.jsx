@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Card, CardBody, Col, Modal, Row } from 'react-bootstrap'
 import { SportsList } from '../Redux/Actions/SportsPhotosAction'
-import { useDispatch, useSelector } from 'react-redux'
 import { AccountAction } from '../Redux/Actions/AccountAction'
 
 const AddSportsModel = ({show,setShow,setPopUp,setSportsTitle}) => {

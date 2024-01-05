@@ -1,11 +1,11 @@
 import React from "react";
 import Navbar from "react-bootstrap/Navbar";
-import Logo from "../Assects/Images/Athlitik_White_New.6786b276b2b3fe3e797b7e8ac9f031c4.svg";
 import { NavDropdown } from "react-bootstrap";
-import { Icon } from "@iconify/react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { Icon } from "@iconify/react";
 import { AccountAction } from "../Redux/Actions/AccountAction";
+import Logo from "../Assects/Images/Athlitik_White_New.6786b276b2b3fe3e797b7e8ac9f031c4.svg";
 
 const NavbarHeader = () => {
   const navigate = useNavigate();
@@ -17,7 +17,6 @@ const NavbarHeader = () => {
   const profileName = (orgSelector?.firstName ? orgSelector?.firstName : "") + " " + (orgSelector?.lastName ? orgSelector?.lastName : "");
 
   const handleOrgInfo = () => {
-    // window.location.pathname = "/organizationinfo";
     dispatch(AccountAction());
     navigate("/organizationinfo");
   };

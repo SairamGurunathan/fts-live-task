@@ -1,9 +1,9 @@
 import React from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
 import AddSportsFormModel from "./AddSportsFormModel";
 import { ResetAction } from "../Redux/Actions/ResetAction";
-import moment from "moment";
 
 const CourtDetails = ({ show, setShow, setPopUp, popUp, setIsEdit }) => {
   const dispatch = useDispatch()

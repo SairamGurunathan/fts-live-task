@@ -1,9 +1,9 @@
 import React from "react";
 import { Button, Form } from "react-bootstrap";
 import * as Yup from "yup";
-import { Icon } from "@iconify/react";
 import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
+import { Icon } from "@iconify/react";
 import { fetchPartner } from "../Redux/Actions/LoginAction";
 
 const Partnerwithus = ({ setIsSignIn }) => {

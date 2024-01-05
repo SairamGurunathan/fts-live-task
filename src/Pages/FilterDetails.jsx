@@ -1,7 +1,7 @@
-import moment from 'moment/moment';
 import React from 'react'
 import { Col, Modal, Row } from 'react-bootstrap'
 import { useSelector } from 'react-redux';
+import moment from 'moment/moment';
 
 const FilterDetails = ({showFD,setShowFD}) => {
     const handleClose = () => setShowFD(false);

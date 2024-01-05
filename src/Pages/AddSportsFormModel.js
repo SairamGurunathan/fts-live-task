@@ -1,20 +1,17 @@
-import { Icon } from "@iconify/react";
 import React, { useEffect, useState } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import DatePickerStart from "../Components/DatePickerStart";
-import DatePickerEnd from "../Components/DatePickerEnd";
 import moment from "moment";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  FacilitiesEditFormAction,
-  FacilitiesFormAction,
-} from "../Redux/Actions/FacilitiesFormAction";
 import Swal from "sweetalert2";
+import { useDispatch, useSelector } from "react-redux";
+import { Icon } from "@iconify/react";
+import AddFacilityImage from "./AddFacilityImage";
+import {FacilitiesEditFormAction,FacilitiesFormAction,} from "../Redux/Actions/FacilitiesFormAction";
+import DatePickerEnd from "../Components/DatePickerEnd";
+import DatePickerStart from "../Components/DatePickerStart";
 import { FacilitiesAction } from "../Redux/Actions/FacilitiesAction";
 import { DeleteFacilitiesMetas } from "../Redux/Actions/DeleteFacilitiesMetaAction";
-import AddFacilityImage from "./AddFacilityImage";
 import { ResetAction } from "../Redux/Actions/ResetAction";
 
 const AddSportsFormModel = ({
@@ -334,7 +331,7 @@ const AddSportsFormModel = ({
         return {
           startTime: businessHour?.startTime, 
           endTime: businessHour?.endTime, 
-          days: businessHour?.weekday, 
+          days: (businessHour?.weekday?.split(",").map((day,dayIndex)=>(`${day.substring(0,3)}${dayIndex===businessHour?.weekday?.split(",")?.length-1?"":", "}`))),
         };
       });
       setSelectedTimes(mappedSelectedTimes);

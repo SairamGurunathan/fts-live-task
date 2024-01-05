@@ -1,7 +1,7 @@
 import axios from "axios";
-import { Constants } from "../Constants/Constants";
 import { AccountAction } from "./AccountAction";
 import { photosAction } from "./PhotosAction";
+import { Constants } from "../Constants/Constants";
 
 export const fetchCenter = (payload,formData) => async (dispatch) => {
   

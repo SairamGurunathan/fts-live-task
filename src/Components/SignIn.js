@@ -1,10 +1,10 @@
 import React from "react";
 import * as Yup from "yup";
+import { Link } from "react-router-dom";
 import { Button, Form } from "react-bootstrap";
 import { useFormik } from "formik";
 import { useDispatch } from "react-redux";
 import { fetchLogin } from "../Redux/Actions/LoginAction";
-import { Link } from "react-router-dom";
 
 const SignIn = ({ setIsSignIn }) => {
   const dispatch = useDispatch();

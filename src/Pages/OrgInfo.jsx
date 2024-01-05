@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from "react";
-import AddBanner from "../Assects/Images/addbanner.svg";
-import "react-datepicker/dist/react-datepicker.css";
 import { Button, Card, CardBody, Form } from "react-bootstrap";
-import { Icon } from "@iconify/react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  OrgInfoAction,
-  OrgInfoEditAction,
-} from "../Redux/Actions/OrganizationInfoAction";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import { Icon } from "@iconify/react";
 import DatePickerStart from "../Components/DatePickerStart";
 import DatePickerEnd from "../Components/DatePickerEnd";
-import Swal from "sweetalert2";
+import AddBanner from "../Assects/Images/addbanner.svg";
+import {OrgInfoAction,OrgInfoEditAction} from "../Redux/Actions/OrganizationInfoAction";
+import "react-datepicker/dist/react-datepicker.css";
 
 const OrganizationInfo = () => {
   const allDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -62,7 +59,6 @@ const OrganizationInfo = () => {
       setAllChecked(allchecked?.filter((item) => item !== e.target.value));
     }
   };
-  // const selectedValuesString = allchecked?.toString();
   const handleClear = () => {
     setSelectedTimes([]);
   };
@@ -149,8 +145,6 @@ const OrganizationInfo = () => {
     }
     // eslint-disable-next-line
   }, [orgIdSelector]);
-
-  
 
   return (
     <>
