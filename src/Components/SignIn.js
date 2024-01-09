@@ -34,9 +34,7 @@ const SignIn = ({ setIsSignIn }) => {
       try {
         dispatch(
           fetchLogin({ email: values.email, password: values.password })
-          
         );
-
       } catch (error) {
         console.log(error);
       }
@@ -73,7 +71,7 @@ const SignIn = ({ setIsSignIn }) => {
               id="password"
               className="mb-2 shadow input-field"
               type="password"
-              placeholder="Password"  
+              placeholder="Password"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               name="password"

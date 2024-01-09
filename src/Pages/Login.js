@@ -6,10 +6,8 @@ import SignIn from '../Components/SignIn';
 import Logo from '../Assects/Images/Athlitik_White_New.6786b276b2b3fe3e797b7e8ac9f031c4.svg'
 import Partnerwithus from '../Components/Partnerwithus';
 
-
 const Login = () => {
   const [isSignIn, setIsSignIn] = useState(true);
-  
   
   return (
     <>
