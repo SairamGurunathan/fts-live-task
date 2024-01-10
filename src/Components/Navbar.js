@@ -44,18 +44,18 @@ const NavbarHeader = () => {
         </Navbar.Brand>
         <div className="d-flex align-items-center me-auto ms-2">
           <div className="text-capitalize">
-          <h4 className="m-0">{orgSelector?.orgName ? orgSelector?.orgName : ""}</h4>
+          <h4 className="m-0 d-none d-sm-block">{orgSelector?.orgName ? orgSelector?.orgName : ""}</h4>
           </div>
 
         </div>
 
         <div className="d-flex align-items-center gap-1 me-1">
-          <Icon icon="mdi:user-circle" className="fs-3 cursor-pointer" />
+          <Icon icon="mdi:user-circle" className="fs-3 cursor-pointer d-md-block" />
           <NavDropdown
           
             title={profileName && profileName.length>0?profileName:""}
             id="collapsible-nav-dropdown"
-            className="text-white fs-6 "
+            className="text-white fs-6"
           >
             <NavDropdown.Item onClick={handleOrgInfo}>
               Organization Info

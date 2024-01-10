@@ -32,11 +32,11 @@ const AddFacilities = () => {
                     <img
                       src={AddFacilitie}
                       alt="Add Facilities"
-                      className="add-banner"
+                      className="add-banner cursor-pointer"
                       onClick={handleClickModel}
                     />
                     <div className="mt-2">
-                      <p className="text-muted fw-light fs-5">Add Facilities</p>
+                      <p className="text-muted fw-light fs-5">Add facilities</p>
                     </div>
                   </div>
                 </div>

@@ -13,7 +13,7 @@ const SideMenu = () => {
 
   return (
     <>
-      <div className="d-flex flex-column px-2 pt-3 bg-white vh-100 side">
+      <div className="d-flex flex-column px-2 pt-3 bg-white vh-100 side d-md-block d-none">
         <ul className="nav nav-pills side flex-column mb-auto gap-1">
           <li className="nav-item">
             <NavLink
@@ -31,7 +31,7 @@ const SideMenu = () => {
                     width="20"
                     height="20"
                   />
-                  <p className="m-0 side-text" style={{ color: location.pathname === "/center" ? "#de342f" : "#424243" }}>Home</p>
+                  <p className="m-0 pt-1 side-text" style={{ color: location.pathname === "/center" ? "#de342f" : "#424243" }}>Home</p>
                 </div>
                 <div className="text-muted">
                   <Icon
@@ -62,7 +62,7 @@ const SideMenu = () => {
                       width="20"
                       height="20"
                     />
-                    <p className="m-0 side-text" style={{ color: location.pathname === "/facilities" ? "#de342f" : "#424243" }}>Facilities</p>
+                    <p className="m-0 pt-1 side-text" style={{ color: location.pathname === "/facilities" ? "#de342f" : "#424243" }}>Facilities</p>
                   </div>
                   <div className="text-muted">
                     <Icon
@@ -93,7 +93,7 @@ const SideMenu = () => {
                       width="20"
                       height="20"
                     />
-                    <p className="m-0 side-text" style={{ color: location.pathname === "/pricing" ? "#de342f" : "#424243" }}>Pricing</p>
+                    <p className="m-0 pt-1 side-text" style={{ color: location.pathname === "/pricing" ? "#de342f" : "#424243" }}>Pricing</p>
                   </div>
                   <div className="text-muted">
                     <Icon
@@ -124,7 +124,7 @@ const SideMenu = () => {
                       width="20"
                       height="20"
                     />
-                    <p className="m-0 side-text" style={{ color: location.pathname === "/reservation" ? "#de342f" : "#424243" }}>Reservation</p>
+                    <p className="m-0 pt-1 side-text" style={{ color: location.pathname === "/reservation" ? "#de342f" : "#424243" }}>Reservation</p>
                   </div>
                   <div className="text-muted">
                     <Icon
@@ -155,7 +155,7 @@ const SideMenu = () => {
                       width="20"
                       height="20"
                     />
-                    <p className="m-0 side-text" style={{ color: location.pathname === "/refunds" ? "#de342f" : "#424243" }}>Refunds</p>
+                    <p className="m-0 pt-1 side-text" style={{ color: location.pathname === "/refunds" ? "#de342f" : "#424243" }}>Refunds</p>
                   </div>
                   <div className="text-muted">
                     <Icon
@@ -186,7 +186,7 @@ const SideMenu = () => {
                       width="20"
                       height="20"
                     />
-                    <p className="m-0 text-nowrap side-text" style={{ color: location.pathname === "/usermanagement" ? "#de342f" : "#424243" }}>User Management</p>
+                    <p className="m-0 pt-1 text-nowrap side-text" style={{ color: location.pathname === "/usermanagement" ? "#de342f" : "#424243" }}>User Management</p>
                   </div>
                   <div className="text-muted">
                     <Icon

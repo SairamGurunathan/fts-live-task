@@ -126,16 +126,16 @@ const Facilities = () => {
                 </div>
 
                 <div className="row ps-4 text-muted">
-                  <div className="col-1">
-                    <p className="font-small ms-2 mb-2">S No</p>
+                  <div className="col-lg-1 col-md-1 col-sm-6">
+                    <p className="font-small text-nowrap ms-md-2 ms-sm-0 mb-2">S No</p>
                   </div>
-                  <div className="col-3">
+                  <div className="col-lg-3 col-md-3 col-sm-6">
                     <p className="font-small mb-2">Name</p>
                   </div>
-                  <div className="col-6">
+                  <div className="col-lg-6 col-md-6 col-sm-6">
                     <p className="font-small mb-2">Features</p>
                   </div>
-                  <div className="col-2">
+                  <div className="col-lg-2 col-md-2 col-sm-6">
                     <p className="font-small mb-2">Actions</p>
                   </div>
                 </div>
@@ -148,10 +148,10 @@ const Facilities = () => {
                         key={i}
                         className="row border rounded-3 bg-ws mx-3 mb-2 py-2"
                       >
-                        <div className="col-1 ps-4">
+                        <div className="col-lg-1 col-md-1 col-sm-6 ps-4">
                           <label>{i + 1}</label>
                         </div>
-                        <div className="col-3">
+                        <div className="col-lg-3 col-md-3 col-sm-6">
                           <Link
                             className="text-decoration-none"
                             onClick={() => handleCourtDetails(sel?.id)}
@@ -159,10 +159,10 @@ const Facilities = () => {
                             {sel?.name}
                           </Link>
                         </div>
-                        <div className="col-6">
+                        <div className="col-lg-6 col-md-6 col-sm-6">
                           <small>{sel?.features?.join(" | ")}</small>
                         </div>
-                        <div className="col-2">
+                        <div className="col-lg-2 col-md-2 col-sm-6">
                           <div className="d-flex flex-row align-items-center justify-content-center gap-2 cursor-pointer">
                             <OverlayTrigger
                               placement={"bottom"}

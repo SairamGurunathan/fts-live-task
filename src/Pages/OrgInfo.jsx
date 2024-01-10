@@ -14,7 +14,16 @@ import {OrgInfoAction,OrgInfoEditAction} from "../Redux/Actions/OrganizationInfo
 import "react-datepicker/dist/react-datepicker.css";
 
 const OrganizationInfo = () => {
-  const allDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  // const allDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const weekdays = [
+    { fullName: 'Sunday', halfName: 'Sun', index: 0 },
+    { fullName: 'Monday', halfName: 'Mon', index: 1 },
+    { fullName: 'Tuesday', halfName: 'Tue', index: 2 },
+    { fullName: 'Wednesday', halfName: 'Wed', index: 3 },
+    { fullName: 'Thursday', halfName: 'Thu', index: 4 },
+    { fullName: 'Friday', halfName: 'Fri', index: 5 },
+    { fullName: 'Saturday', halfName: 'Sat', index: 6 },
+  ];
   const navigate = useNavigate();
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
@@ -309,22 +318,22 @@ const OrganizationInfo = () => {
                 </div>
               </div>
               <div className="mt-2">
-                <Form.Label className="labels">Business hours*</Form.Label>
-                <div className="d-flex flex-row gap-2">
-                  {allDays?.map((day, index) => (
-                    <div className="d-flex gap-2" key={index}>
-                      <Form.Check
-                        onChange={handleWeekDaysChange}
-                        type="checkbox"
-                        value={day}
-                        checked={allchecked?.includes(day)}
-                      />
-                      <Form.Label>{day}</Form.Label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="d-flex align-items-baseline mt-2">
+  <Form.Label className="labels">Business hours*</Form.Label>
+  <div className="d-flex flex-column flex-md-row gap-2">
+    {weekdays?.map(({ halfName, index }) => (
+      <div className="d-flex gap-2" key={index}>
+        <Form.Check
+          onChange={handleWeekDaysChange}
+          type="checkbox"
+          value={halfName}
+          checked={allchecked?.includes(halfName)}
+        />
+        <Form.Label>{halfName}</Form.Label>
+      </div>
+    ))}
+  </div>
+</div>
+              <div className="d-flex flex-column flex-md-row align-items-baseline mt-2">
                 <DatePickerStart
                   startTime={startTime}
                   setStartTime={setStartTime}

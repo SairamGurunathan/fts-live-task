@@ -7,22 +7,12 @@ import moment from "moment/moment";
 import AddBanner from "../Assects/Images/addplus.svg";
 import { CentersListAction } from "../Redux/Actions/CentersListAction";
 import { AccountAction } from "../Redux/Actions/AccountAction";
+import { getWeekDayFormat } from "../Utilities/Utility";
 
 
 const Center = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const weekdays = [
-    { fullName: 'Sunday', halfName: 'Sun', index: 0 },
-    { fullName: 'Monday', halfName: 'Mon', index: 1 },
-    { fullName: 'Tuesday', halfName: 'Tue', index: 2 },
-    { fullName: 'Wednesday', halfName: 'Wed', index: 3 },
-    { fullName: 'Thursday', halfName: 'Thu', index: 4 },
-    { fullName: 'Friday', halfName: 'Fri', index: 5 },
-    { fullName: 'Saturday', halfName: 'Sat', index: 6 },
-  ];
-
   const accountDataSelector = useSelector(
     (state) => state.AccountReducer?.account
   );
@@ -34,35 +24,6 @@ const Center = () => {
     localStorage.setItem("centerId", centerListSelector[i]?.id);
     navigate("/facilities");
   };
-
-  const getWeekDayFormat = (day)=>{
-    const Days = day.split(',')
-    const indices = Days.map((selectedDay)=>{
-      const trimmedDay = selectedDay.trim();
-      return weekdays.findIndex((weekday)=>weekday?.halfName === trimmedDay)
-    })
-    const sortedDays = indices?.sort((a,b)=>a - b)
-
-    if (indices.length === 1) {
-      const firstIndex = indices[0];
-      const matchingWeekday = weekdays.find((weekday) => weekday.index === firstIndex);
-  
-      if (matchingWeekday) {
-        return matchingWeekday.halfName;
-      }
-    }
-    
-    if (indices.length > 0 ) {
-      const firstIndex = indices[0];
-      const matchingWeekdayFirst  = weekdays.find((weekday) => weekday.index === firstIndex);
-      const lastIndex = indices[indices.length - 1];
-    const matchingWeekdayLast = weekdays.find((weekday) => weekday.index === lastIndex);
-
-    if (matchingWeekdayFirst && matchingWeekdayLast) {
-      return `${matchingWeekdayFirst.halfName} - ${matchingWeekdayLast.halfName}`;
-    }
-    }
-  }
 
   useEffect(() => {
     dispatch(AccountAction());
@@ -113,7 +74,7 @@ const Center = () => {
                     onClick={() => navigate("/addcenter")}
                   />
                   <div className="mt-2">
-                    <p className="text-muted fw-light fs-5">Add Center</p>
+                    <p className="text-muted fw-light fs-5">Add center</p>
                   </div>
                 </div>
               </div>

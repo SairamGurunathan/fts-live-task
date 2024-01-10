@@ -42,7 +42,7 @@ const AddSportsModel = ({show,setShow,setPopUp,setSportsTitle}) => {
       <Modal.Body>
                 <Row className='row-gap-4'>
                 {sportsListSelector?.data?.map((sports,index)=>(
-                    <Col lg={3}>
+                    <Col lg={3} >
                             <Card onClick={()=>handlePopUp(sports)} className='cursor-pointer'>
                             <CardBody key={index} className='d-flex flex-column align-items-center justify-content-center'>
                                 <img src={sports?.url} alt='img-sport'/>

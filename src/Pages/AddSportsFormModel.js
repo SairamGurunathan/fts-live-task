@@ -13,6 +13,7 @@ import DatePickerStart from "../Components/DatePickerStart";
 import { FacilitiesAction } from "../Redux/Actions/FacilitiesAction";
 import { DeleteFacilitiesMetas } from "../Redux/Actions/DeleteFacilitiesMetaAction";
 import { ResetAction } from "../Redux/Actions/ResetAction";
+import { getWeekDayFormat } from "../Utilities/Utility";
 
 const AddSportsFormModel = ({
   show,
@@ -22,7 +23,15 @@ const AddSportsFormModel = ({
   response,
   editID,
 }) => {
-  const allDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const weekdays = [
+    { fullName: "Sunday", halfName: "Sun", index: 0 },
+    { fullName: "Monday", halfName: "Mon", index: 1 },
+    { fullName: "Tuesday", halfName: "Tue", index: 2 },
+    { fullName: "Wednesday", halfName: "Wed", index: 3 },
+    { fullName: "Thursday", halfName: "Thu", index: 4 },
+    { fullName: "Friday", halfName: "Fri", index: 5 },
+    { fullName: "Saturday", halfName: "Sat", index: 6 },
+  ];
   const [allchecked, setAllChecked] = useState("");
   const [isPlayer, setIsPlayer] = useState(false);
   const [startTime, setStartTime] = useState("");
@@ -76,16 +85,22 @@ const AddSportsFormModel = ({
       setDisplayErrorMessage(true);
       return;
     }
+    const sortedChecked = allchecked.sort((a, b) => {
+      const indexA = weekdays.find((day) => day.halfName === a)?.index || 0;
+      const indexB = weekdays.find((day) => day.halfName === b)?.index || 0;
+      return indexA - indexB;
+    });
 
     const selectedTimeRange = {
-      startTime: moment(startTime).format("h:mm a"),
-      endTime: moment(endTime).format("h:mm a"),
-      days: allchecked,
+      startTime: moment(startTime).format("h:mm A"),
+      endTime: moment(endTime).format("h:mm A"),
+      days: getWeekDayFormat(sortedChecked.toString()),
     };
 
     setSelectedTimes([...selectedTimes, selectedTimeRange]);
-    setStartTime();
-    setEndTime();
+    setStartTime("");
+    setEndTime("");
+    setAllChecked("");
     setDisplayErrorMessage(false);
   };
 
@@ -331,7 +346,7 @@ const AddSportsFormModel = ({
         return {
           startTime: businessHour?.startTime, 
           endTime: businessHour?.endTime, 
-          days: (businessHour?.weekday?.split(",").map((day,dayIndex)=>(`${day.substring(0,3)}${dayIndex===businessHour?.weekday?.split(",")?.length-1?"":", "}`))),
+          days: getWeekDayFormat(businessHour?.weekday),
         };
       });
       setSelectedTimes(mappedSelectedTimes);
@@ -389,7 +404,7 @@ const AddSportsFormModel = ({
               <Form.Label className="m-0 fw-bold">Name</Form.Label>
               <hr className="w-100 opacity-25" />
               <Form.Group className="d-flex flex-row align-items-center gap-4">
-                <div className="col-6">
+                <div className="col-lg-6 col-md-6">
                   <Form.Control
                     type="text"
                     name="title"
@@ -398,7 +413,7 @@ const AddSportsFormModel = ({
                     value={formik.values.title}
                   />
                 </div>
-                <div className="col-6 d-flex ">
+                <div className="col-lg-6 col-md-6 d-flex ">
                   <Form.Check type="checkbox" onChange={handlePlayer} />
                   <Form.Label className="ms-2">
                     Open to Athlitik users
@@ -414,22 +429,22 @@ const AddSportsFormModel = ({
               <Form.Label className="m-0 fw-bold mt-3">Timings</Form.Label>
               <hr className="w-100 opacity-25" />
               <Row>
-                <Col lg={6}>
-                  <div className="d-flex flex-row gap-2 mt-2 ">
-                    {allDays?.map((day, index) => (
-                      <div className="d-flex flex-row gap-2" key={index}>
+                <Col lg={6} sm={12}>
+                  <div className="d-flex flex-column flex-md-row align-items-baseline mt-2 gap-2">
+                  {weekdays?.map(({ halfName, index }) => (
+                      <div className="d-flex gap-2" key={index}>
                         <Form.Check
                           onChange={handleWeekDaysChange}
                           type="checkbox"
-                          value={day}
-                          checked={allchecked?.includes(day)}
+                          value={halfName}
+                          checked={allchecked?.includes(halfName)}
                         />
-                        <Form.Label>{day}</Form.Label>
+                        <Form.Label>{halfName}</Form.Label>
                       </div>
                     ))}
                   </div>
                 </Col>
-                <Col lg={6}>
+                <Col lg={6} sm={12}>
                   <div className="d-flex align-items-center ps-3">
                     <DatePickerStart
                       startTime={startTime}
@@ -459,21 +474,19 @@ const AddSportsFormModel = ({
                   Please Enter All The Details In Business Hours.
                 </div>
               )}
-             {selectedTimes?.length > 0 &&
-  selectedTimes
-    .filter(timeRange => timeRange?.days && timeRange?.startTime && timeRange?.endTime)
-    .map((timeRange, index) => (
-      <div key={index} className="text-muted mt-3">
-        {timeRange.days}: {timeRange.startTime} - {timeRange.endTime}{" "}
-        <Icon
-          icon="pajamas:close-xs"
-          color="#de342f"
-          width="20"
-          height="20"
-          onClick={handleClear}
-        />{" "}
-      </div>
-    ))}
+    {selectedTimes?.length > 0 &&
+                  selectedTimes?.filter(timeRange => timeRange?.days && timeRange?.startTime && timeRange?.endTime).map((timeRange, index) => (
+                    <div key={index} className="text-muted mt-3">
+                      {timeRange?.days} : {timeRange?.startTime} - {timeRange?.endTime}
+                      <Icon
+                        icon="pajamas:close-xs"
+                        color="#de342f"
+                        width="20"
+                        height="20"
+                        onClick={handleClear}
+                      />{" "}
+                    </div>
+                  ))}
               <Form.Label className="m-0 fw-bold mt-3">
                 Reservation attributes
               </Form.Label>

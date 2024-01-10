@@ -15,16 +15,17 @@ import AddImage from "./AddImage";
 import DatePickerStart from "../Components/DatePickerStart";
 import DatePickerEnd from "../Components/DatePickerEnd";
 import "react-datepicker/dist/react-datepicker.css";
+import { getWeekDayFormat } from "../Utilities/Utility";
 
 const AddCenter = () => {
   const weekdays = [
-    { fullName: 'Sunday', halfName: 'Sun', index: 0 },
-    { fullName: 'Monday', halfName: 'Mon', index: 1 },
-    { fullName: 'Tuesday', halfName: 'Tue', index: 2 },
-    { fullName: 'Wednesday', halfName: 'Wed', index: 3 },
-    { fullName: 'Thursday', halfName: 'Thu', index: 4 },
-    { fullName: 'Friday', halfName: 'Fri', index: 5 },
-    { fullName: 'Saturday', halfName: 'Sat', index: 6 },
+    { fullName: "Sunday", halfName: "Sun", index: 0 },
+    { fullName: "Monday", halfName: "Mon", index: 1 },
+    { fullName: "Tuesday", halfName: "Tue", index: 2 },
+    { fullName: "Wednesday", halfName: "Wed", index: 3 },
+    { fullName: "Thursday", halfName: "Thu", index: 4 },
+    { fullName: "Friday", halfName: "Fri", index: 5 },
+    { fullName: "Saturday", halfName: "Sat", index: 6 },
   ];
   const [selectedFullNames, setSelectedFullNames] = useState([]);
   const navigate = useNavigate();
@@ -37,8 +38,12 @@ const AddCenter = () => {
   const [displayErrorMessage, setDisplayErrorMessage] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
 
-  const timezoneSelector = useSelector((state) => state?.AccountReducer?.timezone);
-  const accountSelector = useSelector((state) => state?.AccountReducer?.account);
+  const timezoneSelector = useSelector(
+    (state) => state?.AccountReducer?.timezone
+  );
+  const accountSelector = useSelector(
+    (state) => state?.AccountReducer?.account
+  );
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Name is required"),
     streetAddress: Yup.string().required("Street is required"),
@@ -46,7 +51,9 @@ const AddCenter = () => {
     city: Yup.string().required("City is required"),
     stateProvince: Yup.string().required("State is required"),
     zipCode: Yup.number().required("Zip is required"),
-    phoneNumber: Yup.string().max(10, "Max 10 digit").required("Phone Number is required"),
+    phoneNumber: Yup.string()
+      .max(10, "Max 10 digit")
+      .required("Phone Number is required"),
     email: Yup.string().email("Invalid email").required("Email is required"),
   });
   const dispatch = useDispatch();
@@ -73,39 +80,39 @@ const AddCenter = () => {
       email: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values,{ setSubmitting }) => {
+    onSubmit: (values, { setSubmitting }) => {
       setAllChecked("");
       try {
         let centerHours = [];
 
-    if (selectedTimes.length > 0) {
-      centerHours = selectedTimes.map((timeRange) => ({
-        weekday: timeRange.days.join(", "),
-        startTime: moment(timeRange.startTime, "h:mm a").format("h:mm a"),
-        endTime: moment(timeRange.endTime, "h:mm a").format("h:mm a"),
-        createdAt: moment().utc(),
-        updatedAt: moment().utc(),
-      }));
-    }
+        if (selectedTimes.length > 0) {
+          centerHours = selectedTimes.map((timeRange) => ({
+            weekday: timeRange.days.join(", "),
+            startTime: moment(timeRange.startTime, "h:mm a").format("h:mm a"),
+            endTime: moment(timeRange.endTime, "h:mm a").format("h:mm a"),
+            createdAt: moment().utc(),
+            updatedAt: moment().utc(),
+          }));
+        }
         const payload = {
-    displayName: isPlayer,
-    ...values,
-    organization: { id: accountSelector?.data?.orgId },
-    centerHours,
-    createdAt: moment().utc(),
-    updatedAt: moment().utc(),
-    centerusers: [
-      {
-        user: {
-          id: accountSelector?.data?.id,
-        },
-      },
-    ],
-    timezone: {
-      id: selectedTimeZone,
-    },
-  };
-        dispatch(fetchCenter(payload,formData));
+          displayName: isPlayer,
+          ...values,
+          organization: { id: accountSelector?.data?.orgId },
+          centerHours,
+          createdAt: moment().utc(),
+          updatedAt: moment().utc(),
+          centerusers: [
+            {
+              user: {
+                id: accountSelector?.data?.id,
+              },
+            },
+          ],
+          timezone: {
+            id: selectedTimeZone,
+          },
+        };
+        dispatch(fetchCenter(payload, formData));
         navigate("/center");
         Swal.fire({
           position: "center",
@@ -127,21 +134,27 @@ const AddCenter = () => {
 
   const handleAddTime = () => {
     if (!allchecked || !startTime || !endTime) {
-      setDisplayErrorMessage(true); 
+      setDisplayErrorMessage(true);
       return;
     }
+    const sortedChecked = allchecked.sort((a, b) => {
+      const indexA = weekdays.find((day) => day.halfName === a)?.index || 0;
+      const indexB = weekdays.find((day) => day.halfName === b)?.index || 0;
+      return indexA - indexB;
+    });
 
     const selectedTimeRange = {
-      startTime: moment(startTime).format("h:mm a"),
-      endTime: moment(endTime).format("h:mm a"),
-      days: allchecked,
+      startTime: moment(startTime).format("h:mm A"),
+      endTime: moment(endTime).format("h:mm A"),
+      days: sortedChecked,
     };
 
     setSelectedTimes([...selectedTimes, selectedTimeRange]);
     setStartTime("");
     setEndTime("");
-    setAllChecked('')
+    setAllChecked("");
     setDisplayErrorMessage(false);
+    getWeekDayFormat(selectedTimes?.days)
   };
 
   const handleTimeZone = (event) => {
@@ -155,22 +168,27 @@ const AddCenter = () => {
       setIsPlayer(false);
     }
   };
+
   const handleWeekDaysChange = (e) => {
-    const selectedFullName = weekdays.find((day) => day.halfName === e.target.value)?.fullName;
-  
+    const selectedFullName = weekdays.find(
+      (day) => day.halfName === e.target.value
+    )?.fullName;
+
     if (e.target.checked) {
       setAllChecked([...allchecked, e.target.value]);
       setSelectedFullNames([...selectedFullNames, selectedFullName]);
     } else {
       setAllChecked(allchecked?.filter((item) => item !== e.target.value));
-      setSelectedFullNames(selectedFullNames.filter((name) => name !== selectedFullName));
+      setSelectedFullNames(
+        selectedFullNames.filter((name) => name !== selectedFullName)
+      );
     }
   };
 
-    const formData = new FormData()
-    formData.append('userId',accountSelector?.data?.id)
-    formData.append('file_0',selectedFiles)
-    formData.append('tags_0',"banner")
+  const formData = new FormData();
+  formData.append("userId", accountSelector?.data?.id);
+  formData.append("file_0", selectedFiles);
+  formData.append("tags_0", "banner");
 
   useEffect(() => {
     dispatch(TimeZone());
@@ -189,10 +207,10 @@ const AddCenter = () => {
                   className="breadcrumb-item text-muted cursor-pointer"
                   onClick={() => navigate("/center")}
                 >
-                  Centers
+                  Center
                 </li>
                 <li className="breadcrumb-item active text-dark fw-bold">
-                  Add Center
+                  Add center
                 </li>
               </ol>
             </nav>
@@ -209,7 +227,6 @@ const AddCenter = () => {
                     <Form.Label>Name*</Form.Label>
                     <Form.Control
                       type="text"
-                     
                       name="title"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
@@ -237,7 +254,6 @@ const AddCenter = () => {
                     <Form.Group>
                       <Form.Label className="labels">Street*</Form.Label>
                       <Form.Control
-                        
                         type="text"
                         name="streetAddress"
                         onChange={formik.handleChange}
@@ -267,7 +283,6 @@ const AddCenter = () => {
                     <Form.Group>
                       <Form.Label className="labels">City*</Form.Label>
                       <Form.Control
-                        
                         type="text"
                         name="city"
                         onChange={formik.handleChange}
@@ -285,7 +300,6 @@ const AddCenter = () => {
                     <Form.Group>
                       <Form.Label className="labels">State*</Form.Label>
                       <Form.Control
-                      
                         type="text"
                         name="stateProvince"
                         onChange={formik.handleChange}
@@ -303,7 +317,6 @@ const AddCenter = () => {
                     <Form.Group>
                       <Form.Label className="labels">Zip*</Form.Label>
                       <Form.Control
-                      
                         type="number"
                         name="zipCode"
                         onChange={formik.handleChange}
@@ -323,7 +336,6 @@ const AddCenter = () => {
                     <Form.Group>
                       <Form.Label className="labels">Phone number*</Form.Label>
                       <Form.Control
-                      
                         type="text"
                         maxLength={10}
                         name="phoneNumber"
@@ -380,8 +392,8 @@ const AddCenter = () => {
                 </div>
                 <div className="mt-2">
                   <Form.Label className="labels">Business hours*</Form.Label>
-                  <div className="d-flex flex-row gap-2">
-                    {weekdays?.map(({halfName, index}) => (
+                  <div className="d-flex flex-column flex-md-row gap-2">
+                    {weekdays?.map(({ halfName, index }) => (
                       <div className="d-flex gap-2" key={index}>
                         <Form.Check
                           onChange={handleWeekDaysChange}
@@ -395,13 +407,16 @@ const AddCenter = () => {
                   </div>
                 </div>
 
-                <div className="d-flex align-items-baseline mt-2">
-                  <DatePickerStart startTime = {startTime} setStartTime = {setStartTime}/>
+                <div className="d-flex flex-column flex-md-row align-items-baseline mt-2">
+                  <DatePickerStart
+                    startTime={startTime}
+                    setStartTime={setStartTime}
+                  />
                   <div className="arrow-select-center">
                     <Icon icon="fe:arrow-down" />
                   </div>
 
-                  <DatePickerEnd endTime = {endTime} setEndTime = {setEndTime}/>
+                  <DatePickerEnd endTime={endTime} setEndTime={setEndTime} />
                   <div className="arrow-select-center">
                     <Icon icon="fe:arrow-down" />
                   </div>
@@ -411,38 +426,38 @@ const AddCenter = () => {
                   </div>
                 </div>
                 {displayErrorMessage && (
-                <div className="text-danger mt-2">
-                  Please Enter All The Details In Business Hours.
-                </div>
-              )}
-              {selectedTimes?.length>0 &&
-                selectedTimes?.map((timeRange, index) => (
-                  <div key={index} className="text-muted mt-3">
-                    {timeRange?.days?.join(", ")}: {timeRange?.startTime} -{" "}
-                    {timeRange?.endTime}{" "}
-                    <Icon
-                      icon="pajamas:close-xs"
-                      color="#de342f"
-                      width="20"
-                      height="20"
-                      onClick={handleClear}
-                    />{" "}
+                  <div className="text-danger mt-2">
+                    Please Enter All The Details In Business Hours.
                   </div>
-                ))}
+                )}
+                {selectedTimes?.length > 0 &&
+                  selectedTimes?.map((timeRange, index) => (
+                    <div key={index} className="text-muted mt-3">
+                      {getWeekDayFormat(timeRange?.days?.join(", "))}: {timeRange?.startTime} -{" "}
+                      {timeRange?.endTime}{" "}
+                      <Icon
+                        icon="pajamas:close-xs"
+                        color="#de342f"
+                        width="20"
+                        height="20"
+                        onClick={handleClear}
+                      />{" "}
+                    </div>
+                  ))}
 
                 <div className="mt-3">
                   <strong>Upload images</strong>
                   <hr className=" w-100 opacity-25" />
                   <div className="row">
                     <div className="col-lg-3 col-md-6 ">
-                      <AddBannerImage setSelectedFiles={setSelectedFiles}/>
+                      <AddBannerImage setSelectedFiles={setSelectedFiles} />
                     </div>
                     <div className="col-lg-4 col-md-6">
                       <AddImage />
                     </div>
                   </div>
                 </div>
-                
+
                 <hr className="w-100 opacity-25" />
                 <div className="d-flex gap-2 justify-content-end">
                   <Button
