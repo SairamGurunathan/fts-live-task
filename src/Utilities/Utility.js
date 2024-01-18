@@ -10,13 +10,13 @@ export const getWeekDayFormat = (day)=>{
       ];
     
     const Days = day?.split(',')
-    const indices = weekdays.map((days,i)=>days?.halfName === Days[i] || days?.fullName === Days[i]? days.index : "")
-    console.log(indices);
-    const result = indices.map((d,ind)=>{
-   return typeof d === "number"?
-        (d===ind)?true:false:""
+    const indices = weekdays.map((days,i)=>{
+      // console.log(days?.halfName , Days[i] )
+      return days?.halfName === Days[i] ? days.index : ""})
+    const result = indices.filter((index)=> typeof index === "number").map((d,ind)=>{
+   return (d===ind)?true:false
     });
-    console.log(result);
+    // console.log(result?.includes(false),result,Days,indices);
     
     // const indices = Days?.map((selectedDay)=>{
     //   const trimmedDay = selectedDay?.trim();
@@ -37,10 +37,8 @@ export const getWeekDayFormat = (day)=>{
     //   const matchingWeekdayFirst  = weekdays?.find((weekday) => weekday?.index === firstIndex);
     //   const lastIndex = indices[indices?.length - 1];
     // const matchingWeekdayLast = weekdays?.find((weekday) => weekday?.index === lastIndex);
-
-    
-    
-      return result?.includes(false)?day:`${Days[0]}-${Days[Days?.length-1]}`;
+  
+      return result?.includes(false)||result.length===1?day:`${Days[0]}-${Days[Days?.length-1]}`;
     
     // }
   }

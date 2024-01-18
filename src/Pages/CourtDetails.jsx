@@ -23,16 +23,16 @@ const CourtDetails = ({ show, setShow, setPopUp, popUp, setIsEdit }) => {
   ];
   const getWeekDayFormat = (day)=>{
     const Days = day.split(',')
-    const indices = Days.map((selectedDay)=>{
+    const indices = Days?.map((selectedDay)=>{
       const trimmedDay = selectedDay?.trim();
-      return weekdays.findIndex((weekday)=>weekday?.halfName === trimmedDay || weekday?.fullName === trimmedDay)
+      return weekdays?.findIndex((weekday)=>weekday?.halfName === trimmedDay || weekday?.fullName === trimmedDay)
     })
     if (indices.length === 1) {
       const firstIndex = indices[0];
-      const matchingWeekday = weekdays.find((weekday) => weekday.index === firstIndex);
+      const matchingWeekday = weekdays?.find((weekday) => weekday?.index === firstIndex);
   
       if (matchingWeekday) {
-        return matchingWeekday.halfName;
+        return matchingWeekday?.halfName;
       }
     }
     
@@ -104,13 +104,13 @@ const CourtDetails = ({ show, setShow, setPopUp, popUp, setIsEdit }) => {
               <p className="m-0">
                         {courtDetailSelector?.facilityHours?.map((time, index) => {
                            if (time.startTime && time.endTime) {
-                          time.startTime=(moment(time?.startTime,"hh:mm A"));
-                          time.endTime=(moment(time?.endTime,"hh:mm A"));
+                          time.startTime=(moment(time?.startTime,'hh:mm A'));
+                          time.endTime=(moment(time?.endTime,'hh:mm A'));
                           return(
-                          <small key={index} className="text-capitalize">
+                          <p className="m-0"><small key={index} className="text-capitalize">
                             {getWeekDayFormat(time?.weekday)}{' : '}
                             {moment(time?.startTime).format('hh:mm A')} to {moment(time?.endTime).format('hh:mm A')}
-                          </small>)
+                          </small></p>)
                            } else {
                             return null;
                           }

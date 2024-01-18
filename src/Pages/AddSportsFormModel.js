@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import { Icon } from "@iconify/react";
 import AddFacilityImage from "./AddFacilityImage";
-import {FacilitiesEditFormAction,FacilitiesFormAction,} from "../Redux/Actions/FacilitiesFormAction";
+import {FacilitiesEditFormAction,FacilitiesFormAction, FacilitiesFormGetAction, FacilityHoursDelete,} from "../Redux/Actions/FacilitiesFormAction";
 import DatePickerEnd from "../Components/DatePickerEnd";
 import DatePickerStart from "../Components/DatePickerStart";
 import { FacilitiesAction } from "../Redux/Actions/FacilitiesAction";
@@ -155,6 +155,9 @@ const AddSportsFormModel = ({
         try {
           dispatch(FacilitiesEditFormAction(editID, payloadEdit));
           setShow(false);
+          setAllChecked("");
+        setStartTime("");
+        setEndTime("");
           setFeatures([]);
           setApiData([]);
           formik.resetForm();
@@ -272,6 +275,7 @@ const AddSportsFormModel = ({
     setShow(false);
     setFeatures([]);
     setApiData([]);
+    setSelectedTimes([])
     setNewFeatures("");
     formik.resetForm();
     setSelectChange([])
@@ -309,8 +313,26 @@ const AddSportsFormModel = ({
     formData.append('file_0', facilitySelect)
     formData.append('tags_0',"photo")
 
-  const handleClear = () => {
-    setSelectedTimes([]);
+  const handleClear = (id) => {
+    Swal.fire({
+      title: '<header style="color:#de342f;">DELETE</header>',
+      html: `
+        <div className="card">
+          <small>Are you sure you want to delete - <strong>Business Hours</strong> ?
+          </small>
+        </div>`,
+      showCloseButton: true,
+      showCancelButton: true,
+      cancelButtonText: "Cancel",
+      confirmButtonText: "Delete",
+      cancelButtonColor: "#3085d6",
+      confirmButtonColor: "#d33",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(FacilityHoursDelete(id)) 
+      }
+      
+    }); 
   };
 
   useEffect(() => {
@@ -343,11 +365,16 @@ const AddSportsFormModel = ({
       setApiData(response?.facilityMetas);
       const businessHours = response?.facilityHours || [];
       const mappedSelectedTimes = businessHours?.map((businessHour) => {
-        return {
-          startTime: businessHour?.startTime, 
-          endTime: businessHour?.endTime, 
-          days: getWeekDayFormat(businessHour?.weekday),
-        };
+        if (businessHour.startTime && businessHour.endTime) {
+          return {
+            id: businessHour?.id,
+            startTime: moment(businessHour?.startTime).format("h:mm A"),
+            endTime: moment(businessHour?.endTime).format("h:mm A"),
+            days: getWeekDayFormat(businessHour?.weekday),
+          };
+        } else {
+          return null;
+        }
       });
       setSelectedTimes(mappedSelectedTimes);
     } catch (error) {
@@ -356,8 +383,7 @@ const AddSportsFormModel = ({
     // eslint-disable-next-line
   }, [response]);
 
-  useEffect(() => {
-    
+  useEffect(() => {   
     if (statusCode === 201) {
       Swal.fire({
         position: "center",
@@ -368,8 +394,19 @@ const AddSportsFormModel = ({
       });
       dispatch(FacilitiesAction(centerID));
     }
+
+    if (statusCode === 204) {
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "The record has been successfully deleted.",
+        showConfirmButton: false,
+        showCloseButton: true,
+      });
+      dispatch(FacilitiesFormGetAction(editID));
+    }
     // eslint-disable-next-line
-  }, [statusCode]);
+  }, [response?.statusCode]);
 
   useEffect(() => {
     setApiData(facilitiesMetasSelector, ...combinedFeatures);
@@ -474,19 +511,20 @@ const AddSportsFormModel = ({
                   Please Enter All The Details In Business Hours.
                 </div>
               )}
-    {selectedTimes?.length > 0 &&
-                  selectedTimes?.filter(timeRange => timeRange?.days && timeRange?.startTime && timeRange?.endTime).map((timeRange, index) => (
-                    <div key={index} className="text-muted mt-3">
+             {selectedTimes?.length > 0 &&
+                  selectedTimes?.map((timeRange, index) => (
+                      <spam key={index} className="text-muted pe-2">
                       {timeRange?.days} : {timeRange?.startTime} - {timeRange?.endTime}
                       <Icon
                         icon="pajamas:close-xs"
                         color="#de342f"
                         width="20"
                         height="20"
-                        onClick={handleClear}
+                        onClick={()=>handleClear(timeRange?.id)}
                       />{" "}
-                    </div>
-                  ))}
+                    </spam>
+                    ))}
+                    <br></br>
               <Form.Label className="m-0 fw-bold mt-3">
                 Reservation attributes
               </Form.Label>

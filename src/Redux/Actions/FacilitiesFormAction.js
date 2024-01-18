@@ -59,3 +59,20 @@ export const FacilitiesEditFormAction = (id, payload) => async (dispatch) => {
     console.log(error);
   }
 };
+
+export const FacilityHoursDelete = (id)=>async(dispatch)=>{
+  try {
+    const response = await axios.delete(`api/facility-hours/${id}`)
+    if (response?.status === 204) {
+      await dispatch({
+        type: Constants.FETCH_ADD_SPORTSFORM,
+        payload: { data: response?.data, statusCode: response?.status },
+      });     
+    } else {
+      console.error('Center not created');
+    }
+    return response?.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
