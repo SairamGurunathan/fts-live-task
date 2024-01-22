@@ -87,7 +87,7 @@ const AddCenter = () => {
 
         if (selectedTimes.length > 0) {
           centerHours = selectedTimes.map((timeRange) => ({
-            weekday: timeRange.days.join(", "),
+            weekday: timeRange?.days?.join(", "),
             startTime: moment(timeRange.startTime, "h:mm a").format("h:mm a"),
             endTime: moment(timeRange.endTime, "h:mm a").format("h:mm a"),
             createdAt: moment().utc(),
@@ -137,16 +137,16 @@ const AddCenter = () => {
       setDisplayErrorMessage(true);
       return;
     }
-    const sortedChecked = allchecked.sort((a, b) => {
-      const indexA = weekdays.find((day) => day.halfName === a)?.index || 0;
-      const indexB = weekdays.find((day) => day.halfName === b)?.index || 0;
+    const sortedChecked = allchecked?.sort((a, b) => {
+      const indexA = weekdays?.find((day) => day?.halfName === a)?.index || 0;
+      const indexB = weekdays?.find((day) => day?.halfName === b)?.index || 0;
       return indexA - indexB;
     });
 
     const selectedTimeRange = {
       startTime: moment(startTime).format("h:mm A"),
       endTime: moment(endTime).format("h:mm A"),
-      days: sortedChecked,
+      days: getWeekDayFormat(sortedChecked.toString()),
     };
 
     setSelectedTimes([...selectedTimes, selectedTimeRange]);
@@ -154,7 +154,6 @@ const AddCenter = () => {
     setEndTime("");
     setAllChecked("");
     setDisplayErrorMessage(false);
-    getWeekDayFormat(selectedTimes?.days)
   };
 
   const handleTimeZone = (event) => {
@@ -243,7 +242,7 @@ const AddCenter = () => {
               </div>
 
               <div className="d-flex gap-2 mt-2">
-                <Form.Check type="checkbox" onChange={handlePlayer} />
+                <Form.Check type="checkbox" onChange={handlePlayer}/>
                 <Form.Label>Display this name to Athlitik users</Form.Label>
               </div>
               <div className="mt-3">
@@ -433,7 +432,7 @@ const AddCenter = () => {
                 {selectedTimes?.length > 0 &&
                   selectedTimes?.map((timeRange, index) => (
                     <div key={index} className="text-muted mt-3">
-                      {getWeekDayFormat(timeRange?.days?.join(", "))}: {timeRange?.startTime} -{" "}
+                      {timeRange?.days}: {timeRange?.startTime} -{" "}
                       {timeRange?.endTime}{" "}
                       <Icon
                         icon="pajamas:close-xs"

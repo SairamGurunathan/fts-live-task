@@ -254,16 +254,18 @@ const AddSportsFormModel = ({
     sport: {
       id: facilitieDataSelector?.sport?.id,
     },
-    facilityHours: [
-      {
-        id: facilitieDataSelector?.facilityHours?.id,
-        weekday: selectedValuesString,
-        startTime: startTime,
-        endTime: endTime,
-        createdAt: moment().utc(),
-        updatedAt: moment().utc(),
-      },
-    ],
+    facilityHours: allchecked.length && startTime && endTime
+    ? [
+        {
+          id: facilitieDataSelector?.facilityHours?.id,
+          weekday: selectedValuesString,
+          startTime: startTime,
+          endTime: endTime,
+          createdAt: moment().utc(),
+          updatedAt: moment().utc(),
+        },
+      ]
+    : [],
     createdAt: moment().utc(),
     updatedAt: moment().utc(),
     updatedBy: userID,
@@ -301,10 +303,33 @@ const AddSportsFormModel = ({
     setFeatures(updatedFeatures);
   };
 
+  // const handledeleteFeature = (id) => {
+  //   dispatch(DeleteFacilitiesMetas(id, editID));
+  //   setApiData(facilitiesMetasSelector);
+  // };
   const handledeleteFeature = (id) => {
-    dispatch(DeleteFacilitiesMetas(id, editID));
-    setApiData(facilitiesMetasSelector);
+    Swal.fire({
+      title: '<header style="color:#de342f;">DELETE</header>',
+      html: `
+        <div className="card">
+          <small>Are you sure you want to delete - <strong>Features</strong> ?
+          </small>
+        </div>`,
+      showCloseButton: true,
+      showCancelButton: true,
+      cancelButtonText: "Cancel",
+      confirmButtonText: "Delete",
+      cancelButtonColor: "#3085d6",
+      confirmButtonColor: "#d33",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const updatedApiData = apiData?.filter(item => item.id !== id);
+        dispatch(DeleteFacilitiesMetas(id, editID));
+        setApiData(updatedApiData);
+      }
+    });
   };
+  
 
   const combinedFeatures = [apiData, ...features];
 
@@ -313,7 +338,7 @@ const AddSportsFormModel = ({
     formData.append('file_0', facilitySelect)
     formData.append('tags_0',"photo")
 
-  const handleClear = (id) => {
+  const handleClear = (timeRange) => {
     Swal.fire({
       title: '<header style="color:#de342f;">DELETE</header>',
       html: `
@@ -329,10 +354,23 @@ const AddSportsFormModel = ({
       confirmButtonColor: "#d33",
     }).then((result) => {
       if (result.isConfirmed) {
-        dispatch(FacilityHoursDelete(id)) 
+        // Identify the business hour based on startTime and endTime
+        const updatedTimes = selectedTimes.filter(
+          (time) =>
+            time.startTime !== timeRange.startTime ||
+            time.endTime !== timeRange.endTime
+        );
+        
+        // Check if the business hour has an ID before dispatching the action
+        if (timeRange && timeRange.id) {
+          dispatch(FacilityHoursDelete(timeRange.id));
+        }
+  
+        // Update the state with the filtered business hours
+        setSelectedTimes(updatedTimes);
       }
-      
-    }); 
+    });
+  
   };
 
   useEffect(() => {
@@ -712,7 +750,7 @@ const AddSportsFormModel = ({
                       ))
                     : null}
 
-                  {features.map((feature, index) => (
+                  {features?.map((feature, index) => (
                     <span
                       key={index}
                       className="badge rounded-pill bg-white text-dark fw-normal border me-1"

@@ -104,8 +104,8 @@ const CourtDetails = ({ show, setShow, setPopUp, popUp, setIsEdit }) => {
               <p className="m-0">
                         {courtDetailSelector?.facilityHours?.map((time, index) => {
                            if (time.startTime && time.endTime) {
-                          time.startTime=(moment(time?.startTime,'hh:mm A'));
-                          time.endTime=(moment(time?.endTime,'hh:mm A'));
+                          time.startTime=(moment(time?.startTime));
+                          time.endTime=(moment(time?.endTime));
                           return(
                           <p className="m-0"><small key={index} className="text-capitalize">
                             {getWeekDayFormat(time?.weekday)}{' : '}

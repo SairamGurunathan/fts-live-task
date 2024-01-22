@@ -119,10 +119,10 @@ const Center = () => {
                           if (time.startTime && time.endTime) {
                             time.startTime=(moment(time?.startTime,"hh:mm A"));
                             time.endTime=(moment(time?.endTime,"hh:mm A"));
-                            
+                            const formattedWeekday = getWeekDayFormat(time?.weekday);
                           return(
                           <small key={index}>
-                            {getWeekDayFormat(time?.weekday)}{" : "}
+                            {formattedWeekday}{" : "}
                             {moment(time?.startTime).format('hh:mm A')} To {moment(time?.endTime).format('hh:mm A')}<br></br>
                           </small>)
                           } else {

@@ -12,6 +12,7 @@ import DatePickerEnd from "../Components/DatePickerEnd";
 import AddBanner from "../Assects/Images/addbanner.svg";
 import {OrgInfoAction,OrgInfoEditAction} from "../Redux/Actions/OrganizationInfoAction";
 import "react-datepicker/dist/react-datepicker.css";
+import { getWeekDayFormat } from "../Utilities/Utility";
 
 const OrganizationInfo = () => {
   // const allDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -110,17 +111,22 @@ const OrganizationInfo = () => {
       setDisplayErrorMessage(true);
       return;
     }
+    const sortedChecked = allchecked.sort((a, b) => {
+      const indexA = weekdays.find((day) => day.halfName === a)?.index || 0;
+      const indexB = weekdays.find((day) => day.halfName === b)?.index || 0;
+      return indexA - indexB;
+    });
 
     const selectedTimeRange = {
-      startTime: moment(startTime).format("h:mm a"),
-      endTime: moment(endTime).format("h:mm a"),
-      days: allchecked,
+      startTime: moment(startTime).format("h:mm A"),
+      endTime: moment(endTime).format("h:mm A"),
+      days: getWeekDayFormat(sortedChecked.toString()),
     };
 
     setSelectedTimes([...selectedTimes, selectedTimeRange]);
-    setStartTime(null);
-    setEndTime(null);
-    setAllChecked(null);
+    setStartTime("");
+    setEndTime("");
+    setAllChecked("");
     setDisplayErrorMessage(false);
   };
 
