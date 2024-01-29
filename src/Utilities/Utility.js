@@ -29,15 +29,12 @@ export const getWeekDayFormat = (day) => {
     { fullName: 'Saturday', halfName: 'Sat', index: 6 },
   ];
 
-  const Days = day?.split(',').map((d) => d.trim());
+  const Days = day?.toLowerCase()?.split(',').map((d) => d.trim());
   if (Days?.length === 1) {
     return day;
   }
-
-  const indices = Days?.map((day) => weekdays?.find((w) => w?.halfName === day || w?.fullName === day)?.index);
-
+  const indices = Days?.map((day) => weekdays?.find((w) => w?.halfName?.toLowerCase() === day || w?.fullName?.toLowerCase() === day)?.index);
   const isContinuous = indices?.every((index, i, arr) => i === 0 || index === arr[i - 1] + 1);
-
   if (isContinuous) {
     return `${weekdays[indices[0]]?.halfName}-${weekdays[indices[indices?.length - 1]]?.halfName}`;
   } else {

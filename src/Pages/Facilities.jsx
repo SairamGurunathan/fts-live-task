@@ -71,7 +71,7 @@ const Facilities = () => {
   const facilitiesGetSelector = useSelector(
     (state) => state?.AddSportsFormReducer?.addSports
   );
-  // console.log(facilitiesGetSelector);
+
   useEffect(() => {
     if (centerID !== undefined) {
       dispatch(FacilitiesAction(centerID));

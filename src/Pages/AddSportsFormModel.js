@@ -7,7 +7,12 @@ import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 import { Icon } from "@iconify/react";
 import AddFacilityImage from "./AddFacilityImage";
-import {FacilitiesEditFormAction,FacilitiesFormAction, FacilitiesFormGetAction, FacilityHoursDelete,} from "../Redux/Actions/FacilitiesFormAction";
+import {
+  FacilitiesEditFormAction,
+  FacilitiesFormAction,
+  FacilitiesFormGetAction,
+  FacilityHoursDelete,
+} from "../Redux/Actions/FacilitiesFormAction";
 import DatePickerEnd from "../Components/DatePickerEnd";
 import DatePickerStart from "../Components/DatePickerStart";
 import { FacilitiesAction } from "../Redux/Actions/FacilitiesAction";
@@ -44,13 +49,13 @@ const AddSportsFormModel = ({
   const [apiData, setApiData] = useState([]);
   const dispatch = useDispatch();
   const userID = localStorage.getItem("userID");
-  const [facilitySelect,setFacilitySelect] = useState([])
-  const [selectChange, setSelectChange] =  useState([])
+  const [facilitySelect, setFacilitySelect] = useState([]);
+  const [selectChange, setSelectChange] = useState([]);
 
   const facilitiesMetasSelector = useSelector(
     (state) => state?.FacilitiesMetasReducer?.facilitesMetas
   );
-  
+
   const validationSchema = Yup.object().shape({
     title: Yup.string().required("Enter the Name"),
     playerAllowedMin: Yup.number().required("Enter Minimun Value"),
@@ -85,7 +90,7 @@ const AddSportsFormModel = ({
       setDisplayErrorMessage(true);
       return;
     }
-    const sortedChecked = allchecked.sort((a, b) => {
+    const sortedChecked = allchecked?.sort((a, b) => {
       const indexA = weekdays.find((day) => day.halfName === a)?.index || 0;
       const indexB = weekdays.find((day) => day.halfName === b)?.index || 0;
       return indexA - indexB;
@@ -94,7 +99,9 @@ const AddSportsFormModel = ({
     const selectedTimeRange = {
       startTime: moment(startTime).format("h:mm A"),
       endTime: moment(endTime).format("h:mm A"),
-      days: getWeekDayFormat(sortedChecked.toString()),
+      day: getWeekDayFormat(sortedChecked.toString()),
+      days: (sortedChecked.toString()),
+
     };
 
     setSelectedTimes([...selectedTimes, selectedTimeRange]);
@@ -103,7 +110,6 @@ const AddSportsFormModel = ({
     setAllChecked("");
     setDisplayErrorMessage(false);
   };
-
   const handleWeekDaysChange = (e) => {
     if (e.target.checked) {
       setAllChecked([...allchecked, e.target.value]);
@@ -111,8 +117,8 @@ const AddSportsFormModel = ({
       setAllChecked(allchecked?.filter((item) => item !== e.target.value));
     }
   };
-  const selectedValuesString = allchecked?.toString();
-
+  // const selectedValuesString = allchecked?.toString();
+  
   const facilitieDataSelector = useSelector(
     (state) => state?.AddSportsFormReducer?.addSports
   );
@@ -142,22 +148,130 @@ const AddSportsFormModel = ({
         setEndTime("");
         formik.resetForm();
         try {
-          dispatch(FacilitiesFormAction(payLoad,formData));
+          let centerHours = [];
+
+        if (selectedTimes?.length > 0) {
+          console.log(selectedTimes);
+          centerHours = selectedTimes?.map((timeRange) => ({
+            weekday: timeRange?.days,
+            startTime: timeRange?.startTime,
+            endTime: timeRange?.endTime,
+            createdAt: moment().utc(),
+            updatedAt: moment().utc(),
+          }));
+        }
+          const payLoad = {
+            reservationAttribute: {
+              advanceBookingMax: formik.values.advanceBookingMax,
+              advanceBookingMin: formik.values.advanceBookingMin,
+              durationAllowedMax: formik.values.durationAllowedMax,
+              durationAllowedMin: formik.values.durationAllowedMin,
+              playerAllowedMax: formik.values.playerAllowedMax,
+              playerAllowedMin: formik.values.playerAllowedMin,
+            },
+            title: formik.values.title,
+            displayName: isPlayer,
+            defaultPlayDuration: "30",
+            sku: sku,
+            createdBy: userID,
+            photos: null,
+            description: "center courts facility",
+            workingPlans: {
+              sunday: 0,
+              monday: 1,
+              tuesday: 1,
+              wednesday: 0,
+              thursday: 0,
+              friday: 0,
+              saturday: 1,
+              startTime: startTime,
+              endTime: endTime,
+            },
+            center: {
+              id: centerID,
+            },
+            sport: {
+              id: sportsTitle?.sport?.id,
+            },
+            facilityHours: centerHours,
+            createdAt: moment().utc(),
+            updatedAt: moment().utc(),
+            updatedBy: userID,
+            video: null,
+            facilityMetas: mappedData,
+          };
+          dispatch(FacilitiesFormAction(payLoad, formData));
           setShow(false);
           setFeatures([]);
           setApiData([]);
-          
-         } catch (error) {
+        } catch (error) {
           console.log(error);
         }
         setSubmitting(false);
       } else {
         try {
+          let centerHours = [];
+          const withoutId = selectedTimes?.filter((timeRange)=>!timeRange?.id)
+          console.log(withoutId,'idwithout');
+          centerHours = withoutId?.map((timeRange) => ({
+            weekday: timeRange?.days,
+            startTime: timeRange?.startTime,
+            endTime: timeRange?.endTime,
+            createdAt: moment().utc(),
+            updatedAt: moment().utc(),
+          }));
+        
+          const payloadEdit = {
+            reservationAttribute: {
+              advanceBookingMax: formik.values.advanceBookingMax,
+              advanceBookingMin: formik.values.advanceBookingMin,
+              durationAllowedMax: formik.values.durationAllowedMax,
+              durationAllowedMin: formik.values.durationAllowedMin,
+              playerAllowedMax: formik.values.playerAllowedMax,
+              playerAllowedMin: formik.values.playerAllowedMin,
+              facility: facilitieDataSelector?.reservationAttribute?.facility,
+              id: facilitieDataSelector?.reservationAttribute?.id,
+            },
+            id: facilitieDataSelector?.id,
+            title: formik.values.title,
+            displayName: isPlayer,
+            defaultPlayDuration: "30",
+            sku: "Edit",
+            createdBy: userID,
+            photos: null,
+            description: "center courts facility",
+            workingPlans: {
+              sunday: 0,
+              monday: 1,
+              tuesday: 1,
+              wednesday: 0,
+              thursday: 0,
+              friday: 0,
+              saturday: 1,
+              startTime: startTime,
+              endTime: endTime,
+            },
+            center: {
+              id: centerID,
+            },
+            sport: {
+              id: facilitieDataSelector?.sport?.id,
+            },
+            facilityHours:
+            centerHours?.length                ? centerHours
+                : [],
+            createdAt: moment().utc(),
+            updatedAt: moment().utc(),
+            updatedBy: userID,
+        
+            facilityMetas: mappedData,
+          };
+          
           dispatch(FacilitiesEditFormAction(editID, payloadEdit));
           setShow(false);
           setAllChecked("");
-        setStartTime("");
-        setEndTime("");
+          setStartTime("");
+          setEndTime("");
           setFeatures([]);
           setApiData([]);
           formik.resetForm();
@@ -169,118 +283,14 @@ const AddSportsFormModel = ({
     },
   });
 
-  const payLoad = {
-    reservationAttribute: {
-      advanceBookingMax: formik.values.advanceBookingMax,
-      advanceBookingMin: formik.values.advanceBookingMin,
-      durationAllowedMax: formik.values.durationAllowedMax,
-      durationAllowedMin: formik.values.durationAllowedMin,
-      playerAllowedMax: formik.values.playerAllowedMax,
-      playerAllowedMin: formik.values.playerAllowedMin,
-    },
-    title: formik.values.title,
-    displayName: isPlayer,
-    defaultPlayDuration: "30",
-    sku: sku,
-    createdBy: userID,
-    photos: null,
-    description: "center courts facility",
-    workingPlans: {
-      sunday: 0,
-      monday: 1,
-      tuesday: 1,
-      wednesday: 0,
-      thursday: 0,
-      friday: 0,
-      saturday: 1,
-      startTime: startTime,
-      endTime: endTime,
-    },
-    center: {
-      id: centerID,
-    },
-    sport: {
-      id: sportsTitle?.sport?.id,
-    },
-    facilityHours: [
-      {
-        weekday: selectedValuesString,
-        startTime: startTime,
-        endTime: endTime,
-        createdAt: moment().utc(),
-        updatedAt: moment().utc(),
-      },
-    ],
-    createdAt: moment().utc(),
-    updatedAt: moment().utc(),
-    updatedBy: userID,
-    video: null,
-    facilityMetas: mappedData,
-  };
-
-  const payloadEdit = {
-    reservationAttribute: {
-      advanceBookingMax: formik.values.advanceBookingMax,
-      advanceBookingMin: formik.values.advanceBookingMin,
-      durationAllowedMax: formik.values.durationAllowedMax,
-      durationAllowedMin: formik.values.durationAllowedMin,
-      playerAllowedMax: formik.values.playerAllowedMax,
-      playerAllowedMin: formik.values.playerAllowedMin,
-      facility: facilitieDataSelector?.reservationAttribute?.facility,
-      id: facilitieDataSelector?.reservationAttribute?.id,
-    },
-    id: facilitieDataSelector?.id,
-    title: formik.values.title,
-    displayName: isPlayer,
-    defaultPlayDuration: "30",
-    sku: "Edit",
-    createdBy: userID,
-    photos: null,
-    description: "center courts facility",
-    workingPlans: {
-      sunday: 0,
-      monday: 1,
-      tuesday: 1,
-      wednesday: 0,
-      thursday: 0,
-      friday: 0,
-      saturday: 1,
-      startTime: startTime,
-      endTime: endTime,
-    },
-    center: {
-      id: centerID,
-    },
-    sport: {
-      id: facilitieDataSelector?.sport?.id,
-    },
-    facilityHours: allchecked.length && startTime && endTime
-    ? [
-        {
-          id: facilitieDataSelector?.facilityHours?.id,
-          weekday: selectedValuesString,
-          startTime: startTime,
-          endTime: endTime,
-          createdAt: moment().utc(),
-          updatedAt: moment().utc(),
-        },
-      ]
-    : [],
-    createdAt: moment().utc(),
-    updatedAt: moment().utc(),
-    updatedBy: userID,
-
-    facilityMetas: mappedData,
-  };
-
   const handleClose = () => {
     setShow(false);
     setFeatures([]);
     setApiData([]);
-    setSelectedTimes([])
+    setSelectedTimes([]);
     setNewFeatures("");
     formik.resetForm();
-    setSelectChange([])
+    setSelectChange([]);
     dispatch(ResetAction());
   };
 
@@ -302,11 +312,6 @@ const AddSportsFormModel = ({
     updatedFeatures.splice(index, 1);
     setFeatures(updatedFeatures);
   };
-
-  // const handledeleteFeature = (id) => {
-  //   dispatch(DeleteFacilitiesMetas(id, editID));
-  //   setApiData(facilitiesMetasSelector);
-  // };
   const handledeleteFeature = (id) => {
     Swal.fire({
       title: '<header style="color:#de342f;">DELETE</header>',
@@ -323,20 +328,19 @@ const AddSportsFormModel = ({
       confirmButtonColor: "#d33",
     }).then((result) => {
       if (result.isConfirmed) {
-        const updatedApiData = apiData?.filter(item => item.id !== id);
+        const updatedApiData = apiData?.filter((item) => item.id !== id);
         dispatch(DeleteFacilitiesMetas(id, editID));
         setApiData(updatedApiData);
       }
     });
   };
-  
 
   const combinedFeatures = [apiData, ...features];
 
-  const formData = new FormData()
-    formData.append('userId',userID)
-    formData.append('file_0', facilitySelect)
-    formData.append('tags_0',"photo")
+  const formData = new FormData();
+  formData.append("userId", userID);
+  formData.append("file_0", facilitySelect);
+  formData.append("tags_0", "photo");
 
   const handleClear = (timeRange) => {
     Swal.fire({
@@ -353,24 +357,18 @@ const AddSportsFormModel = ({
       cancelButtonColor: "#3085d6",
       confirmButtonColor: "#d33",
     }).then((result) => {
-      if (result.isConfirmed) {
-        // Identify the business hour based on startTime and endTime
-        const updatedTimes = selectedTimes.filter(
-          (time) =>
-            time.startTime !== timeRange.startTime ||
-            time.endTime !== timeRange.endTime
+      if (result?.isConfirmed) {
+        const updatedTimes = selectedTimes?.filter((time) =>
+            time?.startTime !== timeRange?.startTime ||
+            time?.endTime !== timeRange?.endTime
         );
-        
-        // Check if the business hour has an ID before dispatching the action
-        if (timeRange && timeRange.id) {
-          dispatch(FacilityHoursDelete(timeRange.id));
+
+        if (timeRange && timeRange?.id) {
+          dispatch(FacilityHoursDelete(timeRange?.id));
         }
-  
-        // Update the state with the filtered business hours
         setSelectedTimes(updatedTimes);
       }
     });
-  
   };
 
   useEffect(() => {
@@ -406,8 +404,8 @@ const AddSportsFormModel = ({
         if (businessHour.startTime && businessHour.endTime) {
           return {
             id: businessHour?.id,
-            startTime: moment(businessHour?.startTime).format("h:mm A"),
-            endTime: moment(businessHour?.endTime).format("h:mm A"),
+            startTime: businessHour?.startTime,
+            endTime: businessHour?.endTime,
             days: getWeekDayFormat(businessHour?.weekday),
           };
         } else {
@@ -421,7 +419,7 @@ const AddSportsFormModel = ({
     // eslint-disable-next-line
   }, [response]);
 
-  useEffect(() => {   
+  useEffect(() => {
     if (statusCode === 201) {
       Swal.fire({
         position: "center",
@@ -506,7 +504,7 @@ const AddSportsFormModel = ({
               <Row>
                 <Col lg={6} sm={12}>
                   <div className="d-flex flex-column flex-md-row align-items-baseline mt-2 gap-2">
-                  {weekdays?.map(({ halfName, index }) => (
+                    {weekdays?.map(({ halfName, index }) => (
                       <div className="d-flex gap-2" key={index}>
                         <Form.Check
                           onChange={handleWeekDaysChange}
@@ -549,20 +547,22 @@ const AddSportsFormModel = ({
                   Please Enter All The Details In Business Hours.
                 </div>
               )}
-             {selectedTimes?.length > 0 &&
-                  selectedTimes?.map((timeRange, index) => (
-                      <spam key={index} className="text-muted pe-2">
-                      {timeRange?.days} : {timeRange?.startTime} - {timeRange?.endTime}
-                      <Icon
-                        icon="pajamas:close-xs"
-                        color="#de342f"
-                        width="20"
-                        height="20"
-                        onClick={()=>handleClear(timeRange?.id)}
-                      />{" "}
-                    </spam>
-                    ))}
-                    <br></br>
+              {selectedTimes?.length > 0 &&
+                selectedTimes?.map((timeRange, index) => (
+                  <spam key={index} className="text-muted pe-2">
+                    {timeRange?.day||timeRange?.days} : {timeRange?.startTime} - {" "}
+                    {timeRange?.endTime}
+                    <Icon
+                      icon="pajamas:close-xs"
+                      color="#de342f"
+                      width="20"
+                      height="20"
+                      onClick={() => handleClear(timeRange)}
+                      
+                    />{" "}
+                  </spam>
+                ))}
+              <br></br>
               <Form.Label className="m-0 fw-bold mt-3">
                 Reservation attributes
               </Form.Label>
@@ -771,7 +771,12 @@ const AddSportsFormModel = ({
                 <small className="m-0 text-muted">Images</small>
               </Form.Label>
               <div>
-                <AddFacilityImage setFacilitySelect={setFacilitySelect} facilitySelect={facilitySelect} selectChange={selectChange} setSelectChange={setSelectChange}/>
+                <AddFacilityImage
+                  setFacilitySelect={setFacilitySelect}
+                  facilitySelect={facilitySelect}
+                  selectChange={selectChange}
+                  setSelectChange={setSelectChange}
+                />
               </div>
             </div>
             <div className="d-flex gap-1 justify-content-end bg-white p-2">

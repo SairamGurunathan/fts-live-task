@@ -147,12 +147,17 @@ const OrganizationInfo = () => {
       formik.setFieldValue("phoneNumber", orgIdSelector?.phoneNumber || "");
       formik.setFieldValue("email", orgIdSelector?.email || "");
       const businessHours = orgIdSelector?.organizationHours || [];
-      const mappedSelectedTimes = businessHours.map((businessHour) => {
-        return {
-          startTime: businessHour.startTime, 
-          endTime: businessHour.endTime, 
-          days: businessHour.weekday, 
-        };
+      const mappedSelectedTimes = businessHours?.map((businessHour) => {
+        if (businessHour.startTime && businessHour.endTime) {
+          return {
+            id: businessHour?.id,
+            startTime: moment(businessHour?.startTime,"h:mm A").format("h:mm A"),
+            endTime: moment(businessHour?.endTime,"h:mm A").format("h:mm A"),
+            days: getWeekDayFormat(businessHour?.weekday),
+          };
+        } else {
+          return null;
+        }
       });
       setSelectedTimes(mappedSelectedTimes);
     } catch (error) {

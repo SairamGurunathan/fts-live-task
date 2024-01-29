@@ -84,10 +84,9 @@ const AddCenter = () => {
       setAllChecked("");
       try {
         let centerHours = [];
-
-        if (selectedTimes.length > 0) {
-          centerHours = selectedTimes.map((timeRange) => ({
-            weekday: timeRange?.days?.join(", "),
+        if (selectedTimes?.length > 0) {
+          centerHours = selectedTimes?.map((timeRange) => ({
+            weekday: timeRange?.days,
             startTime: moment(timeRange.startTime, "h:mm a").format("h:mm a"),
             endTime: moment(timeRange.endTime, "h:mm a").format("h:mm a"),
             createdAt: moment().utc(),

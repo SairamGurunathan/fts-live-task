@@ -2,8 +2,8 @@ import React from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import AddSportsFormModel from "./AddSportsFormModel";
-import moment from "moment";
 import { ResetAction } from "../Redux/Actions/ResetAction";
+import { getWeekDayFormat } from "../Utilities/Utility";
 
 const CourtDetails = ({ show, setShow, setPopUp, popUp, setIsEdit }) => {
   const dispatch = useDispatch()
@@ -12,41 +12,6 @@ const CourtDetails = ({ show, setShow, setPopUp, popUp, setIsEdit }) => {
     setPopUp(false);
     dispatch(ResetAction())
   };
-  const weekdays = [
-    { fullName: 'sunday', halfName: 'Sun', index: 0 },
-    { fullName: 'monday', halfName: 'Mon', index: 1 },
-    { fullName: 'tuesday', halfName: 'Tue', index: 2 },
-    { fullName: 'wednesday', halfName: 'Wed', index: 3 },
-    { fullName: 'thursday', halfName: 'Thu', index: 4 },
-    { fullName: 'friday', halfName: 'Fri', index: 5 },
-    { fullName: 'saturday', halfName: 'Sat', index: 6 },
-  ];
-  const getWeekDayFormat = (day)=>{
-    const Days = day.split(',')
-    const indices = Days?.map((selectedDay)=>{
-      const trimmedDay = selectedDay?.trim();
-      return weekdays?.findIndex((weekday)=>weekday?.halfName === trimmedDay || weekday?.fullName === trimmedDay)
-    })
-    if (indices.length === 1) {
-      const firstIndex = indices[0];
-      const matchingWeekday = weekdays?.find((weekday) => weekday?.index === firstIndex);
-  
-      if (matchingWeekday) {
-        return matchingWeekday?.halfName;
-      }
-    }
-    
-    if (indices.length > 0 ) {
-      const firstIndex = indices[0];
-      const matchingWeekdayFirst  = weekdays.find((weekday) => weekday.index === firstIndex);
-      const lastIndex = indices[indices.length - 1];
-    const matchingWeekdayLast = weekdays.find((weekday) => weekday.index === lastIndex);
-
-    if (matchingWeekdayFirst && matchingWeekdayLast) {
-      return `${matchingWeekdayFirst.halfName} - ${matchingWeekdayLast.halfName}`;
-    }
-    }
-  }
   const handleEdit = () => {
     setIsEdit(true);
     setPopUp(true);
@@ -104,12 +69,10 @@ const CourtDetails = ({ show, setShow, setPopUp, popUp, setIsEdit }) => {
               <p className="m-0">
                         {courtDetailSelector?.facilityHours?.map((time, index) => {
                            if (time.startTime && time.endTime) {
-                          time.startTime=(moment(time?.startTime));
-                          time.endTime=(moment(time?.endTime));
                           return(
                           <p className="m-0"><small key={index} className="text-capitalize">
                             {getWeekDayFormat(time?.weekday)}{' : '}
-                            {moment(time?.startTime).format('hh:mm A')} to {moment(time?.endTime).format('hh:mm A')}
+                            {time?.startTime} to {time?.endTime}
                           </small></p>)
                            } else {
                             return null;
