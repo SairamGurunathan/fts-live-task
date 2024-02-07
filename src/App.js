@@ -6,12 +6,14 @@ import AddCenter from "./Pages/AddCenter";
 import Center from "./Components/Center"
 import NavbarHeader from "./Components/Navbar";
 import SideMenu from "./Components/SideMenu";
+import Reservations from "./Pages/Reservations";
 import { Col, Row } from "react-bootstrap";
 import AddFacilities from "./Pages/AddFacilities";
 import Refunds from "./Pages/Refunds";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import 'react-loading-skeleton/dist/skeleton.css';
+import 'react-big-calendar/lib/css/react-big-calendar.css'
 
 function App() {
   return (
@@ -35,6 +37,8 @@ function App() {
         <Route path="/addfacilities" element={<AddFacilities/>}/>
 
         <Route path="/facilities" element={<Facilities/>}/>
+
+        <Route path="/reservation" element={<Reservations/>}/>
 
         <Route path="/refunds" element={<Refunds/>}/>
       </Routes>

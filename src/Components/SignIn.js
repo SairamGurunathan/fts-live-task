@@ -62,7 +62,7 @@ const SignIn = ({ setIsSignIn }) => {
               name="email"
               value={formik.values.email}
             />
-            {formik.errors.email && 
+            {formik.touched.email && formik.errors.email && 
             (<p className='error text-danger fw-bold m-0'>{formik.errors.email}</p>)}
           </Form.Group>
           <Form.Group>
@@ -77,7 +77,7 @@ const SignIn = ({ setIsSignIn }) => {
               name="password"
               value={formik.values.password}
             />
-            {formik.errors.password && (
+            {formik.touched.password && formik.errors.password && (
               <p className='error text-danger fw-bold m-0'>{formik.errors.password}</p>
             )}
           </Form.Group>
