@@ -8,6 +8,8 @@ import { FacilitiesMetasReducer } from "./FacilitiesMetasReducer";
 import { OrgPhotosReducer } from "./OrgPhotosReducer";
 import { FacilitiesPhotoReducer } from "./FacilititesPhotoReducer";
 import resetReducer from "./ResetReducer";
+import { ResevationSearchReducer } from "./ResevationSearchReducer";
+import { CheckAvailabilityReducer } from "./CheckAvailReducer";
 const reducers = combineReducers({
   offersListData: OffersListReducer,
   AccountReducer: AccountReducer,
@@ -24,6 +26,8 @@ const reducers = combineReducers({
   FacilitiesPhotoReducer : FacilitiesPhotoReducer,
   resetReducer : resetReducer,
   FacilityListReducer : FacilityListReducer,
+  ResevationSearchReducer : ResevationSearchReducer,
+  CheckAvailabilityReducer : CheckAvailabilityReducer,
 });
 
 export default reducers;

@@ -70,7 +70,7 @@ const Center = () => {
                   <img
                     src={AddBanner}
                     alt="Add Center"
-                    className="add-banner cursor-pointer"
+                    className="add-banner cursor-pointer rounded-3"
                     onClick={() => navigate("/addcenter")}
                   />
                   <div className="mt-2">

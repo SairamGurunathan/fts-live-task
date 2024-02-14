@@ -11,7 +11,7 @@ import { Col, Row } from "react-bootstrap";
 import AddFacilities from "./Pages/AddFacilities";
 import Refunds from "./Pages/Refunds";
 import "./App.css";
-import "bootstrap/dist/css/bootstrap.min.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-loading-skeleton/dist/skeleton.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 
