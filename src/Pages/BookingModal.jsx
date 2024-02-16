@@ -2,27 +2,28 @@ import React, { useEffect, useState } from "react";
 import { Button, Col, Form, Offcanvas, Row, Table } from "react-bootstrap";
 import { SportsList } from "../Redux/Actions/SportsPhotosAction";
 import { useDispatch } from "react-redux";
-import "bootstrap/dist/css/bootstrap.min.css";
 import moment from "moment/moment";
 import CheckAvailability from "./CheckAvailability";
+import { CheckAvailabilityAction } from "../Redux/Actions/CheckAvailabilityAction";
+import "bootstrap/dist/css/bootstrap.min.css";
 
-const BookingModal = ({
-  show,
-  setShow,
-  selectFacilityType,
-  sportsListSelector,
-  handleFacilityType,
-}) => {
+const BookingModal = ({ show, setShow, sportsListSelector }) => {
   const handleClose = () => {
     setShow(false);
   };
   const dispatch = useDispatch();
+  const [selectFacility, setSelectFacility] = useState({
+    id:"1",
+    title:"Tennis Court"
+  })
   const [bookingType, setBookingType] = useState("Player");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [bookingCheck, setBookingCheck] = useState("single");
+  const [isMultiple, setIsMultiple] = useState(false);
+  const [day, setDay] = useState("");
   const handleBookingType = (event) => {
     setBookingType(event.target.value);
   };
@@ -37,10 +38,37 @@ const BookingModal = ({
   const handleEndTimeChange = (event) => {
     setEndTime(event.target.value);
   };
-  const onChangeValue = (event) => {
+  const onChangeValueSingle = (event) => {
     setBookingCheck(event.target.value);
+    setIsMultiple(false);
+    setDay("");
   };
-  const handleCheckAvailability = () => {};
+  const onChangeValueMultiple = (event) => {
+    setBookingCheck(event.target.value);
+    setIsMultiple(true);
+    setDay("");
+  };
+  const handleFacilityType1 = (event) => {
+
+    console.log(event.target.selectedOptions[0].label);
+    setSelectFacility({id:event.target.value,title:event.target.selectedOptions[0].label});
+  };
+
+  const handleCheckAvailability = () => {
+    const startDateTime =
+      moment(`${startDate} ${startTime}`).toISOString().slice(0, -5) + "Z";
+    const endDateTime =
+      moment(`${endDate} ${endTime}`).toISOString().slice(0, -5) + "Z";
+    dispatch(
+      CheckAvailabilityAction(
+        selectFacility?.id,
+        startDateTime,
+        endDateTime,
+        isMultiple,
+        day
+      )
+    );
+  };
 
   const formatTime = (time) => {
     const [hours, minutes] = time.split(":");
@@ -48,12 +76,12 @@ const BookingModal = ({
     const period = hours >= 12 ? "PM" : "AM";
     return `${formattedHours}:${minutes} ${period}`;
   };
+
   useEffect(() => {
-    if (sportsListSelector !== undefined) {
-      dispatch(SportsList(sportsListSelector));
-    }
+    dispatch(SportsList());
     // eslint-disable-next-line
-  }, [sportsListSelector]);
+  }, []);
+
   return (
     <>
       <Offcanvas
@@ -73,7 +101,6 @@ const BookingModal = ({
                 <Row>
                   <Col>
                     <label>Booking Type *</label>
-
                     <Form.Select
                       value={bookingType}
                       name="bookingType"
@@ -89,12 +116,14 @@ const BookingModal = ({
                   <Col>
                     <label>Facility Type *</label>
                     <Form.Select
-                      value={selectFacilityType}
+                      value={selectFacility.id}
                       name="facilityType"
-                      onChange={(event) => handleFacilityType(event)}
+                      onChange={(event) => handleFacilityType1(event)}
                     >
                       {sportsListSelector?.data?.map((type, index) => (
-                        <option key={index}>{type?.title}</option>
+                        <option key={index} value={type?.sport?.id} label={type?.title}>
+                          {type?.title}
+                        </option>
                       ))}
                     </Form.Select>
                   </Col>
@@ -108,7 +137,7 @@ const BookingModal = ({
                         name="bookingCheck"
                         value="single"
                         defaultChecked
-                        onChange={onChangeValue}
+                        onChange={onChangeValueSingle}
                         checked={bookingCheck === "single"}
                       />
                       <label className="ps-2">Single Booking</label>
@@ -118,7 +147,7 @@ const BookingModal = ({
                         type="radio"
                         name="bookingCheck"
                         value="multiple"
-                        onChange={onChangeValue}
+                        onChange={onChangeValueMultiple}
                         checked={bookingCheck === "multiple"}
                       />
                       <label className="ps-2">Multiple Booking</label>
@@ -160,7 +189,10 @@ const BookingModal = ({
                     />
                   </div>
                 </div>
-                <Button className="mt-4" onClick={handleCheckAvailability}>
+                <Button
+                  className="mt-4"
+                  onClick={() => handleCheckAvailability()}
+                >
                   Check Availability
                 </Button>
                 <CheckAvailability />
@@ -197,9 +229,7 @@ const BookingModal = ({
                 <hr className="w-100" />
                 <div>
                   <p>Facility Type</p>
-                  <p>
-                    {selectFacilityType ? selectFacilityType : "Tennis court"}
-                  </p>
+                  <p>{selectFacility?.title}</p>
                 </div>
                 <hr className="w-100" />
                 <p>Player's Facility and Pricing Details</p>

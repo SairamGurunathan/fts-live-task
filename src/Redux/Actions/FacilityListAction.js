@@ -17,3 +17,20 @@ export const FacilityListAction = (id) => async (dispatch) => {
       console.error(error);
     } 
   };
+
+  export const FacilityAllListAction = (id) => async (dispatch) => {
+    const centerID = localStorage.getItem("centerId");
+    try { 
+      const response = await axios.get(`api/v1/facilityList?sportId.equals=${id}&centerId.equals=${centerID}`)
+      
+      const { data } = response;
+  
+      dispatch({
+        type: Constants.FETCH_ALLFACILITYLIST,
+        payload: data,
+      });
+      
+    } catch (error) {
+      console.error(error);
+    } 
+  };

@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 import { AccountReducer, CenterReducer, FacilitiesReducer, OffersListReducer, OrgInfoReducer } from "./Reducers";
 import { RefundFilterDetailsReducer, RefundFilterReducer } from "./RefundFilterReducer";
-import { FacilityListReducer, SportsListReducer } from "./SportsListReducer";
+import { FacilityAllListReducer, FacilityListReducer, SportsListReducer } from "./SportsListReducer";
 import { CourtDetailsReducer } from "./CourtDetailsReducer";
 import { AddSportsFormReducer } from "./AddSportsReducer";
 import { FacilitiesMetasReducer } from "./FacilitiesMetasReducer";
@@ -28,6 +28,7 @@ const reducers = combineReducers({
   FacilityListReducer : FacilityListReducer,
   ResevationSearchReducer : ResevationSearchReducer,
   CheckAvailabilityReducer : CheckAvailabilityReducer,
+  FacilityAllListReducer : FacilityAllListReducer,
 });
 
 export default reducers;

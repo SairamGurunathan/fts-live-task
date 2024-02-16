@@ -3,15 +3,15 @@ import { Icon } from "@iconify/react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import BigCalander from "../Components/BigCalander";
 import { useDispatch, useSelector } from "react-redux";
-import moment from "moment"; // Import moment package
-import { FacilityListAction } from "../Redux/Actions/FacilityListAction";
+import moment from "moment";
+import { FacilityAllListAction, FacilityListAction } from "../Redux/Actions/FacilityListAction";
 import { AccountAction } from "../Redux/Actions/AccountAction";
 import { SportsList } from "../Redux/Actions/SportsPhotosAction";
 import BookingModal from "./BookingModal";
 import { ReservationSearch } from "../Redux/Actions/ReservationSearch";
 
 const Reservations = () => {
-  const [selectFacilityType, setSelectFacilityType] = useState("");
+  const [selectFacilityType, setSelectFacilityType] = useState([]);
   const [selectFacilityListType, setSelectFacilityListType] = useState("");
   const [show, setShow] = useState(false);
   const [searchDate, setSearchDate] = useState(moment().format("YYYY-MM-DD")); 
@@ -19,19 +19,25 @@ const Reservations = () => {
 
   const handleFacilityType = (event) => {
     setSelectFacilityType(event.target.value);
-    dispatch(FacilityListAction(event.target.value));
+      dispatch(FacilityListAction(event.target.value));
+      dispatch(FacilityAllListAction(event.target.value))
   };
 
   const handleFacilityListType = (event) => {
-    setSelectFacilityListType(event.target.value);
+      setSelectFacilityListType(event.target.value);
   };
 
   const sportsListSelector = useSelector(
     (state) => state?.SportsListReducer?.sportsList
   );
+  
   const facilityListSelector = useSelector(
     (state) => state?.FacilityListReducer?.facilityList
   );
+
+  const reservationSelector = useSelector((state)=>state?.ResevationSearchReducer?.search?.data)
+  console.log(reservationSelector);
+  const facilityAllCourts = useSelector((state)=>state?.FacilityAllListReducer?.facilityAllList)
 
   const handleBookingModal = () => {
     setShow(true);
@@ -51,14 +57,13 @@ const Reservations = () => {
 
   useEffect(() => {
     dispatch(AccountAction());
+        // eslint-disable-next-line
+  }, [AccountAction])
+  
+  useEffect(() => {
+    dispatch(SportsList());
     const today = moment().format("YYYY-MM-DD");
     setSearchDate(today);
-    if (sportsListSelector !== undefined) {
-      dispatch(SportsList(sportsListSelector));
-    }
-  //   if(facilityListSelector !== undefined){
-  // dispatch(FacilityListAction(facilityListSelector))
-  // }
     const currentDate = moment().subtract(1, "day");
     const searchFormatStart = currentDate.toISOString().slice(0,-5)+"Z";
     const searchFormatend = moment().toISOString().slice(0,-5)+"Z";
@@ -148,10 +153,10 @@ const Reservations = () => {
                 >
                   {Object.values(facilityListSelector)?.length > 0 ? (
                     <>
-                      <option>All Courts</option>
+                      <option value={facilityAllCourts}>All Courts</option>
                       {Object.values(facilityListSelector)?.map((facility) =>
                         facility?.map((list) => (
-                          <option value={list?.id} >{list?.name}</option>
+                          <option value={list?.id}>{list?.name}</option>
                         ))
                       )}
                     </>
@@ -184,13 +189,13 @@ const Reservations = () => {
               </div>
             </div>
             <hr className="w-100" />
-            <BigCalander />
+            <BigCalander  reservationSelector={reservationSelector}/>
           </div>
         </Card>
       </div>
       <Button className="me-5 my-4 float-end">Cancel</Button>
 
-      <BookingModal show={show} setShow={setShow} handleFacilityType={handleFacilityType} sportsListSelector={sportsListSelector} selectFacilityType={selectFacilityType} />
+      <BookingModal show={show} setShow={setShow} handleFacilityType={handleFacilityType} setSelectFacilityType={setSelectFacilityType} sportsListSelector={sportsListSelector} selectFacilityType={selectFacilityType} />
     </>
   );
 };

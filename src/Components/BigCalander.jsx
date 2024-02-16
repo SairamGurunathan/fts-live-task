@@ -2,9 +2,9 @@ import React from 'react'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 
-const BigCalander = () => {
+const BigCalander = ({reservationSelector}) => {
     const localizer = momentLocalizer(moment)
-
+    
   return (
     <>
         <div>
@@ -12,7 +12,7 @@ const BigCalander = () => {
       localizer={localizer}
       views={["day", "week", "month"]}
       defaultView="day"
-    //   events={myEventsList}
+      // events={myEvent}
       startAccessor="start"
       endAccessor="end"
       style={{ height: "100vh" }}
