@@ -1,13 +1,38 @@
 import { Icon } from "@iconify/react";
-import React from "react";
+import React, { useState } from "react";
 import { Button, Col, Form, Row, Table } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { PricingRuleAction } from "../Redux/Actions/PricingRuleAction";
+// import { CostByPriceAction } from "../Redux/Actions/CostByPriceAction";
 
-const CheckAvailability = () => {
+const CheckAvailability = ({setIsPricingTable}) => {
+  const dispatch = useDispatch()
+  const [isAddPlayer, setIsAddPlayer] = useState(false)
+  const checkAvailabilitySelector = useSelector((state)=>state?.CheckAvailabilityReducer?.checkavailability?.data)
+
+  const pricingRuleSelector = useSelector((state)=>state?.PricingRuleReducer?.pricingRule)
+  console.log(pricingRuleSelector);
+  const handleFacilityCheck=(id)=>{
+    dispatch(PricingRuleAction(id))
+  }
+
+  const handleSave = ()=>{
+    // dispatch(CostByPriceAction())
+    setIsPricingTable(true)
+  }
+
+  const handleAddPlayer = ()=>{
+    setIsAddPlayer(true)
+  }
   return (
     <div>
-      <div>
+        <div>
         <div>
           <label>Available Facility</label>
+        </div>
+        <div>
+          {checkAvailabilitySelector?.map((val)=>(<Button className="p-0 px-2 mx-1"><small>{val?.title}</small></Button>))}
+        </div>
         </div>
         <div>
           <label>Player Details</label>
@@ -24,13 +49,21 @@ const CheckAvailability = () => {
                     <Form.Control type="text" />
                   </div>
                   <div>
-                    <label>Facility *</label>
-                    <div className="border border-1">
-                      <Form.Check
-                        type="radio"
-                        // id={`default-${type}`}
-                        // label={`default ${type}`}
-                      />
+                    <label className="mb-2">Facility *</label>
+                    <div className="border border-1 overflow-auto check-height p-2">
+                    {
+  checkAvailabilitySelector?.map((val) => (
+    <div className="form-check" key={val?.id}>
+      <input
+        type="radio"
+        name="facility"
+        value={val?.id}
+        onChange={() => handleFacilityCheck(val?.id)}
+      />
+      <label className="ps-2">{val?.title}</label>
+    </div>
+  ))
+}
                     </div>
                   </div>
                 </div>
@@ -46,28 +79,36 @@ const CheckAvailability = () => {
                     <Form.Control type="text" />
                   </div>
                   <div>
-                    <label>Pricing rule *</label>
-                    <div className="border border-1">
-                      <Form.Check
-                        type="radio"
-                        // id={`default-${type}`}
-                        // label={`default ${type}`}
-                      />
+                    <label className="mb-2">Pricing rule *</label>
+                    <div className="border border-1 overflow-auto check-height p-2">
+                    {
+                      pricingRuleSelector?.map((rule)=>(
+                        <div className="form-check" key={rule?.id}>
+      <input
+        type="radio"
+        name="pricingrule"
+        value={rule?.id}
+      />
+      <label className="ps-2">{rule?.pricingRule?.ruleName}</label>
+    </div>
+                      ))
+                      }
                     </div>
                   </div>
                 </div>
               </Col>
               <div className="mt-3">
-                <Button className="float-end">Edit</Button>
+                <Button className="float-end" onClick={handleSave}>Save</Button>
               </div>
             </Row>
 
             <div className="mt-3">
-              <Button variant="danger">Add Player</Button>
+              <Button variant="danger" onClick={handleAddPlayer}>Add Player</Button>
             </div>
           </Form>
         </div>
-        <div>
+        {isAddPlayer ? 
+        <div className="mt-3">
           <label>Added Player's</label>
           <Table striped bordered hover>
             <thead>
@@ -102,8 +143,8 @@ const CheckAvailability = () => {
               </tr>
             </tbody>
           </Table>
-        </div>
-      </div>
+        </div> : null}
+        
     </div>
   );
 };

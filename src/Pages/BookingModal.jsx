@@ -24,6 +24,9 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
   const [bookingCheck, setBookingCheck] = useState("single");
   const [isMultiple, setIsMultiple] = useState(false);
   const [day, setDay] = useState("");
+  const [isCheckAvailability, setIsCheckAvailability] = useState(false)
+  const [isPricingTable, setIsPricingTable] = useState(false)
+  
   const handleBookingType = (event) => {
     setBookingType(event.target.value);
   };
@@ -49,8 +52,6 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
     setDay("");
   };
   const handleFacilityType1 = (event) => {
-
-    console.log(event.target.selectedOptions[0].label);
     setSelectFacility({id:event.target.value,title:event.target.selectedOptions[0].label});
   };
 
@@ -59,16 +60,16 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
       moment(`${startDate} ${startTime}`).toISOString().slice(0, -5) + "Z";
     const endDateTime =
       moment(`${endDate} ${endTime}`).toISOString().slice(0, -5) + "Z";
-    dispatch(
-      CheckAvailabilityAction(
-        selectFacility?.id,
-        startDateTime,
-        endDateTime,
-        isMultiple,
-        day
-      )
-    );
-  };
+        dispatch(
+          CheckAvailabilityAction(
+            selectFacility?.id,
+            startDateTime,
+            endDateTime,
+            isMultiple,
+            day
+          ))
+          setIsCheckAvailability(true)
+  }
 
   const formatTime = (time) => {
     const [hours, minutes] = time.split(":");
@@ -192,10 +193,14 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
                 <Button
                   className="mt-4"
                   onClick={() => handleCheckAvailability()}
-                >
+                  disabled={!startDate || !startTime || !endDate || !endTime}
+                > 
                   Check Availability
                 </Button>
-                <CheckAvailability />
+          
+                {isCheckAvailability ? (
+              <CheckAvailability setIsPricingTable={setIsPricingTable}/>
+            ) : null}
                 <div className="mt-4">
                   <label>Notes</label>
                   <Form.Control
@@ -233,7 +238,7 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
                 </div>
                 <hr className="w-100" />
                 <p>Player's Facility and Pricing Details</p>
-                <Table striped bordered hover>
+                {isPricingTable ? <Table striped bordered hover>
                   <thead>
                     <tr>
                       <th>Name</th>
@@ -256,7 +261,8 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
                       </td>
                     </tr>
                   </tbody>
-                </Table>
+                </Table> : null}
+                
               </Col>
             </Row>
             <div className="mt-4 bg-info">

@@ -4,7 +4,10 @@ import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import BigCalander from "../Components/BigCalander";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
-import { FacilityAllListAction, FacilityListAction } from "../Redux/Actions/FacilityListAction";
+import {
+  FacilityAllListAction,
+  FacilityListAction,
+} from "../Redux/Actions/FacilityListAction";
 import { AccountAction } from "../Redux/Actions/AccountAction";
 import { SportsList } from "../Redux/Actions/SportsPhotosAction";
 import BookingModal from "./BookingModal";
@@ -14,61 +17,76 @@ const Reservations = () => {
   const [selectFacilityType, setSelectFacilityType] = useState([]);
   const [selectFacilityListType, setSelectFacilityListType] = useState("");
   const [show, setShow] = useState(false);
-  const [searchDate, setSearchDate] = useState(moment().format("YYYY-MM-DD")); 
+  const [searchDate, setSearchDate] = useState(moment().format("YYYY-MM-DD"));
   const dispatch = useDispatch();
 
   const handleFacilityType = (event) => {
     setSelectFacilityType(event.target.value);
-      dispatch(FacilityListAction(event.target.value));
-      dispatch(FacilityAllListAction(event.target.value))
+    dispatch(FacilityListAction(event.target.value));
+    dispatch(FacilityAllListAction(event.target.value));
   };
 
   const handleFacilityListType = (event) => {
-      setSelectFacilityListType(event.target.value);
+    setSelectFacilityListType(event.target.value);
   };
 
   const sportsListSelector = useSelector(
     (state) => state?.SportsListReducer?.sportsList
   );
-  
+
   const facilityListSelector = useSelector(
     (state) => state?.FacilityListReducer?.facilityList
   );
 
-  const reservationSelector = useSelector((state)=>state?.ResevationSearchReducer?.search?.data)
-  console.log(reservationSelector);
-  const facilityAllCourts = useSelector((state)=>state?.FacilityAllListReducer?.facilityAllList)
+  const reservationSelector = useSelector(
+    (state) => state?.ResevationSearchReducer?.search?.data
+  );
+
+  const myEvent =
+  Array.isArray(reservationSelector) && reservationSelector.length > 0
+    ? reservationSelector.map((event) => ({
+        start: event?.timings?.start,
+        end: event?.timings?.end,
+        title: event?.myresources?.title,
+      }))
+    : [];
+
+  const facilityAllCourts = useSelector(
+    (state) => state?.FacilityAllListReducer?.facilityAllList
+  );
 
   const handleBookingModal = () => {
     setShow(true);
   };
-  
+
   const handledDate = (event) => {
     setSearchDate(event.target.value);
   };
 
   const handleSearch = () => {
     const currentDate = moment().subtract(1, "day");
-    const searchFormatStart = currentDate.toISOString().slice(0,-5)+"Z";
-    const searchFormatend = moment().toISOString().slice(0,-5)+"Z";
+    const searchFormatStart = currentDate.toISOString().slice(0, -5) + "Z";
+    const searchFormatend = moment().toISOString().slice(0, -5) + "Z";
     const selectedId = selectFacilityListType;
     dispatch(ReservationSearch(searchFormatStart, searchFormatend, selectedId));
   };
 
   useEffect(() => {
     dispatch(AccountAction());
-        // eslint-disable-next-line
-  }, [AccountAction])
-  
+    // eslint-disable-next-line
+  }, [AccountAction]);
+
   useEffect(() => {
     dispatch(SportsList());
     const today = moment().format("YYYY-MM-DD");
     setSearchDate(today);
     const currentDate = moment().subtract(1, "day");
-    const searchFormatStart = currentDate.toISOString().slice(0,-5)+"Z";
-    const searchFormatend = moment().toISOString().slice(0,-5)+"Z";
+    const searchFormatStart = currentDate.toISOString().slice(0, -5) + "Z";
+    const searchFormatend = moment().toISOString().slice(0, -5) + "Z";
     const selectedId = selectFacilityListType;
-    dispatch(ReservationSearch(searchFormatStart, searchFormatend,selectedId));
+    dispatch(ReservationSearch(searchFormatStart, searchFormatend, selectedId));
+    dispatch(FacilityListAction(1))
+    dispatch(FacilityAllListAction(1))
     // eslint-disable-next-line
   }, []);
 
@@ -171,13 +189,16 @@ const Reservations = () => {
                   type="date"
                   class="form-control"
                   value={searchDate}
-                  onChange={(event)=>handledDate(event)}
+                  onChange={(event) => handledDate(event)}
                   style={{ width: "200px" }}
                 />
               </div>
               <div className="d-flex align-items-center justify-content-between booking-btn gap-3">
-                <Button className="btn-secondary text-white align-items-center" onClick={handleSearch}>
-                  <Icon icon="material-symbols:search" className="fs-6"/>
+                <Button
+                  className="btn-secondary text-white align-items-center"
+                  onClick={handleSearch}
+                >
+                  <Icon icon="material-symbols:search" className="fs-6" />
                   Search
                 </Button>
                 <Button
@@ -189,13 +210,20 @@ const Reservations = () => {
               </div>
             </div>
             <hr className="w-100" />
-            <BigCalander  reservationSelector={reservationSelector}/>
+            <BigCalander myEvent={myEvent} />
           </div>
         </Card>
       </div>
       <Button className="me-5 my-4 float-end">Cancel</Button>
 
-      <BookingModal show={show} setShow={setShow} handleFacilityType={handleFacilityType} setSelectFacilityType={setSelectFacilityType} sportsListSelector={sportsListSelector} selectFacilityType={selectFacilityType} />
+      <BookingModal
+        show={show}
+        setShow={setShow}
+        handleFacilityType={handleFacilityType}
+        setSelectFacilityType={setSelectFacilityType}
+        sportsListSelector={sportsListSelector}
+        selectFacilityType={selectFacilityType}
+      />
     </>
   );
 };
