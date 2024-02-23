@@ -101,7 +101,7 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
               <Col lg={8}>
                 <Row>
                   <Col>
-                    <label>Booking Type *</label>
+                    <label className="labels">Booking Type *</label>
                     <Form.Select
                       value={bookingType}
                       name="bookingType"
@@ -115,7 +115,7 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
                     </Form.Select>
                   </Col>
                   <Col>
-                    <label>Facility Type *</label>
+                    <label className="labels" >Facility Type *</label>
                     <Form.Select
                       value={selectFacility.id}
                       name="facilityType"
@@ -130,9 +130,9 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
                   </Col>
                 </Row>
                 <div className="mt-4">
-                  <label>Booking occurence</label>
-                  <div className="d-flex flex-row ">
-                    <div class="form-check p-0">
+                  <label className="labels">Booking occurence</label>
+                  <div className="d-flex flex-row">
+                    <div class="form-check p-0 d-flex align-items-center">
                       <input
                         type="radio"
                         name="bookingCheck"
@@ -141,9 +141,9 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
                         onChange={onChangeValueSingle}
                         checked={bookingCheck === "single"}
                       />
-                      <label className="ps-2">Single Booking</label>
+                      <label className=" ps-2"><small>Single Booking</small></label>
                     </div>
-                    <div class="form-check">
+                    <div class="form-check d-flex align-items-center">
                       <input
                         type="radio"
                         name="bookingCheck"
@@ -151,7 +151,7 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
                         onChange={onChangeValueMultiple}
                         checked={bookingCheck === "multiple"}
                       />
-                      <label className="ps-2">Multiple Booking</label>
+                      <label className="ps-2"><small>Multiple Booking</small></label>
                     </div>
                   </div>
                 </div>
@@ -165,7 +165,7 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
                     />
                   </div>
                   <div>
-                    <label className="mb-2">End date *</label>
+                    <label className="labels mb-2">End date *</label>
                     <Form.Control
                       type="date"
                       value={endDate}
@@ -174,7 +174,7 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
                     />
                   </div>
                   <div>
-                    <label className="mb-2">Start Time *</label>
+                    <label className="labels mb-2">Start Time *</label>
                     <Form.Control
                       type="time"
                       value={startTime}
@@ -182,7 +182,7 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
                     />
                   </div>
                   <div>
-                    <label className="mb-2">End Time *</label>
+                    <label className="labels mb-2">End Time *</label>
                     <Form.Control
                       type="time"
                       value={endTime}
@@ -202,7 +202,7 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
               <CheckAvailability setIsPricingTable={setIsPricingTable}/>
             ) : null}
                 <div className="mt-4">
-                  <label>Notes</label>
+                  <label className="labels">Notes</label>
                   <Form.Control
                     as="textarea"
                     rows={3}
@@ -214,19 +214,19 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
               <Col lg={4} className="border border-2 p-3">
                 <div>
                   <p>Booking Type</p>
-                  <p>{bookingType}</p>
+                  <p className="fw-bold">{bookingType}</p>
                 </div>
                 <hr className="w-100" />
                 <div>
                   <p>Start date and time</p>
                   {startDate && startTime && (
-                    <p>
+                    <p className="fw-bold">
                       {moment(startDate).format("LL")} {formatTime(startTime)}
                     </p>
                   )}
                   <p>End date and time</p>
                   {endDate && endTime && (
-                    <p>
+                    <p className="fw-bold">
                       {moment(endDate).format("LL")} {formatTime(endTime)}
                     </p>
                   )}
@@ -234,10 +234,10 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
                 <hr className="w-100" />
                 <div>
                   <p>Facility Type</p>
-                  <p>{selectFacility?.title}</p>
+                  <p className="fw-bold">{selectFacility?.title}</p>
                 </div>
                 <hr className="w-100" />
-                <p>Player's Facility and Pricing Details</p>
+                <p className="fw-bold">Player's Facility and Pricing Details</p>
                 {isPricingTable ? <Table striped bordered hover>
                   <thead>
                     <tr>
@@ -266,7 +266,7 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
               </Col>
             </Row>
             <div className="mt-4 bg-info">
-              <Button className="float-end">Proceed to Book</Button>
+              <Button className="float-end" disabled>Proceed to Book</Button>
             </div>
           </Form>
         </Offcanvas.Body>

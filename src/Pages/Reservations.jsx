@@ -4,6 +4,8 @@ import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import BigCalander from "../Components/BigCalander";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
+import "moment-timezone";
+
 import {
   FacilityAllListAction,
   FacilityListAction,
@@ -19,7 +21,7 @@ const Reservations = () => {
   const [show, setShow] = useState(false);
   const [searchDate, setSearchDate] = useState(moment().format("YYYY-MM-DD"));
   const dispatch = useDispatch();
-
+console.log(searchDate,'searchDate');
   const handleFacilityType = (event) => {
     setSelectFacilityType(event.target.value);
     dispatch(FacilityListAction(event.target.value));
@@ -41,15 +43,16 @@ const Reservations = () => {
   const reservationSelector = useSelector(
     (state) => state?.ResevationSearchReducer?.search?.data
   );
-
-  const myEvent =
-  Array.isArray(reservationSelector) && reservationSelector.length > 0
-    ? reservationSelector.map((event) => ({
-        start: event?.timings?.start,
-        end: event?.timings?.end,
-        title: event?.myresources?.title,
-      }))
-    : [];
+  console.log(reservationSelector);
+  const myEvent = reservationSelector?.events.map((event) => {
+    return {
+      title: event?.reservation?.title,
+      start: (event?.reservation?.start),
+      end: (event?.reservation?.end),
+      color: event?.reservation?.bgColour,
+    };
+  });
+  console.log(myEvent);
 
   const facilityAllCourts = useSelector(
     (state) => state?.FacilityAllListReducer?.facilityAllList
@@ -64,9 +67,16 @@ const Reservations = () => {
   };
 
   const handleSearch = () => {
-    const currentDate = moment().subtract(1, "day");
-    const searchFormatStart = currentDate.toISOString().slice(0, -5) + "Z";
-    const searchFormatend = moment().toISOString().slice(0, -5) + "Z";
+    const currentDate = moment.tz(searchDate, "America/Denver");
+    const searchFormatStart =
+      currentDate.utc().toISOString().slice(0, -5) + "Z";
+
+    const nextDate = moment
+      .tz(searchDate, "America/Denver")
+      .add(1, "day")
+      .subtract(1, "seconds");
+    const searchFormatend = nextDate.utc().toISOString().slice(0, -5) + "Z";
+
     const selectedId = selectFacilityListType;
     dispatch(ReservationSearch(searchFormatStart, searchFormatend, selectedId));
   };
@@ -85,8 +95,8 @@ const Reservations = () => {
     const searchFormatend = moment().toISOString().slice(0, -5) + "Z";
     const selectedId = selectFacilityListType;
     dispatch(ReservationSearch(searchFormatStart, searchFormatend, selectedId));
-    dispatch(FacilityListAction(1))
-    dispatch(FacilityAllListAction(1))
+    dispatch(FacilityListAction(1));
+    dispatch(FacilityAllListAction(1));
     // eslint-disable-next-line
   }, []);
 
@@ -210,7 +220,7 @@ const Reservations = () => {
               </div>
             </div>
             <hr className="w-100" />
-            <BigCalander myEvent={myEvent} />
+            <BigCalander myEvent={myEvent} searchDate={searchDate}/>
           </div>
         </Card>
       </div>
