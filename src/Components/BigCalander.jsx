@@ -7,26 +7,36 @@ import BookingPreview from '../Pages/BookingPreview'
 
 const BigCalander = ({myEvent,searchDate}) => {
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [date, setDate] = useState(new Date(searchDate))
   const [show, setShow] = useState(false);
   moment.tz.setDefault('Asia/India')
     const localizer = momentLocalizer(moment)
+    const onNavigate = ((newDate) => setDate(newDate))
     
     const handleSelectEvent = (event) => {
-      setSelectedEvent(event);
+      setSelectedEvent(event)
       setShow(true);
     };
+    const eventPropGetter = ()=>{
+
+    }
   return (
     <>
     <Calendar
       localizer={localizer}
       views={["day", "week", "month"]}
+      date={date}
       defaultView="day"
-      default={new Date(searchDate)}
+      defaultDate={new Date(moment().toDate())}
       events={myEvent}
       startAccessor="start"
       endAccessor="end"
+      titleAccessor="title"
       style={{ height: "100vh" }}
       onSelectEvent={handleSelectEvent}
+      showAllEvents
+      onNavigate={onNavigate}
+      eventPropGetter={eventPropGetter}
     />
     <BookingPreview show={show} setShow={setShow} selectedEvent={selectedEvent}/>
     </>

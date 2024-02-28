@@ -14,6 +14,8 @@ import "./App.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-loading-skeleton/dist/skeleton.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css'
+// import TestPage from "./Pages/TestPage";
+
 
 function App() {
   return (
@@ -41,6 +43,9 @@ function App() {
         <Route path="/reservation" element={<Reservations/>}/>
 
         <Route path="/refunds" element={<Refunds/>}/>
+
+        {/* <Route path="/new" element={<TestPage/>}/> */}
+
       </Routes>
         </Col>
         </Row>

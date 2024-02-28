@@ -199,7 +199,8 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
                 </Button>
           
                 {isCheckAvailability ? (
-              <CheckAvailability setIsPricingTable={setIsPricingTable}/>
+              <CheckAvailability setIsPricingTable={setIsPricingTable} startDate={startDate} startTime={startTime} endDate={endDate} endTime={endTime} isMultiple={isMultiple}
+              day={day}/>
             ) : null}
                 <div className="mt-4">
                   <label className="labels">Notes</label>

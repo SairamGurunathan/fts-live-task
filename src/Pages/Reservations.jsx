@@ -17,11 +17,11 @@ import { ReservationSearch } from "../Redux/Actions/ReservationSearch";
 
 const Reservations = () => {
   const [selectFacilityType, setSelectFacilityType] = useState([]);
-  const [selectFacilityListType, setSelectFacilityListType] = useState("");
+  const [selectFacilityListType, setSelectFacilityListType] = useState('');
   const [show, setShow] = useState(false);
   const [searchDate, setSearchDate] = useState(moment().format("YYYY-MM-DD"));
   const dispatch = useDispatch();
-console.log(searchDate,'searchDate');
+
   const handleFacilityType = (event) => {
     setSelectFacilityType(event.target.value);
     dispatch(FacilityListAction(event.target.value));
@@ -43,16 +43,16 @@ console.log(searchDate,'searchDate');
   const reservationSelector = useSelector(
     (state) => state?.ResevationSearchReducer?.search?.data
   );
-  console.log(reservationSelector);
   const myEvent = reservationSelector?.events.map((event) => {
     return {
+      ...event,
       title: event?.reservation?.title,
       start: (event?.reservation?.start),
       end: (event?.reservation?.end),
-      color: event?.reservation?.bgColour,
+      default: 'allDay'
     };
   });
-  console.log(myEvent);
+
 
   const facilityAllCourts = useSelector(
     (state) => state?.FacilityAllListReducer?.facilityAllList
@@ -87,18 +87,23 @@ console.log(searchDate,'searchDate');
   }, [AccountAction]);
 
   useEffect(() => {
-    dispatch(SportsList());
-    const today = moment().format("YYYY-MM-DD");
-    setSearchDate(today);
-    const currentDate = moment().subtract(1, "day");
-    const searchFormatStart = currentDate.toISOString().slice(0, -5) + "Z";
-    const searchFormatend = moment().toISOString().slice(0, -5) + "Z";
-    const selectedId = selectFacilityListType;
-    dispatch(ReservationSearch(searchFormatStart, searchFormatend, selectedId));
-    dispatch(FacilityListAction(1));
-    dispatch(FacilityAllListAction(1));
+
+        dispatch(SportsList());
+         dispatch(FacilityListAction(1));
+         dispatch(FacilityAllListAction(1));
+  
+        const currentDate = moment.tz(searchDate, "America/Denver");
+        const searchFormatStart =
+          currentDate.utc().toISOString().slice(0, -5) + "Z";
+        const nextDate = moment
+          .tz(searchDate, "America/Denver")
+          .add(1, "day")
+          .subtract(1, "seconds");
+        const searchFormatend = nextDate.utc().toISOString().slice(0, -5) + "Z";
+          dispatch(ReservationSearch(searchFormatStart, searchFormatend, facilityAllCourts))
     // eslint-disable-next-line
   }, []);
+  
 
   return (
     <>
@@ -220,12 +225,12 @@ console.log(searchDate,'searchDate');
               </div>
             </div>
             <hr className="w-100" />
-            <BigCalander myEvent={myEvent} searchDate={searchDate}/>
+            <BigCalander myEvent={myEvent} searchDate={searchDate} reservationSelector={reservationSelector}/>
           </div>
         </Card>
       </div>
       <Button className="me-5 my-4 float-end">Cancel</Button>
-
+      
       <BookingModal
         show={show}
         setShow={setShow}

@@ -1,106 +1,53 @@
-import { Icon } from "@iconify/react";
-import React, { useState } from "react";
-import { Button, Col, Form, Row, Table } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
-import { PricingRuleAction } from "../Redux/Actions/PricingRuleAction";
+import React from 'react'
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import AddPlayer from "./AddPlayer";
-import { CostByPriceAction } from "../Redux/Actions/CostByPriceAction";
-import moment from "moment";
+import { Button, Col, Row, Form } from 'react-bootstrap';
 
-const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTime,day,isMultiple}) => {
-  const validationSchema = Yup.object().shape({
-    firstName: Yup.string().required("Please enter a first name"),
-    lastName: Yup.string().required("Please enter a last name"),
-    phoneNumber: Yup.string()
-      .max(10, "Max 10 digit")
-      .required("Please enter a phone number"),
-    email: Yup.string()
-      .email("Invalid email")
-      .required("Please enter a email address"),
-    facility: Yup.string().required("Please select a facility"),
-    pricingRule: Yup.string().required("Please select a pricing rule"),
-  });
-  const dispatch = useDispatch();
-  const [isAddPlayer, setIsAddPlayer] = useState(false);
-  // const [selectedFacility, setSelectedFacility] = useState(null);
-  const [isEdit, setIsEdit] = useState(false);
-  const [show, setShow] = useState(false);
-  const [pricingRuleId, setPricingRuleId] = useState('')
-
-  const numberValidation = (e) => {
-    var regex = new RegExp("^[0-9]+$");
-    var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
-    if (regex.test(str)) {
-      return true;
-    }
-    e.preventDefault();
-    return false;
-  };
-
-  const checkAvailabilitySelector = useSelector(
-    (state) => state?.CheckAvailabilityReducer?.checkavailability?.data
-  );
-
-  const pricingRuleSelector = useSelector(
-    (state) => state?.PricingRuleReducer?.pricingRule
-  );
-
-  const handleFacilityCheck = (id) => {
-    // setSelectedFacility(id);
-    dispatch(PricingRuleAction(id));
-  };
-  const handleEdit = () => {
-    setIsEdit(false);
-  };
-
-  const handleAddPlayer = () => {
-    setShow(true);
-  };
-
-  const formik = useFormik({
-    initialValues: {
-      firstName: "",
-      lastName: "",
-      phoneNumber: "",
-      email: "",
-      facility: "",
-      pricingRule: "",
-    },
-    validationSchema: validationSchema,
-    onSubmit: async (values, { setSubmitting }) => {
-      try {
-        const startDateTime =
-          moment(`${startDate} ${startTime}`).toISOString().slice(0, -5) + "Z";
-        const endDateTime =
-          moment(`${endDate} ${endTime}`).toISOString().slice(0, -5) + "Z";
-        await dispatch(CostByPriceAction(pricingRuleId, startDateTime, endDateTime, isMultiple, day));
-        setIsPricingTable(true);
-        console.log(values);
-      } catch (error) {
-        console.log(error);
-      }
-      setSubmitting(false);
-    },
-  });
+const TestPage = () => {
+    const validationSchema = Yup.object().shape({
+        firstName: Yup.string().min(1,"required").required("Please enter a first name"),
+        lastName: Yup.string().required("Please enter a last name"),
+        phoneNumber: Yup.string()
+          .max(10, "Max 10 digit")
+          .required("Please enter a phone number"),
+        email: Yup.string()
+          .email("Invalid email")
+          .required("Please enter a email address"),
+        facility: Yup.string().required("Please select a facility"),
+        pricingRule: Yup.string().required("Please select a pricing rule"),
+      });
+      const numberValidation = (e) => {
+        var regex = new RegExp("^[0-9]+$");
+        var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+        if (regex.test(str)) {
+          return true;
+        }
+        e.preventDefault();
+        return false;
+      };
+      const formik = useFormik({
+        initialValues: {
+          firstName: "",
+          lastName: "",
+          phoneNumber: "",
+          email: "",
+          facility: "",
+          pricingRule: "",
+        },
+        validationSchema: validationSchema,
+        onSubmit: async (values, { setSubmitting }) => {
+          try {
+            console.log(values);
+            
+          } catch (error) {
+            console.log(error);
+          }
+          setSubmitting(false);
+        },
+      });
   return (
-    <div>
-      <div>
-        <div>
-          <label>Available Facility</label>
-        </div>
-        <div>
-          {checkAvailabilitySelector?.map((val) => (
-            <Button className="p-0 px-2 mx-1">
-              <small>{val?.title}</small>
-            </Button>
-          ))}
-        </div>
-      </div>
-      <div>
-        <label>Player Details</label>
-        <Form onSubmit={formik.handleSubmit}>
+    <>
+    <Form onSubmit={formik.handleSubmit}>
           <Row>
             <Col>
               <div className="d-flex flex-column justify-content-between mt-4">
@@ -145,7 +92,7 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                       )}
                   </Form.Group>
                 </div>
-                <div>
+                {/* <div>
                   <label className="labels mb-2">Facility *</label>
                   <div className="border border-1 overflow-auto check-height p-2">
                     {checkAvailabilitySelector?.map((val) => (
@@ -158,6 +105,7 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                           onChange={() => {
                             handleFacilityCheck(val?.id);
                             formik.setFieldValue("facility", val?.id);
+                            // formik.setFieldTouched("facility", true);
                           }}
                         />
                         <label className="ps-2">{val?.title}</label>
@@ -169,7 +117,7 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                       {formik.errors.facility}
                     </p>
                   )}
-                </div>
+                </div> */}
               </div>
             </Col>
             <Col>
@@ -210,7 +158,7 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                     )}
                   </Form.Group>
                 </div>
-                <div>
+                {/* <div>
                   <label className=" labels mb-2">Pricing rule *</label>
                   <div className="border border-1 overflow-auto check-height p-2">
                     {pricingRuleSelector && pricingRuleSelector.length > 0 ? (
@@ -226,9 +174,8 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                               value={rule?.id}
                               checked={formik.values.pricingRule === rule?.id}
                               onChange={() => {
-                                setPricingRuleId(rule?.id);
                                 formik.setFieldValue("pricingRule", rule?.id);
-                                formik.setFieldTouched("pricingRule", true);
+                              //   formik.setFieldTouched("pricingRule", true);
                               }}
                             />
                             <label className="ps-2">
@@ -244,77 +191,20 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                       {formik.errors.pricingRule}
                     </p>
                   )}
-                </div>
+                </div> */}
               </div>
             </Col>
             <div className="mt-3">
-              {isEdit ? (
-                <Button className="float-end" onClick={handleEdit}>
-                  Edit
-                </Button>
-              ) : (
-                <Button type="button" onClick={formik.handleSubmit} className="float-end">
+             
+                <Button type="submit" className="float-end">
                   Save
                 </Button>
-              )}
+              
             </div>
           </Row>
-
-          <div className="mt-3">
-            <Button variant="danger" onClick={handleAddPlayer}>
-              Add Player
-            </Button>
-            <AddPlayer
-              show={show}
-              setShow={setShow}
-              setIsAddPlayer={setIsAddPlayer}
-              pricingRuleSelector={pricingRuleSelector}
-              checkAvailabilitySelector={checkAvailabilitySelector}
-              handleFacilityCheck={handleFacilityCheck}
-            />
-          </div>
         </Form>
-      </div>
-      {isAddPlayer ? (
-        <div className="mt-3">
-          <label>Added Player's</label>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>S No</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Facility name</th>
-                <th>Pricing rule name</th>
-                <th>Price</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-                <td>
-                  <div className="d-flex align-items-center justify-content-center">
-                    <div>
-                      <Icon icon="fa-regular:edit" />
-                    </div>
-                    <div>
-                      <Icon icon="ic:outline-delete" />
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </Table>
-        </div>
-      ) : null}
-    </div>
-  );
-};
+    </>
+  )
+}
 
-export default CheckAvailability;
+export default TestPage
