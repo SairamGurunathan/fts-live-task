@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, Col, Form, Offcanvas, Row, Table } from "react-bootstrap";
 import { SportsList } from "../Redux/Actions/SportsPhotosAction";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import moment from "moment/moment";
 import CheckAvailability from "./CheckAvailability";
 import { CheckAvailabilityAction } from "../Redux/Actions/CheckAvailabilityAction";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { ResetAction } from "../Redux/Actions/ResetAction";
+import BookingContext from "../Components/BookingContext";
 
 const BookingModal = ({ show, setShow, sportsListSelector }) => {
-  const handleClose = () => {
-    setShow(false);
-  };
+  const { bookingData, costValue } = useContext(BookingContext);
   const dispatch = useDispatch();
+
   const [selectFacility, setSelectFacility] = useState({
     id:"1",
     title:"Tennis Court"
@@ -26,6 +27,12 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
   const [day, setDay] = useState("");
   const [isCheckAvailability, setIsCheckAvailability] = useState(false)
   const [isPricingTable, setIsPricingTable] = useState(false)
+  const [errormsg,setErrormsg] = useState('')
+
+  const handleClose = () => {
+    setShow(false);
+    dispatch(ResetAction());
+  };
   
   const handleBookingType = (event) => {
     setBookingType(event.target.value);
@@ -54,21 +61,31 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
   const handleFacilityType1 = (event) => {
     setSelectFacility({id:event.target.value,title:event.target.selectedOptions[0].label});
   };
-
-  const handleCheckAvailability = () => {
+  const handleCheckAvailability = async () => {
+    
     const startDateTime =
       moment(`${startDate} ${startTime}`).toISOString().slice(0, -5) + "Z";
     const endDateTime =
       moment(`${endDate} ${endTime}`).toISOString().slice(0, -5) + "Z";
-        dispatch(
-          CheckAvailabilityAction(
-            selectFacility?.id,
-            startDateTime,
-            endDateTime,
-            isMultiple,
-            day
-          ))
-          setIsCheckAvailability(true)
+      const response = await dispatch(
+        CheckAvailabilityAction(
+          selectFacility?.id,
+          startDateTime,
+          endDateTime,
+          isMultiple,
+          day
+        )
+      );
+      try {
+        if (response?.status === 400) {
+          setIsCheckAvailability(false);
+          setErrormsg(response?.data?.message); 
+        } else {
+          setIsCheckAvailability(true);
+        }
+      } catch (error) {
+        console.error('Unexpected error:', error);
+      }
   }
 
   const formatTime = (time) => {
@@ -77,6 +94,7 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
     const period = hours >= 12 ? "PM" : "AM";
     return `${formattedHours}:${minutes} ${period}`;
   };
+  const costByPriceSelector = useSelector((state)=>state?.CostByPriceReducer?.cost)
 
   useEffect(() => {
     dispatch(SportsList());
@@ -96,7 +114,7 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
           <Offcanvas.Title>Booking</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
-          <Form>
+          {/* <Form> */}
             <Row>
               <Col lg={8}>
                 <Row>
@@ -197,7 +215,7 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
                 > 
                   Check Availability
                 </Button>
-          
+               <p className="error text-danger m-1 fw-medium">{errormsg}</p>
                 {isCheckAvailability ? (
               <CheckAvailability setIsPricingTable={setIsPricingTable} startDate={startDate} startTime={startTime} endDate={endDate} endTime={endTime} isMultiple={isMultiple}
               day={day}/>
@@ -250,15 +268,15 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
                   </thead>
                   <tbody>
                     <tr>
-                      <td>Mark</td>
-                      <td>Otto</td>
-                      <td>@mdo</td>
-                      <td>$121</td>
+                      <td>{bookingData.firstName}</td>
+                      <td>{bookingData.facilityTitle}</td>
+                      <td>{bookingData.pricingRuleTitle}</td>
+                      <td>${costValue}</td>
                     </tr>
                     <tr>
                       <td colSpan={3}>Total</td>
                       <td>
-                        <Button>$1792</Button>
+                        <Button>${costByPriceSelector}</Button>
                       </td>
                     </tr>
                   </tbody>
@@ -269,7 +287,7 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
             <div className="mt-4 bg-info">
               <Button className="float-end" disabled>Proceed to Book</Button>
             </div>
-          </Form>
+          {/* </Form> */}
         </Offcanvas.Body>
       </Offcanvas>
     </>

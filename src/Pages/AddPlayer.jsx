@@ -1,41 +1,55 @@
-import React from 'react'
-import { Button, Col, Form, Offcanvas, Row } from 'react-bootstrap'
+import React from "react";
+import { Button, Col, Form, Offcanvas, Row } from "react-bootstrap";
 import * as Yup from "yup";
 import { useFormik } from "formik";
+import { ResetAction } from "../Redux/Actions/ResetAction";
+import { useDispatch } from "react-redux";
 
-const AddPlayer = ({show, setShow,pricingRuleSelector,setIsAddPlayer,checkAvailabilitySelector,handleFacilityCheck}) => {
-    const handleClose = () => {
-        setShow(false);
-      };
+const AddPlayer = ({
+  show,
+  setShow,
+  pricingRuleSelector,
+  setIsAddPlayer,
+  checkAvailabilitySelector,
+  handleFacilityCheck,
+}) => {
+  const dispatch = useDispatch();
 
-      const validationSchema = Yup.object().shape({
-        firstName: Yup.string().required("Please enter a first name"),
-        lastName: Yup.string().required("Please enter a last name"),
-      });
-      const formik = useFormik({
-        initialValues: {
-          firstName:'',
-          lastName:"",
-          phoneNumber: "",
-          email: "",
-        },
-        validationSchema: validationSchema,
-        onSubmit: (values, { setSubmitting }) => {
-          try {
-          } catch (error) {
-            console.log(error);
-          }
-          setSubmitting(false);
-        },
-      });
+  const validationSchema = Yup.object().shape({
+    firstName: Yup.string().required("Please enter a first name"),
+    lastName: Yup.string().required("Please enter a last name"),
+    facility: Yup.string().required("Please select a facility"),
+    pricingRule: Yup.string().required("Please select a pricing rule"),
+  });
+  const handleClose = () => {
+    setShow(false);
+    dispatch(ResetAction());
+    formik.resetForm();
+  };
 
-      const handleAddPlayerTable =()=>{
-        setIsAddPlayer(true);
-        setShow(false)
+  const formik = useFormik({
+    initialValues: {
+      firstName: "",
+      lastName: "",
+      facility:"",
+      pricingRule:"",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values, { setSubmitting }) => {
+      try {
+        console.log(values);
+        // setIsAddPlayer(true);
+        // setShow(false);
+      } catch (error) {
+        console.log(error);
       }
+      setSubmitting(false);
+    },
+  });
+ 
   return (
     <>
-        <Offcanvas
+      <Offcanvas
         show={show}
         onHide={handleClose}
         placement="end"
@@ -46,59 +60,73 @@ const AddPlayer = ({show, setShow,pricingRuleSelector,setIsAddPlayer,checkAvaila
           <Offcanvas.Title>Add Booking</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
-            <div>
+          <Form onSubmit={formik.handleSubmit}>
+          <div>
             <div class="form-check">
-  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"/>
-  <label class="form-check-label" for="flexCheckDefault">
-    Name not disclosed
-  </label>
-</div>
-<Row>
-    <Col>
-    <div>
+              <input
+                class="form-check-input"
+                type="checkbox"
+                value=""
+                id="flexCheckDefault"
+              />
+              <label class="form-check-label" for="flexCheckDefault">
+                Name not disclosed
+              </label>
+            </div>
+            <Row>
+              <Col>
+                <div>
                   <Form.Group>
-                  <Form.Label className="labels mb-2">First Name</Form.Label>
-                  <Form.Control type="text" 
-                  name="firstName"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.firstName}/>
-                  {formik.errors.firstName && (
+                    <Form.Label className="labels mb-2">First Name</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="firstName"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.firstName}
+                    />
+                    {formik.errors.firstName && (
                       <p className="error text-danger m-1 fw-medium">
                         {formik.touched.firstName && formik.errors.firstName}
                       </p>
                     )}
                   </Form.Group>
                 </div>
-    </Col>
-    <Col>
-    <div>
+              </Col>
+              <Col>
+                <div>
                   <Form.Group>
-                  <Form.Label className="labels mb-2">Last Name</Form.Label>
-                  <Form.Control 
-                  type="text" 
+                    <Form.Label className="labels mb-2">Last Name</Form.Label>
+                    <Form.Control
+                      type="text"
                       name="lastName"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.lastName}/>
-                  {formik.errors.lastName && (
+                      value={formik.values.lastName}
+                    />
+                    {formik.errors.lastName && (
                       <p className="error text-danger m-1 fw-medium">
                         {formik.touched.lastName && formik.errors.lastName}
                       </p>
                     )}
                   </Form.Group>
                 </div>
-    </Col>
-</Row>
-<div class="form-check">
-  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"/>
-  <label class="form-check-label" for="flexCheckDefault">
-  Same as primary
-  </label>
-</div>
-<Row>
-    <Col>
-    <div>
+              </Col>
+            </Row>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                value=""
+                id="flexCheckDefault"
+              />
+              <label class="form-check-label" for="flexCheckDefault">
+                Same as primary
+              </label>
+            </div>
+            <Row>
+              <Col>
+              <div>
                   <label className="labels mb-2">Facility *</label>
                   <div className="border border-1 overflow-auto check-height p-2">
                     {checkAvailabilitySelector?.map((val) => (
@@ -107,23 +135,32 @@ const AddPlayer = ({show, setShow,pricingRuleSelector,setIsAddPlayer,checkAvaila
                           type="radio"
                           name="facility"
                           value={val?.id}
-                          onChange={() => handleFacilityCheck(val?.id)}
+                          checked={formik.values.facility === val?.id}
+                          onChange={() => {
+                            handleFacilityCheck(val?.id);
+                            formik.setFieldValue("facility", val?.id);
+                          }}
                         />
                         <label className="ps-2">{val?.title}</label>
                       </div>
                     ))}
                   </div>
+                  {formik.errors.facility && (
+                    <p className="error text-danger m-1 fw-medium">
+                      {formik.errors.facility}
+                    </p>
+                  )}
                 </div>
-    </Col>
-    <Col>
-    <div>
+              </Col>
+              <Col>
+                <div>
                   <label className=" labels mb-2">Pricing rule *</label>
                   <div className="border border-1 overflow-auto check-height p-2">
                     {pricingRuleSelector?.map((rule) => (
                       <div className="form-check ps-0" key={rule?.id}>
                         <input
                           type="radio"
-                          name="pricingrule"
+                          name="pricingRule"
                           value={rule?.id}
                         />
                         <label className="ps-2">
@@ -132,18 +169,19 @@ const AddPlayer = ({show, setShow,pricingRuleSelector,setIsAddPlayer,checkAvaila
                       </div>
                     ))}
                   </div>
-                </div>           
-    </Col>
-</Row>
-<div className='d-flex flex-column col-6 mx-auto gap-2 mt-4'>
-    <Button onClick={handleAddPlayerTable}>Add</Button>
-    <Button>Close</Button>
-</div>
+                </div>
+              </Col>
+            </Row>
+            <div className="d-flex flex-column col-6 mx-auto gap-2 mt-4">
+              <Button type="submit">Add</Button>
+              <Button>Close</Button>
             </div>
+          </div>
+          </Form>
         </Offcanvas.Body>
       </Offcanvas>
     </>
-  )
-}
+  );
+};
 
-export default AddPlayer
+export default AddPlayer;

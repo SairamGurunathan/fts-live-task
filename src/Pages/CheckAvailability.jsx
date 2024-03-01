@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Button, Col, Form, Row, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { PricingRuleAction } from "../Redux/Actions/PricingRuleAction";
@@ -8,9 +8,12 @@ import { useFormik } from "formik";
 import AddPlayer from "./AddPlayer";
 import { CostByPriceAction } from "../Redux/Actions/CostByPriceAction";
 import moment from "moment";
+import BookingContext from "../Components/BookingContext";
 
 const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTime,day,isMultiple}) => {
-  const validationSchema = Yup.object().shape({
+  const { bookingData, setBookingData, setCostValue } = useContext(BookingContext);
+
+    const validationSchema = Yup.object().shape({
     firstName: Yup.string().required("Please enter a first name"),
     lastName: Yup.string().required("Please enter a last name"),
     phoneNumber: Yup.string()
@@ -24,11 +27,9 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
   });
   const dispatch = useDispatch();
   const [isAddPlayer, setIsAddPlayer] = useState(false);
-  // const [selectedFacility, setSelectedFacility] = useState(null);
   const [isEdit, setIsEdit] = useState(false);
   const [show, setShow] = useState(false);
   const [pricingRuleId, setPricingRuleId] = useState('')
-
   const numberValidation = (e) => {
     var regex = new RegExp("^[0-9]+$");
     var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
@@ -40,17 +41,11 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
   };
 
   const checkAvailabilitySelector = useSelector(
-    (state) => state?.CheckAvailabilityReducer?.checkavailability?.data
-  );
+    (state) => state?.CheckAvailabilityReducer?.checkavailability?.data);
 
   const pricingRuleSelector = useSelector(
-    (state) => state?.PricingRuleReducer?.pricingRule
-  );
+    (state) => state?.PricingRuleReducer?.pricingRule);
 
-  const handleFacilityCheck = (id) => {
-    // setSelectedFacility(id);
-    dispatch(PricingRuleAction(id));
-  };
   const handleEdit = () => {
     setIsEdit(false);
   };
@@ -67,23 +62,34 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
       email: "",
       facility: "",
       pricingRule: "",
+      
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { setSubmitting }) => {
       try {
+        values.facilityTitle = bookingData.facilityTitle;
+      values.pricingRuleTitle = bookingData.pricingRuleTitle;
+
+      setBookingData(values);
         const startDateTime =
           moment(`${startDate} ${startTime}`).toISOString().slice(0, -5) + "Z";
         const endDateTime =
           moment(`${endDate} ${endTime}`).toISOString().slice(0, -5) + "Z";
-        await dispatch(CostByPriceAction(pricingRuleId, startDateTime, endDateTime, isMultiple, day));
+          const selectedPricingRule = pricingRuleSelector.find(
+            rule => rule?.pricingRuleId === pricingRuleId
+          );
+          const PerCostValue = selectedPricingRule?.pricingRule?.cost
+          console.log(PerCostValue,'PerCostValue');
+            setCostValue(PerCostValue)
+        dispatch(CostByPriceAction(pricingRuleId, startDateTime, endDateTime, isMultiple, day));
         setIsPricingTable(true);
-        console.log(values);
       } catch (error) {
         console.log(error);
       }
       setSubmitting(false);
     },
   });
+  
   return (
     <div>
       <div>
@@ -149,15 +155,20 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                   <label className="labels mb-2">Facility *</label>
                   <div className="border border-1 overflow-auto check-height p-2">
                     {checkAvailabilitySelector?.map((val) => (
-                      <div className="form-check ps-0" key={val?.id}>
+                      <div className="form-check ps-0" key={val?.id} >
                         <input
                           type="radio"
                           name="facility"
-                          value={val?.id}
+                          value={val?.id} 
+                          label={val?.title}
                           checked={formik.values.facility === val?.id}
                           onChange={() => {
-                            handleFacilityCheck(val?.id);
+                            dispatch(PricingRuleAction(val?.id));
                             formik.setFieldValue("facility", val?.id);
+                            setBookingData((prevData) => ({
+                              ...prevData,
+                              facilityTitle: val?.title,
+                            }));
                           }}
                         />
                         <label className="ps-2">{val?.title}</label>
@@ -213,7 +224,7 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                 <div>
                   <label className=" labels mb-2">Pricing rule *</label>
                   <div className="border border-1 overflow-auto check-height p-2">
-                    {pricingRuleSelector && pricingRuleSelector.length > 0 ? (
+                    {
                       <>
                         <p className="fw-bold">
                           {pricingRuleSelector[0]?.facility?.title}
@@ -223,12 +234,15 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                             <input
                               type="radio"
                               name="pricingRule"
-                              value={rule?.id}
-                              checked={formik.values.pricingRule === rule?.id}
+                              value={pricingRuleId}
+                              checked={formik.values.pricingRule === rule?.pricingRuleId}
                               onChange={() => {
-                                setPricingRuleId(rule?.id);
-                                formik.setFieldValue("pricingRule", rule?.id);
-                                formik.setFieldTouched("pricingRule", true);
+                                formik.setFieldValue("pricingRule", rule?.pricingRuleId);
+                                setPricingRuleId(rule?.pricingRuleId);
+                                setBookingData((prevData) => ({
+                                  ...prevData,
+                                  pricingRuleTitle: rule?.pricingRule?.ruleName,
+                                }));
                               }}
                             />
                             <label className="ps-2">
@@ -237,7 +251,7 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                           </div>
                         ))}
                       </>
-                    ) : null}
+                    }
                   </div>
                   {formik.errors.pricingRule && (
                     <p className="error text-danger m-1 fw-medium">
@@ -253,13 +267,13 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                   Edit
                 </Button>
               ) : (
-                <Button type="button" onClick={formik.handleSubmit} className="float-end">
+                <Button type="submit" className="float-end">
                   Save
                 </Button>
               )}
             </div>
           </Row>
-
+          </Form>
           <div className="mt-3">
             <Button variant="danger" onClick={handleAddPlayer}>
               Add Player
@@ -270,10 +284,10 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
               setIsAddPlayer={setIsAddPlayer}
               pricingRuleSelector={pricingRuleSelector}
               checkAvailabilitySelector={checkAvailabilitySelector}
-              handleFacilityCheck={handleFacilityCheck}
+              // handleFacilityCheck={handleFacilityCheck}
             />
           </div>
-        </Form>
+       
       </div>
       {isAddPlayer ? (
         <div className="mt-3">

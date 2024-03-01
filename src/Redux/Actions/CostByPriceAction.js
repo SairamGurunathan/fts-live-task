@@ -7,7 +7,7 @@ export const CostByPriceAction = (id,start,end,mul,day) => async (dispatch) => {
       const { data } = response;
   
       dispatch({
-        type: Constants.FETCH_FACILITYLIST,
+        type: Constants.FETCH_COST_BY_PRICE,
         payload: data,
       });
       

@@ -14,12 +14,16 @@ import "./App.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-loading-skeleton/dist/skeleton.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css'
+import { createContext } from "react";
+import { BookingProvider } from "./Components/BookingContext";
 // import TestPage from "./Pages/TestPage";
 
+export const BookingDataContext = createContext();
 
 function App() {
   return (
     <div className="App">
+      <BookingProvider>
       {window.location.pathname !== '/' && <NavbarHeader/>}
       <Row className='w-100 h-100 m-0'>
             <Col lg={window.location.pathname !== '/' ? 0 : 2} md={window.location.pathname !== '/' ? 0 : 2} sm={window.location.pathname !== '/' ? 0 : 2} className='p-0'>
@@ -49,6 +53,7 @@ function App() {
       </Routes>
         </Col>
         </Row>
+        </BookingProvider>
     </div>
   );
 }
