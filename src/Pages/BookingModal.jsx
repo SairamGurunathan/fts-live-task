@@ -61,13 +61,17 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
   const handleFacilityType1 = (event) => {
     setSelectFacility({id:event.target.value,title:event.target.selectedOptions[0].label});
   };
+  const errorSelector = useSelector((state)=>state)
+      console.log(errorSelector);
+
   const handleCheckAvailability = async () => {
-    
     const startDateTime =
       moment(`${startDate} ${startTime}`).toISOString().slice(0, -5) + "Z";
     const endDateTime =
       moment(`${endDate} ${endTime}`).toISOString().slice(0, -5) + "Z";
-      const response = await dispatch(
+    
+    try {
+      await dispatch(
         CheckAvailabilityAction(
           selectFacility?.id,
           startDateTime,
@@ -76,17 +80,18 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
           day
         )
       );
-      try {
-        if (response?.status === 400) {
-          setIsCheckAvailability(false);
-          setErrormsg(response?.data?.message); 
-        } else {
-          setIsCheckAvailability(true);
-        }
-      } catch (error) {
-        console.error('Unexpected error:', error);
+      
+        setIsCheckAvailability(true);
+        setErrormsg()
+    } catch (error) {
+      setIsCheckAvailability(false);
+      if (error.response && error.response.data && error.response.data.message) {
+        const errorMessage = error.response.data.message;
+        setErrormsg(errorMessage); // Set the error message in state
       }
+    }
   }
+  
 
   const formatTime = (time) => {
     const [hours, minutes] = time.split(":");
@@ -215,11 +220,14 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
                 > 
                   Check Availability
                 </Button>
-               <p className="error text-danger m-1 fw-medium">{errormsg}</p>
+                {errormsg && <p className="error text-danger m-1 fw-medium">{errormsg}</p>}
+                
+
                 {isCheckAvailability ? (
               <CheckAvailability setIsPricingTable={setIsPricingTable} startDate={startDate} startTime={startTime} endDate={endDate} endTime={endTime} isMultiple={isMultiple}
               day={day}/>
             ) : null}
+
                 <div className="mt-4">
                   <label className="labels">Notes</label>
                   <Form.Control

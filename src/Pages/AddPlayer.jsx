@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Button, Col, Form, Offcanvas, Row } from "react-bootstrap";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { ResetAction } from "../Redux/Actions/ResetAction";
 import { useDispatch } from "react-redux";
+import BookingContext from "../Components/BookingContext";
+import { PricingRuleAction } from "../Redux/Actions/PricingRuleAction";
 
 const AddPlayer = ({
   show,
@@ -11,8 +13,12 @@ const AddPlayer = ({
   pricingRuleSelector,
   setIsAddPlayer,
   checkAvailabilitySelector,
-  handleFacilityCheck,
+  isEdit,
+  pricingRuleId,
+  setPricingRuleId
 }) => {
+  const { setBookingData } = useContext(BookingContext);
+
   const dispatch = useDispatch();
 
   const validationSchema = Yup.object().shape({
@@ -38,7 +44,7 @@ const AddPlayer = ({
     onSubmit: (values, { setSubmitting }) => {
       try {
         console.log(values);
-        // setIsAddPlayer(true);
+        setIsAddPlayer(true);
         // setShow(false);
       } catch (error) {
         console.log(error);
@@ -130,15 +136,21 @@ const AddPlayer = ({
                   <label className="labels mb-2">Facility *</label>
                   <div className="border border-1 overflow-auto check-height p-2">
                     {checkAvailabilitySelector?.map((val) => (
-                      <div className="form-check ps-0" key={val?.id}>
+                      <div className="form-check ps-0" key={val?.id} >
                         <input
                           type="radio"
                           name="facility"
-                          value={val?.id}
+                          disabled={isEdit}
+                          value={val?.id} 
+                          label={val?.title}
                           checked={formik.values.facility === val?.id}
                           onChange={() => {
-                            handleFacilityCheck(val?.id);
+                            dispatch(PricingRuleAction(val?.id));
                             formik.setFieldValue("facility", val?.id);
+                            setBookingData((prevData) => ({
+                              ...prevData,
+                              facilityTitle: val?.title,
+                            }));
                           }}
                         />
                         <label className="ps-2">{val?.title}</label>
@@ -153,22 +165,44 @@ const AddPlayer = ({
                 </div>
               </Col>
               <Col>
-                <div>
+              <div>
                   <label className=" labels mb-2">Pricing rule *</label>
                   <div className="border border-1 overflow-auto check-height p-2">
-                    {pricingRuleSelector?.map((rule) => (
-                      <div className="form-check ps-0" key={rule?.id}>
-                        <input
-                          type="radio"
-                          name="pricingRule"
-                          value={rule?.id}
-                        />
-                        <label className="ps-2">
-                          {rule?.pricingRule?.ruleName}
-                        </label>
-                      </div>
-                    ))}
+                    {
+                      <>
+                        <p className="fw-bold">
+                          {pricingRuleSelector[0]?.facility?.title}
+                        </p>
+                        {pricingRuleSelector.map((rule) => (
+                          <div className="form-check ps-0" key={rule?.id}>
+                            <input
+                              type="radio"
+                              name="pricingRule"
+                              disabled={isEdit}
+                              value={pricingRuleId}
+                              checked={formik.values.pricingRule === rule?.pricingRuleId}
+                              onChange={() => {
+                                formik.setFieldValue("pricingRule", rule?.pricingRuleId);
+                                setPricingRuleId(rule?.pricingRuleId);
+                                setBookingData((prevData) => ({
+                                  ...prevData,
+                                  pricingRuleTitle: rule?.pricingRule?.ruleName,
+                                }));
+                              }}
+                            />
+                            <label className="ps-2">
+                              {rule?.pricingRule?.ruleName}
+                            </label>
+                          </div>
+                        ))}
+                      </>
+                    }
                   </div>
+                  {formik.errors.pricingRule && (
+                    <p className="error text-danger m-1 fw-medium">
+                      {formik.errors.pricingRule}
+                    </p>
+                  )}
                 </div>
               </Col>
             </Row>

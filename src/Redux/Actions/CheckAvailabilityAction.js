@@ -12,6 +12,6 @@ export const CheckAvailabilityAction = (id,start,end,mul,day) => async(dispatch)
               });
         }
     } catch (error) {
-        console.log(error);
+        console.log(error.response.data.message);
     }
 }

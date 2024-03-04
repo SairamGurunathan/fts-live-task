@@ -9,7 +9,7 @@ import { OrgPhotosReducer } from "./OrgPhotosReducer";
 import { FacilitiesPhotoReducer } from "./FacilititesPhotoReducer";
 import resetReducer from "./ResetReducer";
 import { ResevationSearchReducer } from "./ResevationSearchReducer";
-import { CheckAvailabilityReducer } from "./CheckAvailReducer";
+import { CheckAvailabilityErrorReducer, CheckAvailabilityReducer } from "./CheckAvailReducer";
 import { PricingRuleReducer } from "./PricingRuleReducer";
 import { CostByPriceReducer } from "./CostByPriceReducer";
 const reducers = combineReducers({
@@ -33,6 +33,7 @@ const reducers = combineReducers({
   FacilityAllListReducer : FacilityAllListReducer,
   PricingRuleReducer : PricingRuleReducer,
   CostByPriceReducer : CostByPriceReducer,
+  CheckAvailabilityErrorReducer : CheckAvailabilityErrorReducer
 });
 
 export default reducers;

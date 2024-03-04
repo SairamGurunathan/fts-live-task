@@ -3,8 +3,6 @@ import { Constants } from "../Constants/Constants";
 
   
 export const fetchLogin = ({email,password,setIsAuthenticated}) => async (dispatch) => {
-  
-
   try { 
     const response = await axios.post('api/user-management/login', {
       userName : email,

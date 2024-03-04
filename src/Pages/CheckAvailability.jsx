@@ -1,6 +1,5 @@
-import { Icon } from "@iconify/react";
 import React, { useContext, useState } from "react";
-import { Button, Col, Form, Row, Table } from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { PricingRuleAction } from "../Redux/Actions/PricingRuleAction";
 import * as Yup from "yup";
@@ -9,6 +8,7 @@ import AddPlayer from "./AddPlayer";
 import { CostByPriceAction } from "../Redux/Actions/CostByPriceAction";
 import moment from "moment";
 import BookingContext from "../Components/BookingContext";
+import AddPlayerTable from "./AddPlayerTable";
 
 const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTime,day,isMultiple}) => {
   const { bookingData, setBookingData, setCostValue } = useContext(BookingContext);
@@ -30,6 +30,7 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
   const [isEdit, setIsEdit] = useState(false);
   const [show, setShow] = useState(false);
   const [pricingRuleId, setPricingRuleId] = useState('')
+  const [isSave, setIsSave] = useState('Save')
   const numberValidation = (e) => {
     var regex = new RegExp("^[0-9]+$");
     var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
@@ -46,10 +47,6 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
   const pricingRuleSelector = useSelector(
     (state) => state?.PricingRuleReducer?.pricingRule);
 
-  const handleEdit = () => {
-    setIsEdit(false);
-  };
-
   const handleAddPlayer = () => {
     setShow(true);
   };
@@ -61,31 +58,38 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
       phoneNumber: "",
       email: "",
       facility: "",
-      pricingRule: "",
-      
+      pricingRule: "",  
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { setSubmitting }) => {
-      try {
-        values.facilityTitle = bookingData.facilityTitle;
-      values.pricingRuleTitle = bookingData.pricingRuleTitle;
-
-      setBookingData(values);
-        const startDateTime =
-          moment(`${startDate} ${startTime}`).toISOString().slice(0, -5) + "Z";
-        const endDateTime =
-          moment(`${endDate} ${endTime}`).toISOString().slice(0, -5) + "Z";
-          const selectedPricingRule = pricingRuleSelector.find(
-            rule => rule?.pricingRuleId === pricingRuleId
-          );
-          const PerCostValue = selectedPricingRule?.pricingRule?.cost
-          console.log(PerCostValue,'PerCostValue');
-            setCostValue(PerCostValue)
-        dispatch(CostByPriceAction(pricingRuleId, startDateTime, endDateTime, isMultiple, day));
-        setIsPricingTable(true);
-      } catch (error) {
-        console.log(error);
+      if(isSave === 'Save'){
+        try {
+          values.facilityTitle = bookingData.facilityTitle;
+        values.pricingRuleTitle = bookingData.pricingRuleTitle;
+  
+        setBookingData(values);
+          const startDateTime =
+            moment(`${startDate} ${startTime}`).toISOString().slice(0, -5) + "Z";
+          const endDateTime =
+            moment(`${endDate} ${endTime}`).toISOString().slice(0, -5) + "Z";
+            const selectedPricingRule = pricingRuleSelector.find(
+              rule => rule?.pricingRuleId === pricingRuleId
+            );
+            const PerCostValue = selectedPricingRule?.pricingRule?.cost
+            console.log(PerCostValue,'PerCostValue');
+              setCostValue(PerCostValue)
+          dispatch(CostByPriceAction(pricingRuleId, startDateTime, endDateTime, isMultiple, day));
+          setIsPricingTable(true);
+          setIsEdit(true)
+          setIsSave('Edit')
+        } catch (error) {
+          console.log(error);
+        }
       }
+     else{
+      setIsEdit(false)
+          setIsSave('Save')
+     }
       setSubmitting(false);
     },
   });
@@ -116,6 +120,7 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                     <Form.Control
                       type="text"
                       name="firstName"
+                      disabled={isEdit}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       value={formik.values.firstName}
@@ -134,6 +139,7 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                     </Form.Label>
                     <Form.Control
                       type="text"
+                      disabled={isEdit}
                       maxLength={10}
                       name="phoneNumber"
                       onChange={formik.handleChange}
@@ -159,6 +165,7 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                         <input
                           type="radio"
                           name="facility"
+                          disabled={isEdit}
                           value={val?.id} 
                           label={val?.title}
                           checked={formik.values.facility === val?.id}
@@ -191,6 +198,7 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                     <Form.Control
                       type="text"
                       name="lastName"
+                      disabled={isEdit}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       value={formik.values.lastName}
@@ -210,6 +218,7 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                     <Form.Control
                       type="email"
                       name="email"
+                      disabled={isEdit}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       value={formik.values.email}
@@ -234,6 +243,7 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                             <input
                               type="radio"
                               name="pricingRule"
+                              disabled={isEdit}
                               value={pricingRuleId}
                               checked={formik.values.pricingRule === rule?.pricingRuleId}
                               onChange={() => {
@@ -262,15 +272,9 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
               </div>
             </Col>
             <div className="mt-3">
-              {isEdit ? (
-                <Button className="float-end" onClick={handleEdit}>
-                  Edit
-                </Button>
-              ) : (
-                <Button type="submit" className="float-end">
-                  Save
-                </Button>
-              )}
+            <Button type="submit" className="float-end" variant={isEdit ? 'warning' : 'success'} >
+                  {isSave === 'Save' ? 'Save' : 'Edit'}
+            </Button>
             </div>
           </Row>
           </Form>
@@ -284,49 +288,14 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
               setIsAddPlayer={setIsAddPlayer}
               pricingRuleSelector={pricingRuleSelector}
               checkAvailabilitySelector={checkAvailabilitySelector}
-              // handleFacilityCheck={handleFacilityCheck}
+              isEdit={isEdit} 
+              pricingRuleId={pricingRuleId} 
+              setPricingRuleId={setPricingRuleId} 
+              setBookingData={setBookingData}
             />
+            {isAddPlayer ? <AddPlayerTable />: ''}
           </div>
-       
       </div>
-      {isAddPlayer ? (
-        <div className="mt-3">
-          <label>Added Player's</label>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>S No</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Facility name</th>
-                <th>Pricing rule name</th>
-                <th>Price</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-                <td>
-                  <div className="d-flex align-items-center justify-content-center">
-                    <div>
-                      <Icon icon="fa-regular:edit" />
-                    </div>
-                    <div>
-                      <Icon icon="ic:outline-delete" />
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </Table>
-        </div>
-      ) : null}
     </div>
   );
 };
