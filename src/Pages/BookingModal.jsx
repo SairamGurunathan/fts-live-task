@@ -8,6 +8,7 @@ import { CheckAvailabilityAction } from "../Redux/Actions/CheckAvailabilityActio
 import "bootstrap/dist/css/bootstrap.min.css";
 import { ResetAction } from "../Redux/Actions/ResetAction";
 import BookingContext from "../Components/BookingContext";
+import ProceedToBookingPreview from "./ProceedToBookingPreview";
 
 const BookingModal = ({ show, setShow, sportsListSelector }) => {
   const { bookingData, costValue } = useContext(BookingContext);
@@ -28,10 +29,20 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
   const [isCheckAvailability, setIsCheckAvailability] = useState(false)
   const [isPricingTable, setIsPricingTable] = useState(false)
   const [errormsg,setErrormsg] = useState('')
+  const [showBookingPreview, setShowBookingPreview] = useState(false)
 
   const handleClose = () => {
     setShow(false);
     dispatch(ResetAction());
+    setBookingCheck('single')
+    setStartDate('')
+    setEndDate('')
+    setStartTime('')
+    setEndTime('')
+    setIsCheckAvailability(false)
+    setIsPricingTable(false)
+    setErrormsg('')
+    
   };
   
   const handleBookingType = (event) => {
@@ -61,8 +72,8 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
   const handleFacilityType1 = (event) => {
     setSelectFacility({id:event.target.value,title:event.target.selectedOptions[0].label});
   };
-  const errorSelector = useSelector((state)=>state)
-      console.log(errorSelector);
+  // const errorSelector = useSelector((state)=>state)
+      // console.log(errorSelector);
 
   const handleCheckAvailability = async () => {
     const startDateTime =
@@ -92,6 +103,9 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
     }
   }
   
+  const handleProcedtoBooking = ()=>{
+    setShowBookingPreview(true)
+  }
 
   const formatTime = (time) => {
     const [hours, minutes] = time.split(":");
@@ -265,7 +279,8 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
                 </div>
                 <hr className="w-100" />
                 <p className="fw-bold">Player's Facility and Pricing Details</p>
-                {isPricingTable ? <Table striped bordered hover>
+                {isPricingTable ? 
+                <Table striped bordered hover>
                   <thead>
                     <tr>
                       <th>Name</th>
@@ -292,11 +307,14 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
                 
               </Col>
             </Row>
-            <div className="mt-4 bg-info">
-              <Button className="float-end" disabled>Proceed to Book</Button>
-            </div>
           {/* </Form> */}
         </Offcanvas.Body>
+        <Offcanvas.Header className='off-color'>
+                <div className='w-100 d-flex justify-content-end align-items-center'>
+                <Button className="float-end" onClick={handleProcedtoBooking}>Proceed to Book</Button>
+                </div>
+            </Offcanvas.Header>
+            <ProceedToBookingPreview showBookingPreview={showBookingPreview} setShowBookingPreview={setShowBookingPreview}/>
       </Offcanvas>
     </>
   );

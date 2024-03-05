@@ -338,3 +338,6 @@ tr td {
 .check-height{
     height: 110px !important;
 }
+.off-color{
+    background-color: rgb(237, 238, 240) !important
+}

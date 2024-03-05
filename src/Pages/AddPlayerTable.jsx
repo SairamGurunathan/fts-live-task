@@ -1,9 +1,10 @@
 import { Icon } from '@iconify/react'
-import React from 'react'
+import React, { useContext } from 'react'
 import { Table } from 'react-bootstrap'
+import BookingContext from '../Components/BookingContext'
 
 const AddPlayerTable = () => {
-  
+  const {bookingData,costValue} = useContext(BookingContext)
   return (
     <>
         <div className="mt-3">
@@ -23,11 +24,11 @@ const AddPlayerTable = () => {
             <tbody>
               <tr>
                 <td>1</td>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
+                <td>{bookingData.firstName}</td>
+                <td>{bookingData.lastName}</td>
+                <td>{bookingData.facilityTitle}</td>
+                <td>{bookingData.pricingRuleTitle}</td>
+                <td>${costValue}</td>
                 <td>
                   <div className="d-flex align-items-center justify-content-center">
                     <div>

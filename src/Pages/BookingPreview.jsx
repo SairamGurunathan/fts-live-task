@@ -15,7 +15,7 @@ const BookingPreview = ({show,setShow,selectedEvent}) => {
         backdrop="static"
         style={{ width: "40%" }}
       >
-        <Offcanvas.Header closeButton className="bg-info">
+        <Offcanvas.Header closeButton className='off-color'>
           <Offcanvas.Title>Booking preview</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>

@@ -50,6 +50,13 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
   const handleAddPlayer = () => {
     setShow(true);
   };
+  const startDateTime =
+            moment(`${startDate} ${startTime}`).toISOString().slice(0, -5) + "Z";
+          const endDateTime =
+            moment(`${endDate} ${endTime}`).toISOString().slice(0, -5) + "Z";
+            const selectedPricingRule = pricingRuleSelector.find(
+              rule => rule?.pricingRuleId === pricingRuleId
+            );
 
   const formik = useFormik({
     initialValues: {
@@ -68,16 +75,10 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
         values.pricingRuleTitle = bookingData.pricingRuleTitle;
   
         setBookingData(values);
-          const startDateTime =
-            moment(`${startDate} ${startTime}`).toISOString().slice(0, -5) + "Z";
-          const endDateTime =
-            moment(`${endDate} ${endTime}`).toISOString().slice(0, -5) + "Z";
-            const selectedPricingRule = pricingRuleSelector.find(
-              rule => rule?.pricingRuleId === pricingRuleId
-            );
+          
             const PerCostValue = selectedPricingRule?.pricingRule?.cost
-            console.log(PerCostValue,'PerCostValue');
-              setCostValue(PerCostValue)
+
+            setCostValue(PerCostValue)
           dispatch(CostByPriceAction(pricingRuleId, startDateTime, endDateTime, isMultiple, day));
           setIsPricingTable(true);
           setIsEdit(true)
@@ -120,6 +121,7 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                     <Form.Control
                       type="text"
                       name="firstName"
+                      placeholder="First name"
                       disabled={isEdit}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
@@ -142,6 +144,7 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                       disabled={isEdit}
                       maxLength={10}
                       name="phoneNumber"
+                      placeholder="Phone number"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       value={formik.values.phoneNumber}
@@ -198,6 +201,7 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                     <Form.Control
                       type="text"
                       name="lastName"
+                      placeholder="Last name"
                       disabled={isEdit}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
@@ -218,6 +222,7 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                     <Form.Control
                       type="email"
                       name="email"
+                      placeholder="Email address"
                       disabled={isEdit}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
@@ -279,19 +284,23 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
           </Row>
           </Form>
           <div className="mt-3">
-            <Button variant="danger" onClick={handleAddPlayer}>
+            {isEdit ? <Button variant="danger" onClick={handleAddPlayer}>
               Add Player
-            </Button>
+            </Button> : null }
             <AddPlayer
               show={show}
               setShow={setShow}
               setIsAddPlayer={setIsAddPlayer}
               pricingRuleSelector={pricingRuleSelector}
-              checkAvailabilitySelector={checkAvailabilitySelector}
-              isEdit={isEdit} 
+              checkAvailabilitySelector={checkAvailabilitySelector} 
               pricingRuleId={pricingRuleId} 
               setPricingRuleId={setPricingRuleId} 
               setBookingData={setBookingData}
+              bookingData={bookingData}
+              startDateTime={startDateTime}
+              endDateTime={endDateTime}
+              isMultiple={isMultiple}
+              day={day}
             />
             {isAddPlayer ? <AddPlayerTable />: ''}
           </div>
