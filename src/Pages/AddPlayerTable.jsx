@@ -4,7 +4,7 @@ import { Table } from 'react-bootstrap'
 import BookingContext from '../Components/BookingContext'
 
 const AddPlayerTable = () => {
-  const {bookingData,costValue} = useContext(BookingContext)
+  const {costValue,addPlayerBooking} = useContext(BookingContext)
   return (
     <>
         <div className="mt-3">
@@ -24,10 +24,10 @@ const AddPlayerTable = () => {
             <tbody>
               <tr>
                 <td>1</td>
-                <td>{bookingData.firstName}</td>
-                <td>{bookingData.lastName}</td>
-                <td>{bookingData.facilityTitle}</td>
-                <td>{bookingData.pricingRuleTitle}</td>
+                <td>{addPlayerBooking.firstName}</td>
+                <td>{addPlayerBooking.lastName}</td>
+                <td>{addPlayerBooking.facilityTitle}</td>
+                <td>{addPlayerBooking.pricingRuleTitle}</td>
                 <td>${costValue}</td>
                 <td>
                   <div className="d-flex align-items-center justify-content-center">

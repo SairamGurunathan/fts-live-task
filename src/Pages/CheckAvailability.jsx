@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext,useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { PricingRuleAction } from "../Redux/Actions/PricingRuleAction";
@@ -10,10 +10,19 @@ import moment from "moment";
 import BookingContext from "../Components/BookingContext";
 import AddPlayerTable from "./AddPlayerTable";
 
-const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTime,day,isMultiple}) => {
-  const { bookingData, setBookingData, setCostValue } = useContext(BookingContext);
+const CheckAvailability = ({
+  setIsPricingTable,
+  startDate,
+  startTime,
+  endDate,
+  endTime,
+  day,
+  isMultiple,
+}) => {
+  const { bookingData, setBookingData, setCostValue, setLoading, loading } =
+    useContext(BookingContext);
 
-    const validationSchema = Yup.object().shape({
+  const validationSchema = Yup.object().shape({
     firstName: Yup.string().required("Please enter a first name"),
     lastName: Yup.string().required("Please enter a last name"),
     phoneNumber: Yup.string()
@@ -29,8 +38,9 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
   const [isAddPlayer, setIsAddPlayer] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [show, setShow] = useState(false);
-  const [pricingRuleId, setPricingRuleId] = useState('')
-  const [isSave, setIsSave] = useState('Save')
+  const [pricingRuleId, setPricingRuleId] = useState("");
+  const [isSave, setIsSave] = useState("Save");
+
   const numberValidation = (e) => {
     var regex = new RegExp("^[0-9]+$");
     var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
@@ -42,21 +52,23 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
   };
 
   const checkAvailabilitySelector = useSelector(
-    (state) => state?.CheckAvailabilityReducer?.checkavailability?.data);
+    (state) => state?.CheckAvailabilityReducer?.checkavailability?.data
+  );
 
   const pricingRuleSelector = useSelector(
-    (state) => state?.PricingRuleReducer?.pricingRule);
+    (state) => state?.PricingRuleReducer?.pricingRule
+  );
 
   const handleAddPlayer = () => {
     setShow(true);
   };
   const startDateTime =
-            moment(`${startDate} ${startTime}`).toISOString().slice(0, -5) + "Z";
-          const endDateTime =
-            moment(`${endDate} ${endTime}`).toISOString().slice(0, -5) + "Z";
-            const selectedPricingRule = pricingRuleSelector.find(
-              rule => rule?.pricingRuleId === pricingRuleId
-            );
+    moment(`${startDate} ${startTime}`).toISOString().slice(0, -5) + "Z";
+  const endDateTime =
+    moment(`${endDate} ${endTime}`).toISOString().slice(0, -5) + "Z";
+  const selectedPricingRule = pricingRuleSelector.find(
+    (rule) => rule?.pricingRuleId === pricingRuleId
+  );
 
   const formik = useFormik({
     initialValues: {
@@ -65,45 +77,63 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
       phoneNumber: "",
       email: "",
       facility: "",
-      pricingRule: "",  
+      pricingRule: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { setSubmitting }) => {
-      if(isSave === 'Save'){
+      if (isSave === "Save") {
         try {
           values.facilityTitle = bookingData.facilityTitle;
-        values.pricingRuleTitle = bookingData.pricingRuleTitle;
-  
-        setBookingData(values);
-          
-            const PerCostValue = selectedPricingRule?.pricingRule?.cost
-
-            setCostValue(PerCostValue)
-          dispatch(CostByPriceAction(pricingRuleId, startDateTime, endDateTime, isMultiple, day));
+          values.pricingRuleTitle = bookingData.pricingRuleTitle;
+          setBookingData(values);
+          const PerCostValue = selectedPricingRule?.pricingRule?.cost;
+          setCostValue(PerCostValue);
+          dispatch(
+            CostByPriceAction(
+              pricingRuleId,
+              startDateTime,
+              endDateTime,
+              isMultiple,
+              day
+            )
+          );
           setIsPricingTable(true);
-          setIsEdit(true)
-          setIsSave('Edit')
+          setIsEdit(true);
+          setIsSave("Edit");
         } catch (error) {
           console.log(error);
         }
+      } else {
+        setIsEdit(false);
+        setIsSave("Save");
       }
-     else{
-      setIsEdit(false)
-          setIsSave('Save')
-     }
       setSubmitting(false);
     },
   });
-  
+
+  // useEffect(() => {
+  //   if (pricingRuleId) {
+  //     setLoading(true);
+
+  //     // Dispatch the pricing rule API request
+  //     dispatch(PricingRuleAction(pricingRuleId))
+  //       .then(() => setLoading(false))
+  //       .catch(error => {
+  //         console.error("Error fetching pricing rule:", error);
+  //         setLoading(false);
+  //       });
+  //   }
+  //   // eslint-disable-next-line
+  // }, [pricingRuleId]);
   return (
     <div>
       <div>
-        <div>
+        <div className="my-3">
           <label>Available Facility</label>
         </div>
-        <div>
+        <div className="my-3">
           {checkAvailabilitySelector?.map((val) => (
-            <Button className="p-0 px-2 mx-1">
+            <Button className="p-0 px-2 py-1">
               <small>{val?.title}</small>
             </Button>
           ))}
@@ -114,7 +144,7 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
         <Form onSubmit={formik.handleSubmit}>
           <Row>
             <Col>
-              <div className="d-flex flex-column justify-content-between mt-4">
+              <div className="d-flex flex-column justify-content-between mt-2">
                 <div>
                   <Form.Group>
                     <Form.Label className="labels mb-2">First Name</Form.Label>
@@ -134,6 +164,35 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                     )}
                   </Form.Group>
                 </div>
+              </div>
+            </Col>
+            <Col>
+              <div className="d-flex flex-column justify-content-between mt-2">
+                <div>
+                  <Form.Group>
+                    <Form.Label className="labels mb-2">Last Name</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="lastName"
+                      placeholder="Last name"
+                      disabled={isEdit}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      value={formik.values.lastName}
+                    />
+                    {formik.touched.lastName && formik.errors.lastName && (
+                      <p className="error text-danger m-1 fw-medium">
+                        {formik.errors.lastName}
+                      </p>
+                    )}
+                  </Form.Group>
+                </div>
+              </div>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <div className="d-flex flex-column justify-content-between mt-2">
                 <div>
                   <Form.Group>
                     <Form.Label className="labels mb-2">
@@ -160,60 +219,10 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                       )}
                   </Form.Group>
                 </div>
-                <div>
-                  <label className="labels mb-2">Facility *</label>
-                  <div className="border border-1 overflow-auto check-height p-2">
-                    {checkAvailabilitySelector?.map((val) => (
-                      <div className="form-check ps-0" key={val?.id} >
-                        <input
-                          type="radio"
-                          name="facility"
-                          disabled={isEdit}
-                          value={val?.id} 
-                          label={val?.title}
-                          checked={formik.values.facility === val?.id}
-                          onChange={() => {
-                            dispatch(PricingRuleAction(val?.id));
-                            formik.setFieldValue("facility", val?.id);
-                            setBookingData((prevData) => ({
-                              ...prevData,
-                              facilityTitle: val?.title,
-                            }));
-                          }}
-                        />
-                        <label className="ps-2">{val?.title}</label>
-                      </div>
-                    ))}
-                  </div>
-                  {formik.errors.facility && (
-                    <p className="error text-danger m-1 fw-medium">
-                      {formik.errors.facility}
-                    </p>
-                  )}
-                </div>
               </div>
             </Col>
             <Col>
-              <div className="d-flex flex-column justify-content-between mt-4">
-                <div>
-                  <Form.Group>
-                    <Form.Label className="labels mb-2">Last Name</Form.Label>
-                    <Form.Control
-                      type="text"
-                      name="lastName"
-                      placeholder="Last name"
-                      disabled={isEdit}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.lastName}
-                    />
-                    {formik.touched.lastName && formik.errors.lastName && (
-                      <p className="error text-danger m-1 fw-medium">
-                        {formik.errors.lastName}
-                      </p>
-                    )}
-                  </Form.Group>
-                </div>
+              <div className="d-flex flex-column justify-content-between mt-2">
                 <div>
                   <Form.Group>
                     <Form.Label className="labels mb-2">
@@ -235,6 +244,47 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                     )}
                   </Form.Group>
                 </div>
+              </div>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <div className="d-flex flex-column justify-content-between mt-2">
+                <div>
+                  <label className="labels mb-2">Facility *</label>
+                  <div className="border border-1 overflow-auto check-height p-2">
+                    {checkAvailabilitySelector?.map((val) => (
+                      <div className="form-check ps-0" key={val?.id}>
+                        <input
+                          type="radio"
+                          name="facility"
+                          disabled={isEdit}
+                          value={val?.id}
+                          label={val?.title}
+                          checked={formik.values.facility === val?.id}
+                          onChange={() => {
+                            dispatch(PricingRuleAction(val?.id));
+                            formik.setFieldValue("facility", val?.id);
+                            setBookingData((prevData) => ({
+                              ...prevData,
+                              facilityTitle: val?.title,
+                            }));
+                          }}
+                        />
+                        <label className="ps-2">{val?.title}</label>
+                      </div>
+                    ))}
+                  </div>
+                  {formik.touched.facility && formik.errors.facility && (
+                    <p className="error text-danger m-1 fw-medium">
+                      {formik.errors.facility}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </Col>
+            <Col>
+              <div className="d-flex flex-column justify-content-between mt-2">
                 <div>
                   <label className=" labels mb-2">Pricing rule *</label>
                   <div className="border border-1 overflow-auto check-height p-2">
@@ -250,9 +300,15 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                               name="pricingRule"
                               disabled={isEdit}
                               value={pricingRuleId}
-                              checked={formik.values.pricingRule === rule?.pricingRuleId}
+                              checked={
+                                formik.values.pricingRule ===
+                                rule?.pricingRuleId
+                              }
                               onChange={() => {
-                                formik.setFieldValue("pricingRule", rule?.pricingRuleId);
+                                formik.setFieldValue(
+                                  "pricingRule",
+                                  rule?.pricingRuleId
+                                );
                                 setPricingRuleId(rule?.pricingRuleId);
                                 setBookingData((prevData) => ({
                                   ...prevData,
@@ -268,7 +324,7 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                       </>
                     }
                   </div>
-                  {formik.errors.pricingRule && (
+                  {formik.touched.pricingRule && formik.errors.pricingRule && (
                     <p className="error text-danger m-1 fw-medium">
                       {formik.errors.pricingRule}
                     </p>
@@ -276,34 +332,40 @@ const CheckAvailability = ({ setIsPricingTable,startDate,startTime,endDate,endTi
                 </div>
               </div>
             </Col>
-            <div className="mt-3">
-            <Button type="submit" className="float-end" variant={isEdit ? 'warning' : 'success'} >
-                  {isSave === 'Save' ? 'Save' : 'Edit'}
-            </Button>
-            </div>
           </Row>
-          </Form>
-          <div className="mt-3">
-            {isEdit ? <Button variant="danger" onClick={handleAddPlayer}>
-              Add Player
-            </Button> : null }
-            <AddPlayer
-              show={show}
-              setShow={setShow}
-              setIsAddPlayer={setIsAddPlayer}
-              pricingRuleSelector={pricingRuleSelector}
-              checkAvailabilitySelector={checkAvailabilitySelector} 
-              pricingRuleId={pricingRuleId} 
-              setPricingRuleId={setPricingRuleId} 
-              setBookingData={setBookingData}
-              bookingData={bookingData}
-              startDateTime={startDateTime}
-              endDateTime={endDateTime}
-              isMultiple={isMultiple}
-              day={day}
-            />
-            {isAddPlayer ? <AddPlayerTable />: ''}
+          <div className="my-3">
+            <Button
+              type="submit"
+              className="d-flex ms-auto"
+              variant={isEdit ? "warning" : "success"}
+            >
+              {isSave === "Save" ? "Save" : "Edit"}
+            </Button>
           </div>
+        </Form>
+        <div className="my-3">
+          {isEdit ? (
+            <Button variant="danger" onClick={handleAddPlayer}>
+              Add Player
+            </Button>
+          ) : null}
+          <AddPlayer
+            show={show}
+            setShow={setShow}
+            setIsAddPlayer={setIsAddPlayer}
+            pricingRuleSelector={pricingRuleSelector}
+            checkAvailabilitySelector={checkAvailabilitySelector}
+            pricingRuleId={pricingRuleId}
+            setPricingRuleId={setPricingRuleId}
+            setBookingData={setBookingData}
+            bookingData={bookingData}
+            startDateTime={startDateTime}
+            endDateTime={endDateTime}
+            isMultiple={isMultiple}
+            day={day}
+          />
+          {isAddPlayer ? <AddPlayerTable /> : ""}
+        </div>
       </div>
     </div>
   );

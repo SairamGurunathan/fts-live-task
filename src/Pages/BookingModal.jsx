@@ -42,7 +42,6 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
     setIsCheckAvailability(false)
     setIsPricingTable(false)
     setErrormsg('')
-    
   };
   
   const handleBookingType = (event) => {
@@ -82,7 +81,7 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
       moment(`${endDate} ${endTime}`).toISOString().slice(0, -5) + "Z";
     
     try {
-      await dispatch(
+      dispatch(
         CheckAvailabilityAction(
           selectFacility?.id,
           startDateTime,
@@ -93,13 +92,13 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
       );
       
         setIsCheckAvailability(true);
-        setErrormsg()
+        // setErrormsg()
     } catch (error) {
       setIsCheckAvailability(false);
-      if (error.response && error.response.data && error.response.data.message) {
-        const errorMessage = error.response.data.message;
-        setErrormsg(errorMessage); // Set the error message in state
-      }
+      // if (error.response && error.response.data && error.response.data.message) {
+      //   const errorMessage = error.response.data.message;
+      //   setErrormsg(errorMessage);
+      // }
     }
   }
   
@@ -235,15 +234,15 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
                   Check Availability
                 </Button>
                 {errormsg && <p className="error text-danger m-1 fw-medium">{errormsg}</p>}
-                
-
+                <div>
                 {isCheckAvailability ? (
               <CheckAvailability setIsPricingTable={setIsPricingTable} startDate={startDate} startTime={startTime} endDate={endDate} endTime={endTime} isMultiple={isMultiple}
               day={day}/>
             ) : null}
+            </div>
 
-                <div className="mt-4">
-                  <label className="labels">Notes</label>
+                <div className="mt-3">
+                  <label className="labels mb-2">Notes</label>
                   <Form.Control
                     as="textarea"
                     rows={3}
