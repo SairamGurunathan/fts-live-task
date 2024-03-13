@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, Col, Form, Offcanvas, Row } from "react-bootstrap";
 import * as Yup from "yup";
 import { useFormik } from "formik";
@@ -17,7 +17,6 @@ const AddPlayer = ({
   checkAvailabilitySelector,
   pricingRuleId,
   setPricingRuleId,
-  initialData,
   startDateTime,
   endDateTime,
   isMultiple,
@@ -28,6 +27,7 @@ const AddPlayer = ({
 
   const [nameNotDisclosed, setNameNotDisclosed] = useState(false);
   const [sameAsPrimary, setSameAsPrimary] = useState(false);
+
 
   const validationSchema = Yup.object().shape({
     firstName: Yup.string().required("Please enter a first name"),
@@ -66,14 +66,20 @@ const AddPlayer = ({
       lastName: "",
       facility: "",
       pricingRule: "",
+      facilityId:'',
+      pricingRuleId: '',
+      perHourCost : '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { setSubmitting }) => {
       try {
-        console.log(values);
-        values.facilityTitle = addPlayerBooking.facilityTitle;
-        values.pricingRuleTitle = addPlayerBooking.pricingRuleTitle;
-        setAddPlayerBooking(values);
+        console.log(values,'Add Player');
+        if (sameAsPrimary) {
+          values.facility = bookingData.facilityTitle;
+          values.pricingRule = bookingData.pricingRuleTitle;
+          values.perHourCost = bookingData.perHourCost;
+        }
+        setAddPlayerBooking([...addPlayerBooking,values]);
         dispatch(
           CostByPriceAction(
             pricingRuleId,
@@ -94,6 +100,21 @@ const AddPlayer = ({
       setSubmitting(false);
     },
   });
+  useEffect(()=>{
+    formik.setFieldValue(
+      "firstName",
+      nameNotDisclosed
+        ? "Name not disclosed"
+        : ''
+    );
+    formik.setFieldValue(
+      "lastName",
+      nameNotDisclosed
+        ? "Name not disclosed"
+        : ''
+    );
+  },[nameNotDisclosed])
+
 
   return (
     <>
@@ -116,19 +137,7 @@ const AddPlayer = ({
                   value={nameNotDisclosed}
                   id="nameNotDisclosedCheckbox"
                   onChange={() => {
-                    setNameNotDisclosed(!nameNotDisclosed);
-                    formik.setFieldValue(
-                      "firstName",
-                      nameNotDisclosed
-                        ? ''
-                        : "Name not disclosed"
-                    );
-                    formik.setFieldValue(
-                      "lastName",
-                      nameNotDisclosed
-                        ? ''
-                        : "Name not disclosed"
-                    );
+                    setNameNotDisclosed(!nameNotDisclosed);                 
                   }}
                 />
                 <label class="form-check-label" for="nameNotDisclosedCheckbox">
@@ -194,20 +203,19 @@ const AddPlayer = ({
                   class="form-check-input"
                   type="checkbox"
                   value={sameAsPrimary}
-                  id="sameAsPrimaryCheckbox"
                   onChange={() => {
                     setSameAsPrimary(!sameAsPrimary);
                     formik.setFieldValue(
                       "facility",
                       sameAsPrimary
                         ? ''
-                        : bookingData.facility
+                        : bookingData.facilityTitle
                     );
                     formik.setFieldValue(
                       "pricingRule",
                       sameAsPrimary
                         ? ''
-                        : bookingData.pricingRule
+                        : bookingData.pricingRuleTitle
                     );
                   }}
                 />
@@ -227,23 +235,28 @@ const AddPlayer = ({
                             name="facility"
                             disabled={sameAsPrimary}
                             value={
+
+
+
                               sameAsPrimary
-                                ? bookingData.facility
+                                ? bookingData.facilityTitle
                                 : val?.id
                             }
                             label={val?.title}
                             checked={
                               sameAsPrimary
                                 ? bookingData.facility === val?.id
-                                : formik.values.facility === val?.id
+                                : formik.values.facilityId === val?.id
                             }
                             onChange={() => {
                               dispatch(PricingRuleAction(val?.id));
-                              formik.setFieldValue("facility", val?.id);
-                              setAddPlayerBooking((prevData) => ({
-                                ...prevData,
-                                facilityTitle: val?.title,
-                              }));
+                              formik.setFieldValue("facility", val?.title);
+                              formik.setFieldValue("facilityId", val?.id);
+                              
+                              // setAddPlayerBooking((prevData) => ([
+                              //   ...prevData,
+                              //   // facilityTitle: val?.title,
+                              // ]));
                             }}
                           />
                           <label className="ps-2">{val?.title}</label>
@@ -280,22 +293,26 @@ const AddPlayer = ({
                                 sameAsPrimary
                                   ? bookingData.pricingRule ===
                                     rule?.pricingRuleId
-                                  : formik.values.pricingRule ===
+                                  : formik.values.pricingRuleId ===
                                     rule?.pricingRuleId
                               }
                               onChange={() => {
                                 formik.setFieldValue(
                                   "pricingRule",
+                                  rule?.pricingRule?.ruleName
+                                );
+                                formik.setFieldValue(
+                                  "pricingRuleId",
                                   rule?.pricingRuleId
                                 );
-                                setPricingRuleId((prevId) => ({
-                                  ...prevId,
-                                  [rule?.pricingRuleId]: true,
-                                }));
-                                setAddPlayerBooking((prevData) => ({
-                                  ...prevData,
-                                  pricingRuleTitle: rule?.pricingRule?.ruleName,
-                                }));
+                                formik.setFieldValue("perHourCost",rule?.pricingRule?.cost)
+                                setPricingRuleId((prevId) => ([
+                                  ...prevId, rule?.pricingRuleId
+                                ]));
+                                // setAddPlayerBooking((prevData) => ({
+                                //   ...prevData,
+                                //   pricingRuleTitle: rule?.pricingRule?.ruleName,
+                                // }));
                               }}
                             />
                             <label className="ps-2">

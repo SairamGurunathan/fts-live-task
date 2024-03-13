@@ -33,7 +33,7 @@ const reducers = combineReducers({
   FacilityAllListReducer : FacilityAllListReducer,
   PricingRuleReducer : PricingRuleReducer,
   CostByPriceReducer : CostByPriceReducer,
-  CheckAvailabilityErrorReducer : CheckAvailabilityErrorReducer
+  CheckAvailabilityErrorReducer : CheckAvailabilityErrorReducer,
 });
 
 export default reducers;

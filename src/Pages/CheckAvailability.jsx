@@ -19,7 +19,7 @@ const CheckAvailability = ({
   day,
   isMultiple,
 }) => {
-  const { bookingData, setBookingData, setCostValue, setLoading, loading } =
+  const { bookingData, setBookingData, setCostValue } =
     useContext(BookingContext);
 
   const validationSchema = Yup.object().shape({
@@ -38,7 +38,7 @@ const CheckAvailability = ({
   const [isAddPlayer, setIsAddPlayer] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [show, setShow] = useState(false);
-  const [pricingRuleId, setPricingRuleId] = useState("");
+  const [pricingRuleId, setPricingRuleId] = useState([]);
   const [isSave, setIsSave] = useState("Save");
 
   const numberValidation = (e) => {
@@ -58,10 +58,12 @@ const CheckAvailability = ({
   const pricingRuleSelector = useSelector(
     (state) => state?.PricingRuleReducer?.pricingRule
   );
+  console.log(pricingRuleSelector);
 
   const handleAddPlayer = () => {
     setShow(true);
   };
+  
   const startDateTime =
     moment(`${startDate} ${startTime}`).toISOString().slice(0, -5) + "Z";
   const endDateTime =
@@ -78,6 +80,7 @@ const CheckAvailability = ({
       email: "",
       facility: "",
       pricingRule: "",
+      perHourCost:'',
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { setSubmitting }) => {
@@ -85,6 +88,7 @@ const CheckAvailability = ({
         try {
           values.facilityTitle = bookingData.facilityTitle;
           values.pricingRuleTitle = bookingData.pricingRuleTitle;
+          
           setBookingData(values);
           const PerCostValue = selectedPricingRule?.pricingRule?.cost;
           setCostValue(PerCostValue);
@@ -111,29 +115,15 @@ const CheckAvailability = ({
     },
   });
 
-  // useEffect(() => {
-  //   if (pricingRuleId) {
-  //     setLoading(true);
-
-  //     // Dispatch the pricing rule API request
-  //     dispatch(PricingRuleAction(pricingRuleId))
-  //       .then(() => setLoading(false))
-  //       .catch(error => {
-  //         console.error("Error fetching pricing rule:", error);
-  //         setLoading(false);
-  //       });
-  //   }
-  //   // eslint-disable-next-line
-  // }, [pricingRuleId]);
   return (
     <div>
       <div>
         <div className="my-3">
           <label>Available Facility</label>
         </div>
-        <div className="my-3">
+        <div className="my-3 d-flex gap-2">
           {checkAvailabilitySelector?.map((val) => (
-            <Button className="p-0 px-2 py-1">
+            <Button className=" p-0 px-2 py-1">
               <small>{val?.title}</small>
             </Button>
           ))}
@@ -309,7 +299,8 @@ const CheckAvailability = ({
                                   "pricingRule",
                                   rule?.pricingRuleId
                                 );
-                                setPricingRuleId(rule?.pricingRuleId);
+                                formik.setFieldValue("perHourCost",rule?.pricingRule?.cost)
+                                setPricingRuleId([rule?.pricingRuleId]);
                                 setBookingData((prevData) => ({
                                   ...prevData,
                                   pricingRuleTitle: rule?.pricingRule?.ruleName,

@@ -11,7 +11,7 @@ import BookingContext from "../Components/BookingContext";
 import ProceedToBookingPreview from "./ProceedToBookingPreview";
 
 const BookingModal = ({ show, setShow, sportsListSelector }) => {
-  const { bookingData, costValue } = useContext(BookingContext);
+  const { bookingData, addPlayerBooking } = useContext(BookingContext);
   const dispatch = useDispatch();
 
   const [selectFacility, setSelectFacility] = useState({
@@ -71,8 +71,8 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
   const handleFacilityType1 = (event) => {
     setSelectFacility({id:event.target.value,title:event.target.selectedOptions[0].label});
   };
-  // const errorSelector = useSelector((state)=>state)
-      // console.log(errorSelector);
+  // const errorSelector = useSelector((state)=>state?.CheckAvailabilityErrorReducer?.checkavailabilityError)
+  //     console.log(errorSelector);
 
   const handleCheckAvailability = async () => {
     const startDateTime =
@@ -92,13 +92,13 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
       );
       
         setIsCheckAvailability(true);
-        // setErrormsg()
+        setErrormsg()
     } catch (error) {
       setIsCheckAvailability(false);
-      // if (error.response && error.response.data && error.response.data.message) {
-      //   const errorMessage = error.response.data.message;
-      //   setErrormsg(errorMessage);
-      // }
+      if (error.response && error.response.data && error.response.data.message) {
+        const errorMessage = error.response.data.message;
+        setErrormsg(errorMessage);
+      }
     }
   }
   
@@ -132,7 +132,6 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
           <Offcanvas.Title>Booking</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
-          {/* <Form> */}
             <Row>
               <Col lg={8}>
                 <Row>
@@ -173,7 +172,6 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
                         type="radio"
                         name="bookingCheck"
                         value="single"
-                        defaultChecked
                         onChange={onChangeValueSingle}
                         checked={bookingCheck === "single"}
                       />
@@ -293,8 +291,16 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
                       <td>{bookingData.firstName}</td>
                       <td>{bookingData.facilityTitle}</td>
                       <td>{bookingData.pricingRuleTitle}</td>
-                      <td>${costValue}</td>
+                      <td>${bookingData.perHourCost}</td>
                     </tr>
+                    {addPlayerBooking?.map((player)=>(
+                 <tr>
+                 <td>{player.firstName}</td>
+                 <td>{player.facility} </td>
+                 <td>{player.pricingRule}</td>
+                 <td>${player.perHourCost}</td>  
+               </tr>
+              ))}
                     <tr>
                       <td colSpan={3}>Total</td>
                       <td>
@@ -306,7 +312,6 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
                 
               </Col>
             </Row>
-          {/* </Form> */}
         </Offcanvas.Body>
         <Offcanvas.Header className='off-color'>
                 <div className='w-100 d-flex justify-content-end align-items-center'>

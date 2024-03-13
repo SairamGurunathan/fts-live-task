@@ -4,7 +4,11 @@ import { Table } from 'react-bootstrap'
 import BookingContext from '../Components/BookingContext'
 
 const AddPlayerTable = () => {
-  const {costValue,addPlayerBooking} = useContext(BookingContext)
+  const {addPlayerBooking,setAddPlayerBooking} = useContext(BookingContext)
+  const  handleDelete= (index)=>{
+    const updatedPlayerList = addPlayerBooking?.filter((_,i)=>i !== index)
+    setAddPlayerBooking(updatedPlayerList)
+  }
   return (
     <>
         <div className="mt-3">
@@ -22,24 +26,26 @@ const AddPlayerTable = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>1</td>
-                <td>{addPlayerBooking.firstName}</td>
-                <td>{addPlayerBooking.lastName}</td>
-                <td>{addPlayerBooking.facilityTitle}</td>
-                <td>{addPlayerBooking.pricingRuleTitle}</td>
-                <td>${costValue}</td>
-                <td>
-                  <div className="d-flex align-items-center justify-content-center">
-                    <div>
-                      <Icon icon="fa-regular:edit" />
-                    </div>
-                    <div>
-                      <Icon icon="ic:outline-delete" />
-                    </div>
-                  </div>
-                </td>
-              </tr>
+              {addPlayerBooking?.map((player,index)=>(
+                 <tr key={index}>
+                 <td>{index + 1}</td>
+                 <td>{player.firstName}</td>
+                 <td>{player.lastName}</td>
+                 <td>{player.facility} </td>
+                 <td>{player.pricingRule}</td>
+                 <td>${player.perHourCost}</td>
+                 <td>
+                   <div className="d-flex align-items-center justify-content-center">
+                     <div className='btn'>
+                       <Icon icon="fa-regular:edit" />
+                     </div>
+                     <div className='btn fs-3'>
+                       <Icon icon="ic:outline-delete" onClick={()=>handleDelete(index)}/>
+                     </div>
+                   </div>
+                 </td>
+               </tr>
+              ))}
             </tbody>
           </Table>
         </div>

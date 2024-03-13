@@ -16,7 +16,7 @@ export const CheckAvailabilityReducer = (state = initialState, { type, payload }
 
   export const CheckAvailabilityErrorReducer = (state = initialState, { type, payload }) => {
     switch (type) {
-      case Constants.FETCH_CHECKAVAILABILITY:
+      case Constants.FETCH_CHECKAVAILABILITY_ERROR:
         return { ...state, checkavailabilityError: payload }; 
       default:
         return state;

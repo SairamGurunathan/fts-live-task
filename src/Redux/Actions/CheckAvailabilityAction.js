@@ -12,6 +12,9 @@ export const CheckAvailabilityAction = (id,start,end,mul,day) => async(dispatch)
               });
         }
     } catch (error) {
+        dispatch({
+            type: Constants.FETCH_CHECKAVAILABILITY_ERROR,
+          });
         console.log(error.response.data.message);
     }
 }
