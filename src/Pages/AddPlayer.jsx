@@ -15,19 +15,15 @@ const AddPlayer = ({
   pricingRuleSelector,
   setIsAddPlayer,
   checkAvailabilitySelector,
-  pricingRuleId,
-  setPricingRuleId,
   startDateTime,
   endDateTime,
   isMultiple,
   day,
 }) => {
-  const { bookingData,addPlayerBooking, setAddPlayerBooking } = useContext(BookingContext);
+  const { bookingData, addPlayerBooking, setAddPlayerBooking, pricingRuleId, setPricingRuleId, isTableDataEdit, setIsTableDataEdit } = useContext(BookingContext);
   const dispatch = useDispatch();
-
   const [nameNotDisclosed, setNameNotDisclosed] = useState(false);
   const [sameAsPrimary, setSameAsPrimary] = useState(false);
-
 
   const validationSchema = Yup.object().shape({
     firstName: Yup.string().required("Please enter a first name"),
@@ -55,6 +51,7 @@ const AddPlayer = ({
         setNameNotDisclosed(false);
         setSameAsPrimary(false);
         dispatch(ResetAction());
+        setIsTableDataEdit(false)
         formik.resetForm();
       }
     });
@@ -72,23 +69,17 @@ const AddPlayer = ({
     },
     validationSchema: validationSchema,
     onSubmit: async (values, { setSubmitting }) => {
+
       try {
-        console.log(values,'Add Player');
         if (sameAsPrimary) {
           values.facility = bookingData.facilityTitle;
           values.pricingRule = bookingData.pricingRuleTitle;
           values.perHourCost = bookingData.perHourCost;
-        }
+          setPricingRuleId((preData)=>([
+            ...preData,bookingData.pricingRule
+          ]))
+        }  
         setAddPlayerBooking([...addPlayerBooking,values]);
-        dispatch(
-          CostByPriceAction(
-            pricingRuleId,
-            startDateTime,
-            endDateTime,
-            isMultiple,
-            day
-          )
-        );
         setIsAddPlayer(true);
         setShow(false);
         setNameNotDisclosed(false);
@@ -113,8 +104,24 @@ const AddPlayer = ({
         ? "Name not disclosed"
         : ''
     );
+    // eslint-disable-next-line
   },[nameNotDisclosed])
-
+  useEffect(()=>{
+    dispatch(
+      CostByPriceAction(
+        pricingRuleId,
+        startDateTime,
+        endDateTime,
+        isMultiple,
+        day
+      )
+    );
+    // eslint-disable-next-line
+  },[pricingRuleId])
+useEffect(()=>{
+  formik.setValues('firstName',isTableDataEdit.firstName)
+  // eslint-disable-next-line
+},[isTableDataEdit])
 
   return (
     <>
@@ -125,9 +132,9 @@ const AddPlayer = ({
         style={{ width: "50%" }}
       >
         <Offcanvas.Header className="bg-info">
-          <Offcanvas.Title>Add Booking</Offcanvas.Title>
+          <Offcanvas.Title>{isTableDataEdit.isEdit ? 'Edit' : 'Add'} Booking</Offcanvas.Title>
         </Offcanvas.Header>
-        <Offcanvas.Body>
+        <Offcanvas.Body> 
           <Form onSubmit={formik.handleSubmit}>
             <div>
               <div class="form-check">
@@ -158,6 +165,7 @@ const AddPlayer = ({
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={
+                        
                           nameNotDisclosed
                             ? "Name not disclosed"
                             : formik.values.firstName
@@ -217,6 +225,7 @@ const AddPlayer = ({
                         ? ''
                         : bookingData.pricingRuleTitle
                     );
+                    
                   }}
                 />
                 <label class="form-check-label" for="sameAsPrimaryCheckbox">
@@ -252,11 +261,6 @@ const AddPlayer = ({
                               dispatch(PricingRuleAction(val?.id));
                               formik.setFieldValue("facility", val?.title);
                               formik.setFieldValue("facilityId", val?.id);
-                              
-                              // setAddPlayerBooking((prevData) => ([
-                              //   ...prevData,
-                              //   // facilityTitle: val?.title,
-                              // ]));
                             }}
                           />
                           <label className="ps-2">{val?.title}</label>
@@ -309,10 +313,6 @@ const AddPlayer = ({
                                 setPricingRuleId((prevId) => ([
                                   ...prevId, rule?.pricingRuleId
                                 ]));
-                                // setAddPlayerBooking((prevData) => ({
-                                //   ...prevData,
-                                //   pricingRuleTitle: rule?.pricingRule?.ruleName,
-                                // }));
                               }}
                             />
                             <label className="ps-2">
@@ -332,8 +332,8 @@ const AddPlayer = ({
                 </Col>
               </Row>
               <div className="d-flex flex-column col-6 mx-auto gap-2 mt-4">
-                <Button type="submit">Add</Button>
-                <Button onClick={handleClose}>Close</Button>
+                <Button type="submit" variant={isTableDataEdit.isEdit ? 'warning' : 'success'}>{isTableDataEdit.isEdit ? 'Update' : "Add"} </Button>
+                <Button onClick={handleClose} variant="danger">Close</Button>
               </div>
             </div>
           </Form>

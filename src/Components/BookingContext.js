@@ -13,10 +13,16 @@ export const BookingProvider = ({ children }) => {
     perHourCost: '',
   });
   const [costValue, setCostValue] = useState('');
-  const [addPlayerBooking, setAddPlayerBooking] = useState([])
+  const [addPlayerBooking, setAddPlayerBooking] = useState([]);
+  const [pricingRuleId, setPricingRuleId] = useState([]);
+  const [isTableDataEdit, setIsTableDataEdit] = useState({
+    isEdit : false,
+  });
 
+console.log(isTableDataEdit);
+console.log(isTableDataEdit.pricingRule);
   return (
-    <BookingContext.Provider value={{ bookingData, setBookingData, costValue, setCostValue,addPlayerBooking, setAddPlayerBooking}}>
+    <BookingContext.Provider value={{ bookingData, setBookingData, costValue, setCostValue,addPlayerBooking, setAddPlayerBooking,pricingRuleId, setPricingRuleId,isTableDataEdit, setIsTableDataEdit}}>
       {children}
     </BookingContext.Provider>
   );

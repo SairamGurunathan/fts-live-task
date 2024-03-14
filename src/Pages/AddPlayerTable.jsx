@@ -3,12 +3,16 @@ import React, { useContext } from 'react'
 import { Table } from 'react-bootstrap'
 import BookingContext from '../Components/BookingContext'
 
-const AddPlayerTable = () => {
-  const {addPlayerBooking,setAddPlayerBooking} = useContext(BookingContext)
+const AddPlayerTable = ({handleEdit}) => {
+  const {addPlayerBooking,setAddPlayerBooking,pricingRuleId, setPricingRuleId} = useContext(BookingContext)
+  
   const  handleDelete= (index)=>{
     const updatedPlayerList = addPlayerBooking?.filter((_,i)=>i !== index)
     setAddPlayerBooking(updatedPlayerList)
+    const updatedPricingRuleId = pricingRuleId?.filter((_,i)=>i !== index+1)
+    setPricingRuleId(updatedPricingRuleId)
   }
+  
   return (
     <>
         <div className="mt-3">
@@ -37,7 +41,7 @@ const AddPlayerTable = () => {
                  <td>
                    <div className="d-flex align-items-center justify-content-center">
                      <div className='btn'>
-                       <Icon icon="fa-regular:edit" />
+                       <Icon icon="fa-regular:edit" onClick={()=>handleEdit(player)}/>
                      </div>
                      <div className='btn fs-3'>
                        <Icon icon="ic:outline-delete" onClick={()=>handleDelete(index)}/>

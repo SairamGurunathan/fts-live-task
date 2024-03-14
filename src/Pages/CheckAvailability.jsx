@@ -5,7 +5,6 @@ import { PricingRuleAction } from "../Redux/Actions/PricingRuleAction";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import AddPlayer from "./AddPlayer";
-import { CostByPriceAction } from "../Redux/Actions/CostByPriceAction";
 import moment from "moment";
 import BookingContext from "../Components/BookingContext";
 import AddPlayerTable from "./AddPlayerTable";
@@ -19,7 +18,7 @@ const CheckAvailability = ({
   day,
   isMultiple,
 }) => {
-  const { bookingData, setBookingData, setCostValue } =
+  const { bookingData, setBookingData, setCostValue,pricingRuleId, setPricingRuleId,setIsTableDataEdit } =
     useContext(BookingContext);
 
   const validationSchema = Yup.object().shape({
@@ -38,7 +37,6 @@ const CheckAvailability = ({
   const [isAddPlayer, setIsAddPlayer] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [show, setShow] = useState(false);
-  const [pricingRuleId, setPricingRuleId] = useState([]);
   const [isSave, setIsSave] = useState("Save");
 
   const numberValidation = (e) => {
@@ -58,11 +56,16 @@ const CheckAvailability = ({
   const pricingRuleSelector = useSelector(
     (state) => state?.PricingRuleReducer?.pricingRule
   );
-  console.log(pricingRuleSelector);
 
   const handleAddPlayer = () => {
     setShow(true);
   };
+  const handleEdit=(id)=>{
+    setShow(true)
+    id.isEdit = true
+    setIsTableDataEdit(id)
+  }
+
   
   const startDateTime =
     moment(`${startDate} ${startTime}`).toISOString().slice(0, -5) + "Z";
@@ -92,15 +95,6 @@ const CheckAvailability = ({
           setBookingData(values);
           const PerCostValue = selectedPricingRule?.pricingRule?.cost;
           setCostValue(PerCostValue);
-          dispatch(
-            CostByPriceAction(
-              pricingRuleId,
-              startDateTime,
-              endDateTime,
-              isMultiple,
-              day
-            )
-          );
           setIsPricingTable(true);
           setIsEdit(true);
           setIsSave("Edit");
@@ -355,7 +349,7 @@ const CheckAvailability = ({
             isMultiple={isMultiple}
             day={day}
           />
-          {isAddPlayer ? <AddPlayerTable /> : ""}
+          {isAddPlayer ? <AddPlayerTable handleEdit={handleEdit}/> : ""}
         </div>
       </div>
     </div>

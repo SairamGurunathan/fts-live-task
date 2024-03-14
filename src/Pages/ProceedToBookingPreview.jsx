@@ -1,13 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Button, Card, Col, Offcanvas, Row, Table } from "react-bootstrap";
+import BookingContext from "../Components/BookingContext";
+import { useSelector } from "react-redux";
 
 const ProceedToBookingPreview = ({
   showBookingPreview,
   setShowBookingPreview,
 }) => {
+  const { bookingData, addPlayerBooking} = useContext(BookingContext);
   const handleClose = () => {
     setShowBookingPreview(false);
   };
+  const costByPriceSelector = useSelector((state)=>state?.CostByPriceReducer?.cost)
   return (
     <>
       <Offcanvas
@@ -36,7 +40,7 @@ const ProceedToBookingPreview = ({
                           </Col>
                           <Col lg={4}>
                             <label>Facility Type</label>
-                            <p>Player Booking</p>
+                            <p>{}</p>
                           </Col>
                           <Col lg={4}>
                             <label>Booking Occurance</label>
@@ -69,7 +73,39 @@ const ProceedToBookingPreview = ({
                         <div className="d-flex text-start justify-content-between">
                           <Col>
                             <h6>Pricing</h6>
-                            <Table striped bordered hover>
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Facility</th>
+                      <th>Pricing Rule</th>
+                      <th>Per hour ($)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{bookingData.firstName}</td>
+                      <td>{bookingData.facilityTitle}</td>
+                      <td>{bookingData.pricingRuleTitle}</td>
+                      <td>${bookingData.perHourCost}</td>
+                    </tr>
+                    {addPlayerBooking?.map((player)=>(
+                 <tr>
+                 <td>{player.firstName}</td>
+                 <td>{player.facility} </td>
+                 <td>{player.pricingRule}</td>
+                 <td>${player.perHourCost}</td>  
+               </tr>
+              ))}
+                    <tr>
+                      <td colSpan={3}>Total</td>
+                      <td>
+                        <Button>${costByPriceSelector}</Button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
+                            {/* <Table striped bordered hover>
                               <thead>
                                 <tr>
                                   <th>Name</th>
@@ -92,7 +128,7 @@ const ProceedToBookingPreview = ({
                                   </td>
                                 </tr>
                               </tbody>
-                            </Table>
+                            </Table> */}
                           </Col>
                         </div>
                       </Col>
