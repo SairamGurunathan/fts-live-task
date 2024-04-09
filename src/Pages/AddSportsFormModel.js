@@ -49,7 +49,7 @@ const AddSportsFormModel = ({
   const [apiData, setApiData] = useState([]);
   const dispatch = useDispatch();
   const userID = localStorage.getItem("userID");
-  const [facilitySelect, setFacilitySelect] = useState([]);
+  const [facilitySelect, setFacilitySelect] = useState('');
   const [selectChange, setSelectChange] = useState([]);
 
   const facilitiesMetasSelector = useSelector(
@@ -117,7 +117,6 @@ const AddSportsFormModel = ({
       setAllChecked(allchecked?.filter((item) => item !== e.target.value));
     }
   };
-  // const selectedValuesString = allchecked?.toString();
   
   const facilitieDataSelector = useSelector(
     (state) => state?.AddSportsFormReducer?.addSports

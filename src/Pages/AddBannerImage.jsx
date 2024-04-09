@@ -47,7 +47,7 @@ const AddBannerImage = ({setSelectedFiles}) => {
       </div>
       <label for="file-input" className="btn btn-outline-primary mt-3">
                   Browse
-      <input type="file" for="browse" size="60" />
+      <input type="file" for="browse" size="60"  onChange={handleFiles}/>
       </label>
     </>
   );

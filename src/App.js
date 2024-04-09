@@ -10,15 +10,11 @@ import Reservations from "./Pages/Reservations";
 import { Col, Row } from "react-bootstrap";
 import AddFacilities from "./Pages/AddFacilities";
 import Refunds from "./Pages/Refunds";
+import { BookingProvider } from "./Components/BookingContext";
 import "./App.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-loading-skeleton/dist/skeleton.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css'
-import { createContext } from "react";
-import { BookingProvider } from "./Components/BookingContext";
-// import TestPage from "./Pages/TestPage";
-
-export const BookingDataContext = createContext();
 
 function App() {
   return (
@@ -47,9 +43,6 @@ function App() {
         <Route path="/reservation" element={<Reservations/>}/>
 
         <Route path="/refunds" element={<Refunds/>}/>
-
-        {/* <Route path="/new" element={<TestPage/>}/> */}
-
       </Routes>
         </Col>
         </Row>

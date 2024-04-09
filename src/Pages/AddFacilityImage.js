@@ -2,25 +2,27 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import AddImages from "../Assects/Images/addimage.svg";
 
-const AddFacilityImage = ({facilitySelect,setFacilitySelect,selectChange,setSelectChange}) => {
+const AddFacilityImage = ({setFacilitySelect,selectChange,setSelectChange}) => {
   const [facilityImagePreview, setFacilityImagePreview] = useState(null);
   const select = useSelector((state)=>state?.FacilitiesPhotoReducer?.facilitiesPhotos)
 
-const handleFiles = (e) => {
+  const handleFiles = (e) => {
     const files = e.target.files[0];
     setFacilitySelect(files);
-    setSelectChange([...facilitySelect, facilityImagePreview])
-
+  
     if (files) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFacilityImagePreview(reader.result);
-      }
+        setFacilityImagePreview(reader?.result);
+        setSelectChange([reader.result]);
+      };
       reader.readAsDataURL(files);
     } else {
-        setFacilityImagePreview(null);
+      setFacilityImagePreview(null);
+      setSelectChange(null);
     }
   };
+  
 
   useEffect(()=>{
     setSelectChange(select)
@@ -30,7 +32,7 @@ const handleFiles = (e) => {
   return (
     <>
     <div className="d-flex flex-row gap-2">
-     {selectChange ? (selectChange?.map((photo)=>(
+     {selectChange && selectChange.length === 0 ? (selectChange?.map((photo)=>(
                   <div>
                   <img 
                   src={photo?.url}
@@ -52,7 +54,7 @@ const handleFiles = (e) => {
             />
             </div>
           )}
-          {(facilityImagePreview && (
+          {(facilityImagePreview &&  (
             <img
               src={facilityImagePreview}
               alt="Preview"
@@ -65,7 +67,7 @@ const handleFiles = (e) => {
       </div>
       <label for="file-input" className="btn btn-outline-primary mt-3">
                   Browse
-      <input type="file" for="browse" size="60" />
+      <input type="file" for="browse" size="60" onChange={handleFiles}/>
       </label>
     </>
   );

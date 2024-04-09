@@ -3,7 +3,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import SignIn from '../Components/SignIn';
-import Logo from '../Assects/Images/Athlitik_White_New.6786b276b2b3fe3e797b7e8ac9f031c4.svg'
+import Logo from '../Assects/Images/brandLogo.png'
 import Partnerwithus from '../Components/Partnerwithus';
 
 const Login = () => {

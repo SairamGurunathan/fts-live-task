@@ -71,8 +71,8 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
   const handleFacilityType1 = (event) => {
     setSelectFacility({id:event.target.value,title:event.target.selectedOptions[0].label});
   };
-  // const errorSelector = useSelector((state)=>state?.CheckAvailabilityErrorReducer?.checkavailabilityError)
-  //     console.log(errorSelector);
+  const errorSelector = useSelector((state)=>state?.CheckAvailabilityErrorReducer?.checkavailabilityError)
+      console.log(errorSelector);
 
   const handleCheckAvailability = async () => {
     const startDateTime =
@@ -89,8 +89,7 @@ const BookingModal = ({ show, setShow, sportsListSelector }) => {
           isMultiple,
           day
         )
-      );
-      
+      )
         setIsCheckAvailability(true);
         setErrormsg()
     } catch (error) {

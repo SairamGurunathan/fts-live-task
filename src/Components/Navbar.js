@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Icon } from "@iconify/react";
 import { AccountAction } from "../Redux/Actions/AccountAction";
-import Logo from "../Assects/Images/Athlitik_White_New.6786b276b2b3fe3e797b7e8ac9f031c4.svg";
+import Logo from "../Assects/Images/brandLogo.png";
 
 const NavbarHeader = () => {
   const navigate = useNavigate();
@@ -35,10 +35,12 @@ const NavbarHeader = () => {
     <>
       <Navbar expand="lg" className="text-white bg-dark py-0 header">
         <Navbar.Brand onClick={() => navigate("/center")}>
+          <div></div>
           <img
             alt="logo"
             src={Logo}
-            width="230px"
+            width="150px"
+            height="75px"
             className="d-inline-block align-top cursor-pointer"
           />
         </Navbar.Brand>
